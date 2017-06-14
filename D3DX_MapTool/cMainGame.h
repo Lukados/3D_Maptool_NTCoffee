@@ -86,9 +86,6 @@ class cMainGame
 
 	// >> : RadioButton에 대한 변수 & construct
 	cRadioButton*			m_pRadioButton_Object;
-	// << :
-
-	// >> : Construct에 관한 변수
 	cConstruct*				m_pConstruct;
 	vector<cConstruct*>		m_vecConstruct;
 	// << :

@@ -157,7 +157,7 @@ void cRadioButton::Render_Sprite(LPD3DXSPRITE pSprite)
 		pSprite->SetTransform(&matWorld);
 
 		int u = OBJECTDB->GetMapObject(m_vecSIndex[i]->eCurrentSID)->fU * 8;
-		int v = OBJECTDB->GetMapObject(m_vecSIndex[i]->eCurrentSID)->fV * 8;
+		int v = OBJECTDB->GetMapObject(m_vecSIndex[i]->eCurrentSID)->fV * 16;
 		SetRect(&rc, 128 * u, 128 * v, 128 * (u + 1), 128 * (v + 1));
 		pSprite->Draw(m_vecSIndex[i]->texture, &rc, &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 0, 0), D3DCOLOR_RGBA(255, 255, 255, 255));
 	}

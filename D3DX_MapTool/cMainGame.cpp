@@ -120,11 +120,9 @@ void cMainGame::Render()
 	if (m_pSkyBox) m_pSkyBox->Render();
 
 	Render_UI(m_pUISprite);
-	//if(m_pRadioButton_Object->GetSID() != -1) 
 	Render_Object();
 
 	DEVICE->EndScene();
-
 	DEVICE->Present(NULL, NULL, NULL, NULL);
 }
 
