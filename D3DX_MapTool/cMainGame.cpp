@@ -285,7 +285,7 @@ void cMainGame::Setup_UI()
 
 	cUIScrollbar* pUIScroll_BrushDepth_inside = new cUIScrollbar();
 	pUIScroll_BrushDepth_inside->Setup(D3DXVECTOR3(80, 190, 0), E_UI_SCROLL);
-	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "image/rect/sky.png", -5, 5);
+	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "image/rect/sky.png", -15, 15);
 	pUITab_Map_space->AddChild(pUIScroll_BrushDepth_inside);
 	pUIScroll_BrushDepth_inside->Setup_bar(15, 30);
 	m_pUIScroll_BrushDepth_inside = pUIScroll_BrushDepth_inside;
