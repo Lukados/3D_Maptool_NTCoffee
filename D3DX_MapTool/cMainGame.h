@@ -154,6 +154,7 @@ public:
 	void Update_M_Object();
 	void Update_S_Object();
 	void Render_Object();
+	void Delete_Object();
 
 	void Update_MapBrush();
 	void Update_Menu();

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "cHeightMap.h"
-#include "cRay.h"
 #include "cMtlTex.h"
 
 

@@ -1049,6 +1049,23 @@ void cMainGame::Render_Object()
 	}
 }
 
+// 오브젝트 지우기
+void cMainGame::Delete_Object()
+{
+	if (m_pRadioButton_Object->GetSID() == -1)
+	{
+		D3DXVECTOR3 vDummy;
+		for (int i = 0; i < m_vecConstruct.size(); i++)
+		{
+			if (cRay::IsCollidedWithMesh(D3DXVECTOR2(INPUT->GetMousePos().x, INPUT->GetMousePos().y),
+				m_vecConstruct[i]->GetMesh(), vDummy))
+			{
+				
+			}
+		}
+	}
+}
+
 // 맵 브러쉬 업데이트 
 void cMainGame::Update_MapBrush()
 {

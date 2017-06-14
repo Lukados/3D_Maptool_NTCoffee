@@ -139,3 +139,4 @@ enum eFONTTYPE
 #include "cObjectDB.h"
 #include "cObject.h"
 #include "cMath.h"
+#include "cRay.h"
