@@ -102,9 +102,21 @@ void cMainGame::Update(float deltaTime)
 		{
 			MoveStandardPos(deltaTime);
 			SetOption();
-			if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK) m_pMap->SetOption(1);
-			else if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK2) m_pMap->SetOption(2);
-			else m_pMap->SetOption(0);
+			if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK)
+			{
+				m_pMap->SetOption(1);
+				m_pMap->SetIsCursorOn(true);
+			}
+			else if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK2)
+			{
+				m_pMap->SetOption(2);
+				m_pMap->SetIsCursorOn(true);
+			}
+			else
+			{
+				m_pMap->SetOption(0);
+				m_pMap->SetIsCursorOn(false);
+			}
 			m_pMap->Update();
 			m_vCursorPos = m_pMap->GetCursorPosition();
 		}
