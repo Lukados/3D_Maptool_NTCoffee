@@ -19,6 +19,7 @@
 #include "cSkyBox.h"
 
 #include "cFog.h"
+#include "cSnow.h"
 
 cMainGame::cMainGame() : m_pCamera(NULL), m_vStandardPos(0,0,0), m_pGrid(NULL), m_nSize(150), m_fCellSpace(1.0f), m_pMap(NULL), m_vDir(0,0,1), m_pUISprite(NULL), m_vCursorPos(0,0,0),
 m_pUITab_Menu(NULL), m_pUITab_Map(NULL), m_pUITab_Object(NULL), m_pUITab_Effect(NULL), m_fCamSpeed(10), m_isUpdateMap(false), m_isUpdateObj(false),
@@ -35,7 +36,9 @@ m_pConstruct(NULL), m_pRadioButton_Object(NULL),
 m_pSkyBox(NULL), m_pRadioButton_Fog(NULL), m_pFog(NULL), m_isFogOn(false),
 m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NULL), m_pUIText_Fog_Plus(NULL), m_nPassIndex(2),
 m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
-m_pRadioButton_Shadow(NULL), m_isShodowOn(false)
+m_pRadioButton_Shadow(NULL), m_isShodowOn(false),
+m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(NULL), m_pUIText_Snow_Plus(NULL),
+m_pRadioButton_Snow(NULL), m_isSnowOn(false)
 {
 }
 
@@ -61,6 +64,7 @@ cMainGame::~cMainGame()
 	}
 
 	m_pFog->Destroy();
+	SAFE_DELETE(m_pSnow);
 
 	TEXTURE->Destroy();
 	DEVICE->Release();
@@ -115,7 +119,6 @@ void cMainGame::Update(float deltaTime)
 
 	if (m_pCamera) m_pCamera->Update();	
 	if (m_pSkyBox) m_pSkyBox->Update(m_pCamera);
-	if (m_isFogOn) m_pFog->Update(m_pCamera);
 }
 
 void cMainGame::Render()
@@ -134,6 +137,7 @@ void cMainGame::Render()
 		Render_Object();
 	}
 
+	if (m_isSnowOn) m_pSnow->Render();
 	Render_UI(m_pUISprite);
 
 	DEVICE->EndScene();
@@ -432,6 +436,7 @@ void cMainGame::Setup_UI()
 	pUITab_Effect_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
 	m_pUITab_Effect->AddChild(pUITab_Effect_space);
 
+	// Fog
 	m_pRadioButton_Fog = new cRadioButton();
 	m_pRadioButton_Fog->Setup(D3DXVECTOR3(10, 50, 0), E_UI_RADIOBUTTON);
 	m_pRadioButton_Fog->Setup_RadioButton();
@@ -440,7 +445,7 @@ void cMainGame::Setup_UI()
 	m_pRadioButton_Fog->Add_RadioButton(D3DXVECTOR3(75, 10, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 
 	cUITextView* m_UIText_Fog = new cUITextView();
-	m_UIText_Fog->Setup(D3DXVECTOR3(70, 0, 0), E_UI_TEXT);
+	m_UIText_Fog->Setup(D3DXVECTOR3(70, -5, 0), E_UI_TEXT);
 	m_UIText_Fog->Setup_Text(ST_SIZE(130, 80), "Fog");
 	m_pRadioButton_Fog->AddChild(m_UIText_Fog);
 
@@ -467,6 +472,18 @@ void cMainGame::Setup_UI()
 	m_pUIText_Fog_Plus->Setup_Text(ST_SIZE(60, 40), "+");
 	pUITab_Effect_space->AddChild(m_pUIText_Fog_Plus);
 
+	// Shadow
+	m_pRadioButton_Shadow = new cRadioButton();
+	m_pRadioButton_Shadow->Setup(D3DXVECTOR3(10, 70, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Shadow->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Shadow);
+
+	m_pRadioButton_Shadow->Add_RadioButton(D3DXVECTOR3(75, 70, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Shadow = new cUITextView();
+	m_UIText_Shadow->Setup(D3DXVECTOR3(70, 55, 0), E_UI_TEXT);
+	m_UIText_Shadow->Setup_Text(ST_SIZE(130, 80), "Shadow");
+	m_pRadioButton_Shadow->AddChild(m_UIText_Shadow);
 
 	m_pUIButton_Shadow_Minus = new cUIButton();
 	m_pUIButton_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
@@ -488,17 +505,41 @@ void cMainGame::Setup_UI()
 	m_pUIText_Shadow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
 	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Plus);
 
-	m_pRadioButton_Shadow = new cRadioButton();
-	m_pRadioButton_Shadow->Setup(D3DXVECTOR3(10, 70, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Shadow->Setup_RadioButton();
-	pUITab_Effect_space->AddChild(m_pRadioButton_Shadow);
+	// Snow
+	m_pRadioButton_Snow = new cRadioButton();
+	m_pRadioButton_Snow->Setup(D3DXVECTOR3(10, 90, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Snow->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Snow);
 
-	m_pRadioButton_Shadow->Add_RadioButton(D3DXVECTOR3(75, 70, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Snow->Add_RadioButton(D3DXVECTOR3(75, 130, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 
-	cUITextView* m_UIText_Shadow = new cUITextView();
-	m_UIText_Shadow->Setup(D3DXVECTOR3(70, 60, 0), E_UI_TEXT);
-	m_UIText_Shadow->Setup_Text(ST_SIZE(130, 80), "Shadow");
-	m_pRadioButton_Shadow->AddChild(m_UIText_Shadow);
+	cUITextView* m_UIText_Snow = new cUITextView();
+	m_UIText_Snow->Setup(D3DXVECTOR3(70, 115, 0), E_UI_TEXT);
+	m_UIText_Snow->Setup_Text(ST_SIZE(130, 80), "Snow");
+	m_pRadioButton_Snow->AddChild(m_UIText_Snow);
+
+	m_pSnow = new cSnow();
+	m_pSnow->Setup();
+
+	m_pUIButton_Snow_Minus = new cUIButton();
+	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
+	m_pUIButton_Snow_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Snow_Minus);
+
+	m_pUIButton_Snow_Plus = new cUIButton();
+	m_pUIButton_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
+	m_pUIButton_Snow_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Snow_Plus);
+
+	m_pUIText_Snow_Minus = new cUITextView();
+	m_pUIText_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
+	m_pUIText_Snow_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Snow_Minus);
+
+	m_pUIText_Snow_Plus = new cUITextView();
+	m_pUIText_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
+	m_pUIText_Snow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Snow_Plus);
 
 	m_pUITab_Effect->SetHiddenAll(true);
 	// << 
@@ -1187,9 +1228,12 @@ void cMainGame::Setup_SkyBox()
 
 void cMainGame::Update_Effect()
 {
+	// Fog 贸府
 	if (m_pRadioButton_Fog->GetSID() != -1)
 	{
 		m_isFogOn = true;
+		m_pFog->Update(m_pCamera);
+
 		if (m_pUIButton_Fog_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
 			m_nPassIndex--;
@@ -1197,13 +1241,26 @@ void cMainGame::Update_Effect()
 		}
 		if (m_pUIButton_Fog_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_isFogOn = true;
 			m_nPassIndex++;
 			if (m_nPassIndex > 5) m_nPassIndex = 5;
 		}
 	}
 	else if (m_pRadioButton_Fog->GetSID() == -1) m_isFogOn = false;
-	
+
+	// Snow 贸府
+	if (m_pRadioButton_Snow->GetSID() != -1)
+	{
+		m_isSnowOn = true;
+		m_pSnow->Update();
+
+		if (m_pUIButton_Snow_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+		}
+		if (m_pUIButton_Snow_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+		}
+	}
+	else if (m_pRadioButton_Snow->GetSID() == -1) m_isSnowOn = false;
 }
 
 void cMainGame::Render_Effect()

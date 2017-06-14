@@ -153,6 +153,7 @@
     <ClInclude Include="cObjLoader.h" />
     <ClInclude Include="cRadioButton.h" />
     <ClInclude Include="cSkyBox.h" />
+    <ClInclude Include="cSnow.h" />
     <ClInclude Include="cUIButton.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cDeviceManager.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="cObjLoader.cpp" />
     <ClCompile Include="cRadioButton.cpp" />
     <ClCompile Include="cSkyBox.cpp" />
+    <ClCompile Include="cSnow.cpp" />
     <ClCompile Include="cUIButton.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />

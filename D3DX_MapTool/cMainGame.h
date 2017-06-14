@@ -15,6 +15,7 @@ class cConstruct;
 class cSkyBox;
 
 class cFog;
+class cSnow;
 
 class cMainGame
 {
@@ -118,6 +119,18 @@ class cMainGame
 	cRadioButton*			m_pRadioButton_Shadow;
 
 	bool					m_isShodowOn;
+	
+	// >> : SNOW
+	cUIButton*              m_pUIButton_Snow_Minus;
+	cUIButton*              m_pUIButton_Snow_Plus;
+	cUITextView*            m_pUIText_Snow_Minus;
+	cUITextView*            m_pUIText_Snow_Plus;
+
+	cRadioButton*			m_pRadioButton_Snow;
+	cSnow*					m_pSnow;
+
+	bool					m_isSnowOn;
+	// << :
 
 public:
 	cMainGame();
