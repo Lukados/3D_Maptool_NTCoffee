@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="99. etc">
+      <UniqueIdentifier>{8fe78645-a31e-4610-b660-b66050eb7ebd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. MapTool">
+      <UniqueIdentifier>{5ed32d18-75e4-4111-af61-98d4137af334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. MainGame">
+      <UniqueIdentifier>{353a268a-bef5-4c4e-9cd1-35b588a19542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager">
+      <UniqueIdentifier>{47496a67-c49f-4b3a-a7d9-f84e568e714b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\02. TextureManager">
+      <UniqueIdentifier>{334de84f-d50a-46a8-89c4-b448ed5693cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility">
+      <UniqueIdentifier>{1d64c7cf-165f-4812-8f40-c10d1baac718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\02. Camera">
+      <UniqueIdentifier>{e9302f6d-451f-47ae-aba5-81cdb0b85dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\01. ASE Info">
+      <UniqueIdentifier>{899626a9-9f61-4a54-84d2-3ad7a23afea1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\04. Pyramid">
+      <UniqueIdentifier>{35eacc1f-df5a-46ec-8506-6515d2afe5a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\03. Grid">
+      <UniqueIdentifier>{98152847-22b4-41f4-8585-858499a2413e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity">
+      <UniqueIdentifier>{859f454f-8651-4438-8792-826821beb043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\01. IMap">
+      <UniqueIdentifier>{32ae540f-16c0-43f0-9f97-39a326328eaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\02. HeightMap">
+      <UniqueIdentifier>{0c947657-975c-4dbe-802c-58f4f8bc2472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\03. InputManager">
+      <UniqueIdentifier>{6866d918-bf4e-45eb-838c-f0497900ce26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\01. DeviceManager">
+      <UniqueIdentifier>{128caea8-6c09-4b16-8445-fefa1834354a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI">
+      <UniqueIdentifier>{5328c278-9b84-469d-9fa3-d32baf4043bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\05. Ray">
+      <UniqueIdentifier>{14c3b82f-c86a-4e19-81aa-3e89b65f8803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\04. TimeManager">
+      <UniqueIdentifier>{a072b4d6-593d-47a8-b873-f565226a9d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\02. UITab">
+      <UniqueIdentifier>{41f6406a-222c-4d9b-9018-f38a3023e024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UIObject">
+      <UniqueIdentifier>{fad8657b-4cfb-43cc-912c-168efcc8c765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\06. Math">
+      <UniqueIdentifier>{28a35157-497f-421a-a275-8575301b0acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\05. FontManager">
+      <UniqueIdentifier>{55c7061d-369f-40af-a91e-691508c3b953}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\03. UIButton">
+      <UniqueIdentifier>{9afe6125-54fd-4af3-8eee-f3b95b298971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\04. UIScrollbar">
+      <UniqueIdentifier>{dfda6c4e-3236-4c53-9ccd-00f19e069401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\05. UITextView">
+      <UniqueIdentifier>{63c1db32-13e8-480e-bc17-24e280b34d2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\06. cRadioButton">
+      <UniqueIdentifier>{5d96fd7a-42bd-49ac-abc3-2703ce31e733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\07. UIInputField">
+      <UniqueIdentifier>{ff9c2b92-32ad-47c9-b15a-ad4956e510db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\03. Object">
+      <UniqueIdentifier>{e6c23127-d6f7-446a-9578-acb5cb403f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\04. Group">
+      <UniqueIdentifier>{131ff846-4825-462b-92f7-3d6b222d383c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\06. ObjectManager">
+      <UniqueIdentifier>{e3aaeb3a-0f09-465c-8208-dadfaf6733c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\08. ObjLoader">
+      <UniqueIdentifier>{8e6bc2f0-bd26-41a9-ae51-7e60e2451273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\09. ObjSaver">
+      <UniqueIdentifier>{162fab9b-2d79-4de8-9624-6439e2cdd175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. DB">
+      <UniqueIdentifier>{cacec0a4-eec8-457d-8a03-8e965ea539cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. DB\01. ObjectDB">
+      <UniqueIdentifier>{3ef6bb0c-246f-4a45-8e67-6de45a69ecbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\05. Construct">
+      <UniqueIdentifier>{c8fe0ccc-87be-4d9a-8f7d-d4a1512c3ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Utility\07. MtlTex">
+      <UniqueIdentifier>{4e802211-7077-4790-90a0-1de514c8c93b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\06. SkyBox">
+      <UniqueIdentifier>{eb5e9d61-9038-4c4b-a472-a9bb8dfea138}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>99. etc</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99. etc</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DX_MapTool.h">
+      <Filter>00. MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="cMainGame.h">
+      <Filter>01. MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="cDeviceManager.h">
+      <Filter>02. Manager\01. DeviceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cCamera.h">
+      <Filter>04. Utility\02. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Asciitok.h">
+      <Filter>04. Utility\01. ASE Info</Filter>
+    </ClInclude>
+    <ClInclude Include="cTextureManager.h">
+      <Filter>02. Manager\02. TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cGrid.h">
+      <Filter>04. Utility\03. Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="cPyramid.h">
+      <Filter>04. Utility\04. Pyramid</Filter>
+    </ClInclude>
+    <ClInclude Include="cIMap.h">
+      <Filter>03. Entity\01. IMap</Filter>
+    </ClInclude>
+    <ClInclude Include="cInputManager.h">
+      <Filter>02. Manager\03. InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cHeightMap.h">
+      <Filter>03. Entity\02. HeightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="cRay.h">
+      <Filter>04. Utility\05. Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="cTimeManager.h">
+      <Filter>02. Manager\04. TimeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cUITab.h">
+      <Filter>05. UI\02. UITab</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIObject.h">
+      <Filter>05. UI\01. UIObject</Filter>
+    </ClInclude>
+    <ClInclude Include="cMath.h">
+      <Filter>04. Utility\06. Math</Filter>
+    </ClInclude>
+    <ClInclude Include="cFontManager.h">
+      <Filter>02. Manager\05. FontManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIButton.h">
+      <Filter>05. UI\03. UIButton</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIScrollbar.h">
+      <Filter>05. UI\04. UIScrollbar</Filter>
+    </ClInclude>
+    <ClInclude Include="cUITextView.h">
+      <Filter>05. UI\05. UITextView</Filter>
+    </ClInclude>
+    <ClInclude Include="cRadioButton.h">
+      <Filter>05. UI\06. cRadioButton</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIInputField.h">
+      <Filter>05. UI\07. UIInputField</Filter>
+    </ClInclude>
+    <ClInclude Include="cObject.h">
+      <Filter>03. Entity\03. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cGroup.h">
+      <Filter>03. Entity\04. Group</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjectManager.h">
+      <Filter>02. Manager\06. ObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cMtlTex.h">
+      <Filter>04. Utility\07. MtlTex</Filter>
+    </ClInclude>
+    <ClInclude Include="cConstruct.h">
+      <Filter>03. Entity\05. Construct</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjLoader.h">
+      <Filter>04. Utility\08. ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjectDB.h">
+      <Filter>06. DB\01. ObjectDB</Filter>
+    </ClInclude>
+    <ClInclude Include="Note.h" />
+    <ClInclude Include="cSkyBox.h">
+      <Filter>03. Entity\06. SkyBox</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>99. etc</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DX_MapTool.cpp">
+      <Filter>00. MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="cMainGame.cpp">
+      <Filter>01. MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="cDeviceManager.cpp">
+      <Filter>02. Manager\01. DeviceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cCamera.cpp">
+      <Filter>04. Utility\02. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="cTextureManager.cpp">
+      <Filter>02. Manager\02. TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cGrid.cpp">
+      <Filter>04. Utility\03. Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="cPyramid.cpp">
+      <Filter>04. Utility\04. Pyramid</Filter>
+    </ClCompile>
+    <ClCompile Include="cIMap.cpp">
+      <Filter>03. Entity\01. IMap</Filter>
+    </ClCompile>
+    <ClCompile Include="cInputManager.cpp">
+      <Filter>02. Manager\03. InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cHeightMap.cpp">
+      <Filter>03. Entity\02. HeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="cRay.cpp">
+      <Filter>04. Utility\05. Ray</Filter>
+    </ClCompile>
+    <ClCompile Include="cTimeManager.cpp">
+      <Filter>02. Manager\04. TimeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cUITab.cpp">
+      <Filter>05. UI\02. UITab</Filter>
+    </ClCompile>
+    <ClCompile Include="cUIObject.cpp">
+      <Filter>05. UI\01. UIObject</Filter>
+    </ClCompile>
+    <ClCompile Include="cMath.cpp">
+      <Filter>04. Utility\06. Math</Filter>
+    </ClCompile>
+    <ClCompile Include="cFontManager.cpp">
+      <Filter>02. Manager\05. FontManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cUIButton.cpp">
+      <Filter>05. UI\03. UIButton</Filter>
+    </ClCompile>
+    <ClCompile Include="cUIScrollbar.cpp">
+      <Filter>05. UI\04. UIScrollbar</Filter>
+    </ClCompile>
+    <ClCompile Include="cUITextView.cpp">
+      <Filter>05. UI\05. UITextView</Filter>
+    </ClCompile>
+    <ClCompile Include="cRadioButton.cpp">
+      <Filter>05. UI\06. cRadioButton</Filter>
+    </ClCompile>
+    <ClCompile Include="cUIInputField.cpp">
+      <Filter>05. UI\07. UIInputField</Filter>
+    </ClCompile>
+    <ClCompile Include="cObject.cpp">
+      <Filter>03. Entity\03. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cGroup.cpp">
+      <Filter>03. Entity\04. Group</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjectManager.cpp">
+      <Filter>02. Manager\06. ObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cMtlTex.cpp">
+      <Filter>04. Utility\07. MtlTex</Filter>
+    </ClCompile>
+    <ClCompile Include="cConstruct.cpp">
+      <Filter>03. Entity\05. Construct</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjLoader.cpp">
+      <Filter>04. Utility\08. ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjectDB.cpp">
+      <Filter>06. DB\01. ObjectDB</Filter>
+    </ClCompile>
+    <ClCompile Include="cSkyBox.cpp">
+      <Filter>03. Entity\06. SkyBox</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="D3DX_MapTool.ico">
+      <Filter>99. etc</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>99. etc</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D3DX_MapTool.rc">
+      <Filter>99. etc</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>99. etc</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
