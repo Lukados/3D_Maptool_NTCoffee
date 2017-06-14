@@ -26,7 +26,7 @@ void cRadioButton::Update(float deltaTime)
 	{
 		if (INPUT->IsMouseDown(MOUSE_LEFT) &&
 			INPUT->IsCollided(D3DXVECTOR2(m_vecSIndex[i]->vPosition.x, m_vecSIndex[i]->vPosition.y),
-				D3DXVECTOR2(m_vecSIndex[i]->vPosition.x + m_vecSIndex[i]->stSize.nWidth, m_vecSIndex[i]->vPosition.y + m_vecSIndex[i]->stSize.nWidth)))
+				D3DXVECTOR2(m_vecSIndex[i]->vPosition.x + m_vecSIndex[i]->stSize.nWidth, m_vecSIndex[i]->vPosition.y + m_vecSIndex[i]->stSize.nHeight)))
 		{
 			if (m_vecSIndex[i]->eUIState == E_UISTATE_IDLE)
 			{

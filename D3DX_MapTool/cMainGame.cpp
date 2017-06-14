@@ -468,8 +468,39 @@ void cMainGame::Setup_UI()
 	pUITab_Effect_space->AddChild(m_pUIText_Fog_Plus);
 
 
-	m_pUITab_Effect->SetHiddenAll(true);
+	m_pUIButton_Shadow_Minus = new cUIButton();
+	m_pUIButton_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
+	m_pUIButton_Shadow_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Shadow_Minus);
 
+	m_pUIButton_Shadow_Plus = new cUIButton();
+	m_pUIButton_Shadow_Plus->Setup(D3DXVECTOR3(210, 150, 0), E_UI_BUTTON);
+	m_pUIButton_Shadow_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Shadow_Plus);
+
+	m_pUIText_Shadow_Minus = new cUITextView();
+	m_pUIText_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
+	m_pUIText_Shadow_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Minus);
+
+	m_pUIText_Shadow_Plus = new cUITextView();
+	m_pUIText_Shadow_Plus->Setup(D3DXVECTOR3(210, 150, 0), E_UI_BUTTON);
+	m_pUIText_Shadow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Plus);
+
+	m_pRadioButton_Shadow = new cRadioButton();
+	m_pRadioButton_Shadow->Setup(D3DXVECTOR3(10, 70, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Shadow->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Shadow);
+
+	m_pRadioButton_Shadow->Add_RadioButton(D3DXVECTOR3(75, 70, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Shadow = new cUITextView();
+	m_UIText_Shadow->Setup(D3DXVECTOR3(70, 60, 0), E_UI_TEXT);
+	m_UIText_Shadow->Setup_Text(ST_SIZE(130, 80), "Shadow");
+	m_pRadioButton_Shadow->AddChild(m_UIText_Shadow);
+
+	m_pUITab_Effect->SetHiddenAll(true);
 	// << 
 }
 
@@ -1159,7 +1190,6 @@ void cMainGame::Update_Effect()
 	if (m_pRadioButton_Fog->GetSID() != -1)
 	{
 		m_isFogOn = true;
-		
 		if (m_pUIButton_Fog_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
 			m_nPassIndex--;
@@ -1167,6 +1197,7 @@ void cMainGame::Update_Effect()
 		}
 		if (m_pUIButton_Fog_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
+			m_isFogOn = true;
 			m_nPassIndex++;
 			if (m_nPassIndex > 5) m_nPassIndex = 5;
 		}
