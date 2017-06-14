@@ -38,7 +38,8 @@ m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NUL
 m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
 m_pRadioButton_Shadow(NULL), m_isShodowOn(false),
 m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(NULL), m_pUIText_Snow_Plus(NULL),
-m_pRadioButton_Snow(NULL), m_isSnowOn(false)
+m_pRadioButton_Snow(NULL), m_isSnowOn(false),
+m_pSphere(NULL), m_vSpherePos(0, 0, 0)
 {
 }
 
@@ -65,6 +66,7 @@ cMainGame::~cMainGame()
 
 	m_pFog->Destroy();
 	SAFE_DELETE(m_pSnow);
+	SAFE_RELEASE(m_pSphere);
 
 	TEXTURE->Destroy();
 	DEVICE->Release();
@@ -82,6 +84,10 @@ void cMainGame::Setup()
 	m_pGrid->Setup(m_nSize / 2);
 
 	OBJECTDB->Setup();
+
+	m_mtlSPhere.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_mtlSPhere.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_mtlSPhere.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	cHeightMap* pMap = new cHeightMap;
 	pMap->Setup(m_nSize, m_fCellSpace);
@@ -1060,10 +1066,33 @@ void cMainGame::Delete_Object()
 			if (cRay::IsCollidedWithMesh(D3DXVECTOR2(INPUT->GetMousePos().x, INPUT->GetMousePos().y),
 				m_vecConstruct[i]->GetMesh(), vDummy))
 			{
-				
+				if (m_pSphere) SAFE_RELEASE(m_pSphere);
+				m_vSpherePos = m_vecConstruct[i]->GetPosition();
+				D3DXCreateSphere(DEVICE, 20, 10, 10, &m_pSphere, NULL);
 			}
 		}
 	}
+}
+
+void cMainGame::Render_Sphere()
+{
+	if (!m_pSphere) return;
+
+	D3DXMATRIXA16 matWorld, matR, matT;
+	D3DXMatrixIdentity(&matWorld);
+	D3DXMatrixIdentity(&matR);
+	D3DXMatrixIdentity(&matT);
+
+	D3DXMatrixTranslation(&matT, m_vSpherePos.x, m_vSpherePos.y, m_vSpherePos.z);
+	matWorld = matR*matT;
+
+	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
+	DEVICE->SetMaterial(&m_mtlSPhere);
+	DEVICE->SetTexture(0, NULL);
+
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	m_pSphere->DrawSubset(0);
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 // 맵 브러쉬 업데이트 

@@ -114,6 +114,15 @@ struct ST_SIZE
 	ST_SIZE(int width, int height) { nWidth = width; nHeight = height; }
 };
 
+struct ST_SPHERE
+{
+	ST_SPHERE() {}
+	ST_SPHERE(D3DXVECTOR3 pos, float radius) { vCenter = pos; fRadius = radius; }
+	bool isPicked;
+	D3DXVECTOR3 vCenter;
+	float fRadius;
+};
+
 enum eUIOBJECT
 {
 	E_UI_NONE, E_UI_TAB, E_UI_BUTTON, E_UI_SCROLL, E_UI_TEXT, E_UI_RADIOBUTTON, E_UI_INPUTFIELD, 

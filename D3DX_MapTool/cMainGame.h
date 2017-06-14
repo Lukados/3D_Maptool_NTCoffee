@@ -132,6 +132,12 @@ class cMainGame
 	bool					m_isSnowOn;
 	// << :
 
+	// >> : Object 클릭시 생성되는 구체 -> 추후 삭제예정
+	LPD3DXMESH				m_pSphere;
+	D3DMATERIAL9			m_mtlSPhere;
+	D3DXVECTOR3				m_vSpherePos;
+	// << :
+
 public:
 	cMainGame();
 	~cMainGame();
@@ -154,7 +160,11 @@ public:
 	void Update_M_Object();
 	void Update_S_Object();
 	void Render_Object();
+
+	// >> 
 	void Delete_Object();
+	void Render_Sphere();
+	// <<
 
 	void Update_MapBrush();
 	void Update_Menu();
