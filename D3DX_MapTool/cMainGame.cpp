@@ -111,7 +111,7 @@ void cMainGame::Update(float deltaTime)
 
 void cMainGame::Render()
 {
-	DEVICE->Clear(NULL,	NULL,D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,D3DCOLOR_XRGB(120, 150, 200),1.0f, 0);
+	DEVICE->Clear(NULL,	NULL,D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL ,D3DCOLOR_XRGB(120, 150, 200),1.0f, 0);
 
 	DEVICE->BeginScene();
 	
@@ -121,6 +121,9 @@ void cMainGame::Render()
 
 	Render_UI(m_pUISprite);
 	//if(m_pRadioButton_Object->GetSID() != -1) 
+
+	Render_Object_Shadow();
+
 	Render_Object();
 
 	DEVICE->EndScene();
@@ -744,6 +747,15 @@ void cMainGame::Render_Object()
 	for (int i = 0; i < m_vecConstruct.size(); i++)
 	{
 		m_vecConstruct[i]->Render();
+	}
+}
+
+void cMainGame::Render_Object_Shadow()
+{
+	if (m_pConstruct != NULL) m_pConstruct->Render_Shadow();
+	for (int i = 0; i < m_vecConstruct.size(); i++)
+	{
+		m_vecConstruct[i]->Render_Shadow();
 	}
 }
 

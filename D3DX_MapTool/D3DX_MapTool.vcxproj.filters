@@ -212,6 +212,7 @@
     <ClInclude Include="cSkyBox.h">
       <Filter>03. Entity\06. SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="cShadowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -304,6 +305,7 @@
     <ClCompile Include="cSkyBox.cpp">
       <Filter>03. Entity\06. SkyBox</Filter>
     </ClCompile>
+    <ClCompile Include="cShadowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="D3DX_MapTool.ico">
