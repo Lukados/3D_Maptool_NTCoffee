@@ -18,6 +18,8 @@
 #include "cConstruct.h"
 #include "cSkyBox.h"
 
+#include "cFog.h"
+
 cMainGame::cMainGame() : m_pCamera(NULL), m_vStandardPos(0,0,0), m_pGrid(NULL), m_nSize(150), m_fCellSpace(1.0f), m_pMap(NULL), m_vDir(0,0,1), m_pUISprite(NULL), m_vCursorPos(0,0,0),
 m_pUITab_Menu(NULL), m_pUITab_Map(NULL), m_pUITab_Object(NULL), m_pUITab_Effect(NULL), m_fCamSpeed(10), m_isUpdateMap(false), m_isUpdateObj(false),
 m_pRadioButton_Brush(NULL), m_pUIButton_GetHeight(NULL), m_pUIInputField_SetHeight(NULL), m_pUIButton_SetHeight(NULL),
@@ -30,7 +32,10 @@ m_pUIButton_MLeft(NULL),m_pUIButton_MRight(NULL),m_pUIText_MID(NULL),
 m_pUIButton_SLeft(NULL),m_pUIButton_SRight(NULL),m_pUIText_SID(NULL),
 m_nObject_LIndex(0), m_nObject_MIndex(0), m_nObject_SIndex(0), m_nPage(1),
 m_pConstruct(NULL), m_pRadioButton_Object(NULL),
-m_pSkyBox(NULL)
+m_pSkyBox(NULL), m_pRadioButton_Fog(NULL), m_pFog(NULL), m_isFogOn(false),
+m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NULL), m_pUIText_Fog_Plus(NULL), m_nPassIndex(2),
+m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
+m_pRadioButton_Shadow(NULL), m_isShodowOn(false)
 {
 }
 
@@ -54,6 +59,9 @@ cMainGame::~cMainGame()
 	{
 		SAFE_DELETE(p);
 	}
+
+	m_pFog->Destroy();
+
 	TEXTURE->Destroy();
 	DEVICE->Release();
 	FONT->Destroy();
@@ -107,6 +115,7 @@ void cMainGame::Update(float deltaTime)
 
 	if (m_pCamera) m_pCamera->Update();	
 	if (m_pSkyBox) m_pSkyBox->Update(m_pCamera);
+	if (m_isFogOn) m_pFog->Update(m_pCamera);
 }
 
 void cMainGame::Render()
@@ -116,11 +125,16 @@ void cMainGame::Render()
 	DEVICE->BeginScene();
 	
 	if (m_pGrid) m_pGrid->Render();
-	if (m_pMap) m_pMap->Render();
-	if (m_pSkyBox) m_pSkyBox->Render();
+
+	if (m_isFogOn) Render_Effect_Fog();
+	else
+	{
+		if (m_pMap) m_pMap->Render();
+		if (m_pSkyBox) m_pSkyBox->Render();
+		Render_Object();
+	}
 
 	Render_UI(m_pUISprite);
-	Render_Object();
 
 	DEVICE->EndScene();
 	DEVICE->Present(NULL, NULL, NULL, NULL);
@@ -412,14 +426,51 @@ void cMainGame::Setup_UI()
 	m_pUITab_Effect = new cUITab();
 	m_pUITab_Effect->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 3, 0, 0), E_UI_TAB);
 	m_pUITab_Effect->Setup_tab(titleW, titleH, "Effect", "image/rect/darkgray.png", "image/rect/gray.png");
-	
+
 	cUITab* pUITab_Effect_space = new cUITab();
 	pUITab_Effect_space->Setup(D3DXVECTOR3(-(titleW + titleGap) * index, menuspaceY, 0), E_UI_TAB);
 	pUITab_Effect_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
 	m_pUITab_Effect->AddChild(pUITab_Effect_space);
-	
+
+	m_pRadioButton_Fog = new cRadioButton();
+	m_pRadioButton_Fog->Setup(D3DXVECTOR3(10, 50, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Fog->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Fog);
+
+	m_pRadioButton_Fog->Add_RadioButton(D3DXVECTOR3(75, 10, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Fog = new cUITextView();
+	m_UIText_Fog->Setup(D3DXVECTOR3(70, 0, 0), E_UI_TEXT);
+	m_UIText_Fog->Setup_Text(ST_SIZE(130, 80), "Fog");
+	m_pRadioButton_Fog->AddChild(m_UIText_Fog);
+
+	m_pFog = new cFog();
+	m_pFog->Setup("obj/Effect/Fog/fog.txt");
+
+	m_pUIButton_Fog_Minus = new cUIButton();
+	m_pUIButton_Fog_Minus->Setup(D3DXVECTOR3(20, 70, 0), E_UI_BUTTON);
+	m_pUIButton_Fog_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Fog_Minus);
+
+	m_pUIButton_Fog_Plus = new cUIButton();
+	m_pUIButton_Fog_Plus->Setup(D3DXVECTOR3(210, 70, 0), E_UI_BUTTON);
+	m_pUIButton_Fog_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Fog_Plus);
+
+	m_pUIText_Fog_Minus = new cUITextView();
+	m_pUIText_Fog_Minus->Setup(D3DXVECTOR3(20, 70, 0), E_UI_BUTTON);
+	m_pUIText_Fog_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Fog_Minus);
+
+	m_pUIText_Fog_Plus = new cUITextView();
+	m_pUIText_Fog_Plus->Setup(D3DXVECTOR3(210, 70, 0), E_UI_BUTTON);
+	m_pUIText_Fog_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Fog_Plus);
+
+
 	m_pUITab_Effect->SetHiddenAll(true);
-// << 
+
+	// << 
 }
 
 void cMainGame::Update_UI()
@@ -498,6 +549,7 @@ void cMainGame::Update_UI()
 
 	Update_Menu();
 	Update_Object();
+	Update_Effect();
 }
 
 void cMainGame::Render_UI(LPD3DXSPRITE pSprite)
@@ -1100,4 +1152,41 @@ void cMainGame::Setup_SkyBox()
 {
 	m_pSkyBox = new cSkyBox();
 	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2);
+}
+
+void cMainGame::Update_Effect()
+{
+	if (m_pRadioButton_Fog->GetSID() != -1)
+	{
+		m_isFogOn = true;
+		
+		if (m_pUIButton_Fog_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nPassIndex--;
+			if (m_nPassIndex < 0) m_nPassIndex = 0;
+		}
+		if (m_pUIButton_Fog_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nPassIndex++;
+			if (m_nPassIndex > 5) m_nPassIndex = 5;
+		}
+	}
+	else if (m_pRadioButton_Fog->GetSID() == -1) m_isFogOn = false;
+	
+}
+
+void cMainGame::Render_Effect()
+{
+
+}
+
+void cMainGame::Render_Effect_Fog()
+{
+	m_pFog->Render_Begin(m_nPassIndex);
+
+	if (m_pMap) m_pMap->Render();
+	if (m_pSkyBox) m_pSkyBox->Render();
+	Render_Object();
+
+	m_pFog->Render_End();
 }

@@ -112,6 +112,12 @@
     <Filter Include="03. Entity\06. SkyBox">
       <UniqueIdentifier>{eb5e9d61-9038-4c4b-a472-a9bb8dfea138}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Entity\07. Effect">
+      <UniqueIdentifier>{d7949ca4-7310-46fc-a563-cf00813499dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\07. Effect\Fog">
+      <UniqueIdentifier>{01e02db8-3a80-40d8-8656-0fcecb652771}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -212,6 +218,9 @@
     <ClInclude Include="cSkyBox.h">
       <Filter>03. Entity\06. SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="cFog.h">
+      <Filter>03. Entity\07. Effect\Fog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -303,6 +312,9 @@
     </ClCompile>
     <ClCompile Include="cSkyBox.cpp">
       <Filter>03. Entity\06. SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="cFog.cpp">
+      <Filter>03. Entity\07. Effect\Fog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

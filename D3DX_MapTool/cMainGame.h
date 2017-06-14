@@ -14,6 +14,8 @@ class cUIInputField;
 class cConstruct;
 class cSkyBox;
 
+class cFog;
+
 class cMainGame
 {
 	D3DXVECTOR3					m_vStandardPos;
@@ -94,6 +96,29 @@ class cMainGame
 	cSkyBox*				m_pSkyBox;
 	// <<
 
+	// >> : Effect에 관한 변수
+	// >> : FOG
+	cUIButton*              m_pUIButton_Fog_Minus;
+	cUIButton*              m_pUIButton_Fog_Plus;
+	cUITextView*            m_pUIText_Fog_Minus;
+	cUITextView*            m_pUIText_Fog_Plus;
+
+	cRadioButton*			m_pRadioButton_Fog;
+
+	cFog*					m_pFog;
+	int						m_nPassIndex;
+	bool					m_isFogOn;
+
+	// >> : SHADOW
+	cUIButton*              m_pUIButton_Shadow_Minus;
+	cUIButton*              m_pUIButton_Shadow_Plus;
+	cUITextView*            m_pUIText_Shadow_Minus;
+	cUITextView*            m_pUIText_Shadow_Plus;
+
+	cRadioButton*			m_pRadioButton_Shadow;
+
+	bool					m_isShodowOn;
+
 public:
 	cMainGame();
 	~cMainGame();
@@ -126,5 +151,9 @@ public:
 	void LoadMap();
 
 	void Setup_SkyBox();
+
+	void Update_Effect();
+	void Render_Effect();
+	void Render_Effect_Fog();
 };
 
