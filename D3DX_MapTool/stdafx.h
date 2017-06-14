@@ -25,6 +25,7 @@
 #include <string>
 #include <assert.h>
 #include <fstream>
+#include <ctime>
 
 #include <d3dx9.h>
 #pragma comment(lib, "d3d9.lib")
@@ -127,6 +128,7 @@ enum eFONTTYPE
 {
 	E_FONT_DEFAULT,
 };
+
 
 #include "cDeviceManager.h"
 #include "cTextureManager.h"

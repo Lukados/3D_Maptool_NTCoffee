@@ -400,7 +400,7 @@ void cMainGame::Setup_UI()
 
 	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 	{
-		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Construct File/Construct1.png"));
+		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Construct/Image/Construct1.png"));
 	}
 
 
@@ -531,7 +531,14 @@ void cMainGame::Update_Object()
 
 			char* folder = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->szFolder;
 			char* file = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->szFile;
-			m_pConstruct->Setup(folder, file);
+			m_pConstruct->SetSObjID(m_pRadioButton_Object->GetSID());
+
+			if (m_pConstruct->GetSObjID() >= E_S_OBJECTID_P_DW_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_P_ETC_END)
+			{
+				m_pConstruct->Setup(folder, file, false);
+			}
+			else m_pConstruct->Setup(folder, file, true);
+
 		}
 
 		if (INPUT->GetKeyState('Z'))	m_pConstruct->SetScale(m_pConstruct->GetScale() + D3DXVECTOR3(0.05f, 0.05f, 0.05f));
@@ -559,11 +566,11 @@ void cMainGame::Update_Object()
 		}
 	}
 
-	// 삭제시키는 부분 -> 에러남
-	// if (m_pRadioButton_Object->GetSID() == -1 && m_pRadioButton_Object->GetIsClicked() == false)
-	// {
-	// 	if(m_pConstruct) m_pConstruct->Destroy();
-	// }
+
+	if (m_pRadioButton_Object->GetSID() == -1 && m_pRadioButton_Object->GetIsClicked() == false)
+	{
+		if (m_pConstruct)	SAFE_DELETE(m_pConstruct);
+	}
 }
 
 void cMainGame::Update_L_Object()
@@ -575,8 +582,25 @@ void cMainGame::Update_L_Object()
 	{
 		m_nPage = 1;
 		m_nObject_LIndex--;
-		m_nObject_MIndex = E_M_OBJECTID_H_DUSKWOOD;
-		m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
+
+		switch (m_nObject_LIndex)
+		{
+		case E_L_OBJECTID_HUMAN:
+			m_nObject_MIndex = E_M_OBJECTID_H_DUSKWOOD;
+			m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
+			break;
+
+		case E_L_OBJECTID_ORC:
+			m_nObject_MIndex = E_M_OBJECTID_O_KALIMDOR;
+			m_nObject_SIndex = E_S_OBJECTID_O_KD_START;
+			break;
+
+		case E_L_OBJECTID_PROPS:
+			m_nObject_MIndex = E_M_OBJECTID_P_DUSKWOOD;
+			m_nObject_SIndex = E_S_OBJECTID_P_DW_START;
+			break;
+		}
+
 	}
 	if (m_pUIButton_LRight->GetCurrentState() == E_UISTATE_CLICKED)
 	{
@@ -603,6 +627,20 @@ void cMainGame::Update_L_Object()
 		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_O_START) ? (E_M_OBJECTID_O_START + 1) : m_nObject_MIndex;
 		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_O_END) ? (E_M_OBJECTID_O_END - 1) : m_nObject_MIndex;
 		break;
+
+	case E_L_OBJECTID_PROPS:
+		m_pUIText_LID->SetText("PROPS");
+
+		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_P_START) ? (E_M_OBJECTID_P_START + 1) : m_nObject_MIndex;
+		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_P_END) ? (E_M_OBJECTID_P_END - 1) : m_nObject_MIndex;
+		break;
+
+	case E_L_OBJECTID_VILLAGE:
+		m_pUIText_LID->SetText("VILLAGE");
+
+		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_V_START) ? (E_M_OBJECTID_V_START + 1) : m_nObject_MIndex;
+		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_V_END) ? (E_M_OBJECTID_V_END - 1) : m_nObject_MIndex;
+		break;
 	}
 }
 
@@ -613,14 +651,33 @@ void cMainGame::Update_M_Object()
 		m_nObject_MIndex--;
 		m_nPage = 1;
 
-		if (m_nObject_LIndex == E_L_OBJECTID_HUMAN) m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
-		if (m_nObject_LIndex == E_L_OBJECTID_ORC)	m_nObject_SIndex = E_S_OBJECTID_O_KD_START;
+		switch (m_nObject_LIndex)
+		{
+		case E_L_OBJECTID_HUMAN:
+			m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
+			break;
+
+		case E_L_OBJECTID_ORC:
+			m_nObject_SIndex = E_S_OBJECTID_O_KD_START;
+			break;
+
+		case E_L_OBJECTID_PROPS:
+			if (m_nObject_MIndex == E_M_OBJECTID_P_DUSKWOOD)	m_nObject_SIndex = E_S_OBJECTID_P_DW_START;
+			if (m_nObject_MIndex == E_M_OBJECTID_P_NORTHREND)	m_nObject_SIndex = E_S_OBJECTID_P_NR_START;
+			break;
+
+		case E_L_OBJECTID_VILLAGE:
+			m_nObject_SIndex = E_S_OBJECTID_V_START;
+			break;
+		}
 	}
+
 	if (m_pUIButton_MRight->GetCurrentState() == E_UISTATE_CLICKED)
 	{
 		m_nObject_MIndex++;
 		m_nPage = 1;
 	}
+
 
 	int nStartIndex = 1;
 
@@ -643,7 +700,7 @@ void cMainGame::Update_M_Object()
 	case E_M_OBJECTID_O_KALIMDOR:
 		m_pUIText_MID->SetText("KALIMDOR");
 		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_O_KD_START) ? (E_S_OBJECTID_O_KD_START + 1) : m_nObject_SIndex;
-		
+
 		nStartIndex = E_S_OBJECTID_O_KD_START + 1;
 		break;
 
@@ -653,9 +710,37 @@ void cMainGame::Update_M_Object()
 
 		nStartIndex = E_S_OBJECTID_O_NR_START + 1;
 		break;
+
+	case E_M_OBJECTID_P_DUSKWOOD:
+		m_pUIText_MID->SetText("DUSKWOOD");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_P_DW_START) ? (E_S_OBJECTID_P_DW_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_P_DW_START + 1;
+		break;
+
+	case E_M_OBJECTID_P_NORTHREND:
+		m_pUIText_MID->SetText("NORTHREND");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_P_NR_START) ? (E_S_OBJECTID_P_NR_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_P_NR_START + 1;
+		break;
+
+	case E_M_OBJECTID_P_ETC:
+		m_pUIText_MID->SetText("ETC");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_P_ETC_START) ? (E_S_OBJECTID_P_ETC_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_P_ETC_START + 1;
+		break;
+
+	case E_M_OBJECTID_V_VILLAGE:
+		m_pUIText_MID->SetText("VILLAGE");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_V_START) ? (E_S_OBJECTID_V_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_V_START + 1;
+		break;
 	}
 
-	if(m_nPage > 0) m_nObject_SIndex = 8 * (m_nPage - 1) + nStartIndex;
+	if (m_nPage > 0) m_nObject_SIndex = 8 * (m_nPage - 1) + nStartIndex;
 }
 
 void cMainGame::Update_S_Object()
@@ -666,77 +751,160 @@ void cMainGame::Update_S_Object()
 		else m_nPage--;
 	}
 
-	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+	switch (m_nObject_MIndex)
 	{
-		switch (m_nObject_MIndex)
-		{
-		case E_M_OBJECTID_H_DUSKWOOD:
+		// HUMAN
+	case E_M_OBJECTID_H_DUSKWOOD:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_H_DW_END)
 			{
 				m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			}
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_H_DW_END - E_S_OBJECTID_H_DW_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-			break;
 		}
 
-		case E_M_OBJECTID_H_DRAENOR:
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_H_DW_END - E_S_OBJECTID_H_DW_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_H_DRAENOR:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_H_DN_END) 	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_H_DN_END - E_S_OBJECTID_H_DN_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-			break;
 		}
 
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_H_DN_END - E_S_OBJECTID_H_DN_START - 1;
+			int maxPage = (count / 8) + 1;
 
-		case E_M_OBJECTID_O_KALIMDOR:
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	// ORC
+	case E_M_OBJECTID_O_KALIMDOR:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_O_KD_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_O_KD_END - E_S_OBJECTID_O_KD_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-break;
 		}
 
-		case E_M_OBJECTID_O_NORTHREND:
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_O_KD_END - E_S_OBJECTID_O_KD_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_O_NORTHREND:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_O_NR_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_O_NR_END - E_S_OBJECTID_O_NR_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-			break;
 		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_O_NR_END - E_S_OBJECTID_O_NR_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
 		}
+		break;
+	}
+
+	// PROPS
+	case E_M_OBJECTID_P_DUSKWOOD:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_P_DW_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_P_DW_END - E_S_OBJECTID_P_DW_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_P_NORTHREND:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_P_NR_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_P_NR_END - E_S_OBJECTID_P_NR_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_P_ETC:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_P_ETC_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_P_ETC_END - E_S_OBJECTID_P_ETC_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	// VILLAGE
+	case E_M_OBJECTID_V_VILLAGE:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_V_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_V_END - E_S_OBJECTID_V_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
 	}
 }
-
 // 오브젝트 랜더
 void cMainGame::Render_Object()
 {
