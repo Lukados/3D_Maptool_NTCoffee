@@ -119,7 +119,6 @@ class cMainGame
 	cRadioButton*			m_pRadioButton_Shadow;
 
 	bool					m_isShodowOn;
-	
 	// >> : Weather
 	cUIButton*              m_pUIButton_Snow_Minus;
 	cUIButton*              m_pUIButton_Snow_Plus;
@@ -141,6 +140,10 @@ class cMainGame
 	int						m_nSnowCount;
 	bool					m_isRainOn;
 	int						m_nRainCount;
+	// << :
+
+	// >> : 디퓨즈값 날려줄거
+	float                   m_diffuseAlpha;
 	// << :
 
 	// >> : Object 클릭시 생성되는 구체 -> 추후 삭제예정
@@ -171,6 +174,7 @@ public:
 	void Update_M_Object();
 	void Update_S_Object();
 	void Render_Object();
+	void Render_Object_Shadow();
 
 	// >> 
 	void Delete_Object();

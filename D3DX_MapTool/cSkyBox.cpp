@@ -223,6 +223,7 @@ void cSkyBox::Render()
 	//	&m_vecVertex[30],
 	//	sizeof(ST_PT_VERTEX));
 
+	DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	DEVICE->EndScene();
 }
 

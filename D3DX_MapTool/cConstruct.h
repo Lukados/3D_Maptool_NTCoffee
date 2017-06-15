@@ -27,9 +27,17 @@ public:
 	void Setup(char* szFolder, char* szFile, bool isChecked);
 	void Update();
 	void Render();
+	void Render_Shadow();
 
 	void Create(int sIndex);
 	void Destroy();
 
 	LPD3DXMESH GetMesh() { return m_pObjMesh; }
+
+	D3DMATERIAL9 InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p);
+
+	vector<cMtlTex*> cConstruct::GetMtl()
+	{
+		return m_vecObjMtlTex;
+	}
 };

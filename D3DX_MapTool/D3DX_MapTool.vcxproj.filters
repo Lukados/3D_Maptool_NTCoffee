@@ -233,6 +233,7 @@
     <ClInclude Include="cConstructManager.h">
       <Filter>02. Manager\ConstructManager</Filter>
     </ClInclude>
+    <ClInclude Include="cShadowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -334,6 +335,7 @@
     <ClCompile Include="cConstructManager.cpp">
       <Filter>02. Manager\ConstructManager</Filter>
     </ClCompile>
+    <ClCompile Include="cShadowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="D3DX_MapTool.ico">
