@@ -14,6 +14,9 @@ class cUIInputField;
 class cConstruct;
 class cSkyBox;
 
+class cFog;
+class cWeather;
+
 class cMainGame
 {
 	D3DXVECTOR3					m_vStandardPos;
@@ -86,9 +89,6 @@ class cMainGame
 
 	// >> : RadioButton에 대한 변수 & construct
 	cRadioButton*			m_pRadioButton_Object;
-	// << :
-
-	// >> : Construct에 관한 변수
 	cConstruct*				m_pConstruct;
 	vector<cConstruct*>		m_vecConstruct;
 	// << :
@@ -96,6 +96,58 @@ class cMainGame
 	// >> : SkyBox에 관한 변수
 	cSkyBox*				m_pSkyBox;
 	// <<
+
+	// >> : Effect에 관한 변수
+	// >> : FOG
+	cUIButton*              m_pUIButton_Fog_Minus;
+	cUIButton*              m_pUIButton_Fog_Plus;
+	cUITextView*            m_pUIText_Fog_Minus;
+	cUITextView*            m_pUIText_Fog_Plus;
+
+	cRadioButton*			m_pRadioButton_Fog;
+
+	cFog*					m_pFog;
+	int						m_nPassIndex;
+	bool					m_isFogOn;
+
+	// >> : SHADOW
+	cUIButton*              m_pUIButton_Shadow_Minus;
+	cUIButton*              m_pUIButton_Shadow_Plus;
+	cUITextView*            m_pUIText_Shadow_Minus;
+	cUITextView*            m_pUIText_Shadow_Plus;
+
+	cRadioButton*			m_pRadioButton_Shadow;
+
+	bool					m_isShodowOn;
+	
+	// >> : Weather
+	cUIButton*              m_pUIButton_Snow_Minus;
+	cUIButton*              m_pUIButton_Snow_Plus;
+	cUITextView*            m_pUIText_Snow_Minus;
+	cUITextView*            m_pUIText_Snow_Plus;
+
+	cRadioButton*			m_pRadioButton_Snow;
+	cWeather*				m_pSnow;
+
+	cUIButton*              m_pUIButton_Rain_Minus;
+	cUIButton*              m_pUIButton_Rain_Plus;
+	cUITextView*            m_pUIText_Rain_Minus;
+	cUITextView*            m_pUIText_Rain_Plus;
+
+	cRadioButton*			m_pRadioButton_Rain;
+	cWeather*				m_pRain;
+
+	bool					m_isSnowOn;
+	int						m_nSnowCount;
+	bool					m_isRainOn;
+	int						m_nRainCount;
+	// << :
+
+	// >> : Object 클릭시 생성되는 구체 -> 추후 삭제예정
+	LPD3DXMESH				m_pSphere;
+	D3DMATERIAL9			m_mtlSPhere;
+	D3DXVECTOR3				m_vSpherePos;
+	// << :
 
 public:
 	cMainGame();
@@ -121,6 +173,11 @@ public:
 	void Render_Object();
 	void Render_Object_Shadow();
 
+	// >> 
+	void Delete_Object();
+	void Render_Sphere();
+	// <<
+
 	void Update_MapBrush();
 	void Update_Menu();
 
@@ -130,5 +187,9 @@ public:
 	void LoadMap();
 
 	void Setup_SkyBox();
+
+	void Update_Effect();
+	void Render_Effect();
+	void Render_Effect_Fog();
 };
 

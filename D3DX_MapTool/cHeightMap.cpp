@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "cHeightMap.h"
-#include "cRay.h"
 #include "cMtlTex.h"
 
 
@@ -205,7 +204,7 @@ void cHeightMap::RenderBrush()
 		if (index < 0 || index > m_vecIndex.size() - 1) continue;
 
 		if (m_vecIndex[index + 0] >= 0 && m_vecIndex[index + 0] < m_vecVertex.size() - 1 &&
-			m_vecIndex[index + 1] >= 0 && m_vecIndex[index + 1] < m_vecVertex.size() - 1 && 
+			m_vecIndex[index + 1] >= 0 && m_vecIndex[index + 1] < m_vecVertex.size() - 1 &&
 			m_vecIndex[index + 2] >= 0 && m_vecIndex[index + 2] < m_vecVertex.size() - 1 &&
 			MATH->CheckDistance(D3DXVECTOR2(m_vecVertex[m_vecIndex[m_vecFace_Inside[i] * 3 + 0]].p.x, m_vecVertex[m_vecIndex[m_vecFace_Inside[i] * 3 + 0]].p.y),
 				D3DXVECTOR2(m_vCursorPos.x, m_vCursorPos.y), m_nBrushSize_Inside))
@@ -297,12 +296,37 @@ void cHeightMap::RenderBrush()
 	D3DXMatrixIdentity(&matWorld);
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
 	DEVICE->SetFVF(ST_PNT_VERTEX::FVF);
-	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
+	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 	DEVICE->SetTexture(0, m_pTexture_Brush_Inside);
+
+	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, false);
+	//
+	//DEVICE->SetRenderState(D3DRS_POINTSCALEENABLE, true);
+	//DEVICE->SetRenderState(D3DRS_POINTSIZE, FtoDw(5.0f));
+	//DEVICE->SetRenderState(D3DRS_POINTSCALE_A, FtoDw(0.0f));
+	//DEVICE->SetRenderState(D3DRS_POINTSCALE_B, FtoDw(0.0f));
+	//DEVICE->SetRenderState(D3DRS_POINTSCALE_C, FtoDw(1.0f));	// 10.0f 바꿔서 확인해보셈
+	//DEVICE->SetRenderState(D3DRS_POINTSPRITEENABLE, true);
+	//DEVICE->SetRenderState(D3DRS_POINTSIZE_MIN, FtoDw(0.0f));
+	//DEVICE->SetRenderState(D3DRS_POINTSIZE_MAX, FtoDw(1000.0f));		// 변경해보기
+
+	DEVICE->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+	DEVICE->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	DEVICE->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+	//DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	//DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	//DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
+	DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+
 	if (vecVertex_Inner.size() > 0) DEVICE->DrawPrimitiveUP(D3DPT_TRIANGLELIST, vecVertex_Inner.size() / 3, &vecVertex_Inner[0], sizeof(ST_PNT_VERTEX));
 
 	//if (vecVertex_Outer.size() > 0)DEVICE->DrawPrimitiveUP(D3DPT_TRIANGLELIST, vecVertex_Outer.size() / 3, &vecVertex_Outer[0], sizeof(ST_PC_VERTEX));
-	
+
+	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, true);
 }
 
 void cHeightMap::PickingCursor()
@@ -386,19 +410,19 @@ void cHeightMap::SetMapHeight_Inside()
 			currentPos = D3DXVECTOR2(v0.x, v0.z);
 			if (MATH->CheckDistance(currentPos, standardPos, m_nBrushSize_Inside))
 			{
-				if(m_nOption == 1) v0.y += m_nBrushDepth_InSide * 0.1f;
+				if(m_nOption == 1) v0.y += m_nBrushDepth_InSide * 0.01f;
 				if (m_nOption == 2) v0.y = m_fFixedHeight;
 			}
 			currentPos = D3DXVECTOR2(v1.x, v1.z);
 			if (MATH->CheckDistance(currentPos, standardPos, m_nBrushSize_Inside))
 			{
-				if (m_nOption == 1) v1.y += m_nBrushDepth_InSide * 0.1f;
+				if (m_nOption == 1) v1.y += m_nBrushDepth_InSide * 0.01f;
 				if (m_nOption == 2) v1.y = m_fFixedHeight;
 			}
 			currentPos = D3DXVECTOR2(v2.x, v2.z);
 			if (MATH->CheckDistance(currentPos, standardPos, m_nBrushSize_Inside)) 
 			{
-				if (m_nOption == 1) v2.y += m_nBrushDepth_InSide * 0.1f;
+				if (m_nOption == 1) v2.y += m_nBrushDepth_InSide * 0.01f;
 				if (m_nOption == 2) v2.y = m_fFixedHeight;
 			}
 

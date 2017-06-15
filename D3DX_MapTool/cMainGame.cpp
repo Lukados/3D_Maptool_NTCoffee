@@ -18,6 +18,9 @@
 #include "cConstruct.h"
 #include "cSkyBox.h"
 
+#include "cFog.h"
+#include "cWeather.h"
+
 cMainGame::cMainGame() : m_pCamera(NULL), m_vStandardPos(0,0,0), m_pGrid(NULL), m_nSize(150), m_fCellSpace(1.0f), m_pMap(NULL), m_vDir(0,0,1), m_pUISprite(NULL), m_vCursorPos(0,0,0),
 m_pUITab_Menu(NULL), m_pUITab_Map(NULL), m_pUITab_Object(NULL), m_pUITab_Effect(NULL), m_fCamSpeed(10), m_isUpdateMap(false), m_isUpdateObj(false),
 m_pRadioButton_Brush(NULL), m_pUIButton_GetHeight(NULL), m_pUIInputField_SetHeight(NULL), m_pUIButton_SetHeight(NULL),
@@ -30,7 +33,15 @@ m_pUIButton_MLeft(NULL),m_pUIButton_MRight(NULL),m_pUIText_MID(NULL),
 m_pUIButton_SLeft(NULL),m_pUIButton_SRight(NULL),m_pUIText_SID(NULL),
 m_nObject_LIndex(0), m_nObject_MIndex(0), m_nObject_SIndex(0), m_nPage(1),
 m_pConstruct(NULL), m_pRadioButton_Object(NULL),
-m_pSkyBox(NULL)
+m_pSkyBox(NULL), m_pRadioButton_Fog(NULL), m_pFog(NULL), m_isFogOn(false),
+m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NULL), m_pUIText_Fog_Plus(NULL), m_nPassIndex(2),
+m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
+m_pRadioButton_Shadow(NULL), m_isShodowOn(false),
+m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(NULL), m_pUIText_Snow_Plus(NULL),
+m_pRadioButton_Snow(NULL), m_isSnowOn(false), m_nSnowCount(1500),
+m_pSphere(NULL), m_vSpherePos(0, 0, 0),
+m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
+m_pRadioButton_Rain(NULL), m_isRainOn(false), m_nRainCount(3000)
 {
 }
 
@@ -54,6 +65,12 @@ cMainGame::~cMainGame()
 	{
 		SAFE_DELETE(p);
 	}
+
+	m_pFog->Destroy();
+	SAFE_DELETE(m_pSnow);
+	SAFE_DELETE(m_pRain);
+	SAFE_RELEASE(m_pSphere);
+
 	TEXTURE->Destroy();
 	DEVICE->Release();
 	FONT->Destroy();
@@ -70,6 +87,10 @@ void cMainGame::Setup()
 	m_pGrid->Setup(m_nSize / 2);
 
 	OBJECTDB->Setup();
+
+	m_mtlSPhere.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_mtlSPhere.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_mtlSPhere.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	cHeightMap* pMap = new cHeightMap;
 	pMap->Setup(m_nSize, m_fCellSpace);
@@ -90,9 +111,21 @@ void cMainGame::Update(float deltaTime)
 		{
 			MoveStandardPos(deltaTime);
 			SetOption();
-			if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK) m_pMap->SetOption(1);
-			else if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK2) m_pMap->SetOption(2);
-			else m_pMap->SetOption(0);
+			if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK)
+			{
+				m_pMap->SetOption(1);
+				m_pMap->SetIsCursorOn(true);
+			}
+			else if (m_pRadioButton_Brush->GetSID() == E_S_OBJECTID_BLANK2)
+			{
+				m_pMap->SetOption(2);
+				m_pMap->SetIsCursorOn(true);
+			}
+			else
+			{
+				m_pMap->SetOption(0);
+				m_pMap->SetIsCursorOn(false);
+			}
 			m_pMap->Update();
 			m_vCursorPos = m_pMap->GetCursorPosition();
 		}
@@ -116,18 +149,20 @@ void cMainGame::Render()
 	DEVICE->BeginScene();
 	
 	if (m_pGrid) m_pGrid->Render();
-	if (m_pMap) m_pMap->Render();
-	if (m_pSkyBox) m_pSkyBox->Render();
 
+	if (m_isFogOn) Render_Effect_Fog();
+	else
+	{
+		if (m_pMap) m_pMap->Render();
+		if (m_pSkyBox) m_pSkyBox->Render();
+		Render_Object();
+	}
+
+	if (m_isSnowOn) m_pSnow->Render("obj/Effect/Snow/Snow.tga");
+	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain.tga");
 	Render_UI(m_pUISprite);
-	//if(m_pRadioButton_Object->GetSID() != -1) 
-
-	Render_Object_Shadow();
-
-	Render_Object();
 
 	DEVICE->EndScene();
-
 	DEVICE->Present(NULL, NULL, NULL, NULL);
 }
 
@@ -288,7 +323,7 @@ void cMainGame::Setup_UI()
 
 	cUIScrollbar* pUIScroll_BrushDepth_inside = new cUIScrollbar();
 	pUIScroll_BrushDepth_inside->Setup(D3DXVECTOR3(80, 190, 0), E_UI_SCROLL);
-	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "image/rect/sky.png", -5, 5);
+	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "image/rect/sky.png", -15, 15);
 	pUITab_Map_space->AddChild(pUIScroll_BrushDepth_inside);
 	pUIScroll_BrushDepth_inside->Setup_bar(15, 30);
 	m_pUIScroll_BrushDepth_inside = pUIScroll_BrushDepth_inside;
@@ -403,7 +438,7 @@ void cMainGame::Setup_UI()
 
 	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 	{
-		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Construct File/Construct1.png"));
+		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Construct/Image/Construct1.png"));
 	}
 
 
@@ -417,14 +452,155 @@ void cMainGame::Setup_UI()
 	m_pUITab_Effect = new cUITab();
 	m_pUITab_Effect->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 3, 0, 0), E_UI_TAB);
 	m_pUITab_Effect->Setup_tab(titleW, titleH, "Effect", "image/rect/darkgray.png", "image/rect/gray.png");
-	
+
 	cUITab* pUITab_Effect_space = new cUITab();
 	pUITab_Effect_space->Setup(D3DXVECTOR3(-(titleW + titleGap) * index, menuspaceY, 0), E_UI_TAB);
 	pUITab_Effect_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
 	m_pUITab_Effect->AddChild(pUITab_Effect_space);
-	
+
+	// Fog
+	m_pRadioButton_Fog = new cRadioButton();
+	m_pRadioButton_Fog->Setup(D3DXVECTOR3(10, 50, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Fog->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Fog);
+
+	m_pRadioButton_Fog->Add_RadioButton(D3DXVECTOR3(75, 10, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Fog = new cUITextView();
+	m_UIText_Fog->Setup(D3DXVECTOR3(70, -5, 0), E_UI_TEXT);
+	m_UIText_Fog->Setup_Text(ST_SIZE(130, 80), "Fog");
+	m_pRadioButton_Fog->AddChild(m_UIText_Fog);
+
+	m_pFog = new cFog();
+	m_pFog->Setup("obj/Effect/Fog/fog.txt");
+
+	m_pUIButton_Fog_Minus = new cUIButton();
+	m_pUIButton_Fog_Minus->Setup(D3DXVECTOR3(20, 70, 0), E_UI_BUTTON);
+	m_pUIButton_Fog_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Fog_Minus);
+
+	m_pUIButton_Fog_Plus = new cUIButton();
+	m_pUIButton_Fog_Plus->Setup(D3DXVECTOR3(210, 70, 0), E_UI_BUTTON);
+	m_pUIButton_Fog_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Fog_Plus);
+
+	m_pUIText_Fog_Minus = new cUITextView();
+	m_pUIText_Fog_Minus->Setup(D3DXVECTOR3(20, 70, 0), E_UI_BUTTON);
+	m_pUIText_Fog_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Fog_Minus);
+
+	m_pUIText_Fog_Plus = new cUITextView();
+	m_pUIText_Fog_Plus->Setup(D3DXVECTOR3(210, 70, 0), E_UI_BUTTON);
+	m_pUIText_Fog_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Fog_Plus);
+
+	// Shadow
+	m_pRadioButton_Shadow = new cRadioButton();
+	m_pRadioButton_Shadow->Setup(D3DXVECTOR3(10, 70, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Shadow->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Shadow);
+
+	m_pRadioButton_Shadow->Add_RadioButton(D3DXVECTOR3(75, 70, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Shadow = new cUITextView();
+	m_UIText_Shadow->Setup(D3DXVECTOR3(70, 55, 0), E_UI_TEXT);
+	m_UIText_Shadow->Setup_Text(ST_SIZE(130, 80), "Shadow");
+	m_pRadioButton_Shadow->AddChild(m_UIText_Shadow);
+
+	m_pUIButton_Shadow_Minus = new cUIButton();
+	m_pUIButton_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
+	m_pUIButton_Shadow_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Shadow_Minus);
+
+	m_pUIButton_Shadow_Plus = new cUIButton();
+	m_pUIButton_Shadow_Plus->Setup(D3DXVECTOR3(210, 150, 0), E_UI_BUTTON);
+	m_pUIButton_Shadow_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Shadow_Plus);
+
+	m_pUIText_Shadow_Minus = new cUITextView();
+	m_pUIText_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
+	m_pUIText_Shadow_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Minus);
+
+	m_pUIText_Shadow_Plus = new cUITextView();
+	m_pUIText_Shadow_Plus->Setup(D3DXVECTOR3(210, 150, 0), E_UI_BUTTON);
+	m_pUIText_Shadow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Plus);
+
+	// Snow
+	m_pRadioButton_Snow = new cRadioButton();
+	m_pRadioButton_Snow->Setup(D3DXVECTOR3(10, 90, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Snow->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Snow);
+
+	m_pRadioButton_Snow->Add_RadioButton(D3DXVECTOR3(75, 130, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Snow = new cUITextView();
+	m_UIText_Snow->Setup(D3DXVECTOR3(70, 115, 0), E_UI_TEXT);
+	m_UIText_Snow->Setup_Text(ST_SIZE(130, 80), "Snow");
+	m_pRadioButton_Snow->AddChild(m_UIText_Snow);
+
+	m_pSnow = new cWeather();
+	m_pSnow->Setup(m_nSnowCount);
+
+	m_pUIButton_Snow_Minus = new cUIButton();
+	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
+	m_pUIButton_Snow_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Snow_Minus);
+
+	m_pUIButton_Snow_Plus = new cUIButton();
+	m_pUIButton_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
+	m_pUIButton_Snow_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Snow_Plus);
+
+	m_pUIText_Snow_Minus = new cUITextView();
+	m_pUIText_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
+	m_pUIText_Snow_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Snow_Minus);
+
+	m_pUIText_Snow_Plus = new cUITextView();
+	m_pUIText_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
+	m_pUIText_Snow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Snow_Plus);
+
+	// Rain
+	m_pRadioButton_Rain = new cRadioButton();
+	m_pRadioButton_Rain->Setup(D3DXVECTOR3(10, 110, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Rain->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Rain);
+
+	m_pRadioButton_Rain->Add_RadioButton(D3DXVECTOR3(75, 190, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Rain = new cUITextView();
+	m_UIText_Rain->Setup(D3DXVECTOR3(70, 175, 0), E_UI_TEXT);
+	m_UIText_Rain->Setup_Text(ST_SIZE(130, 80), "Rain");
+	m_pRadioButton_Rain->AddChild(m_UIText_Rain);
+
+	m_pRain = new cWeather();
+	m_pRain->Setup(m_nRainCount);
+
+	m_pUIButton_Rain_Minus = new cUIButton();
+	m_pUIButton_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
+	m_pUIButton_Rain_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Rain_Minus);
+
+	m_pUIButton_Rain_Plus = new cUIButton();
+	m_pUIButton_Rain_Plus->Setup(D3DXVECTOR3(210, 310, 0), E_UI_BUTTON);
+	m_pUIButton_Rain_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Rain_Plus);
+
+	m_pUIText_Rain_Minus = new cUITextView();
+	m_pUIText_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
+	m_pUIText_Rain_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Rain_Minus);
+
+	m_pUIText_Rain_Plus = new cUITextView();
+	m_pUIText_Rain_Plus->Setup(D3DXVECTOR3(210, 310, 0), E_UI_BUTTON);
+	m_pUIText_Rain_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Rain_Plus);
+
 	m_pUITab_Effect->SetHiddenAll(true);
-// << 
+	// << 
 }
 
 void cMainGame::Update_UI()
@@ -503,6 +679,7 @@ void cMainGame::Update_UI()
 
 	Update_Menu();
 	Update_Object();
+	Update_Effect();
 }
 
 void cMainGame::Render_UI(LPD3DXSPRITE pSprite)
@@ -534,7 +711,14 @@ void cMainGame::Update_Object()
 
 			char* folder = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->szFolder;
 			char* file = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->szFile;
-			m_pConstruct->Setup(folder, file);
+			m_pConstruct->SetSObjID(m_pRadioButton_Object->GetSID());
+
+			if (m_pConstruct->GetSObjID() >= E_S_OBJECTID_P_DW_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_P_ETC_END)
+			{
+				m_pConstruct->Setup(folder, file, false);
+			}
+			else m_pConstruct->Setup(folder, file, true);
+
 		}
 
 		if (INPUT->GetKeyState('Z'))	m_pConstruct->SetScale(m_pConstruct->GetScale() + D3DXVECTOR3(0.05f, 0.05f, 0.05f));
@@ -562,11 +746,11 @@ void cMainGame::Update_Object()
 		}
 	}
 
-	// 삭제시키는 부분 -> 에러남
-	// if (m_pRadioButton_Object->GetSID() == -1 && m_pRadioButton_Object->GetIsClicked() == false)
-	// {
-	// 	if(m_pConstruct) m_pConstruct->Destroy();
-	// }
+
+	if (m_pRadioButton_Object->GetSID() == -1 && m_pRadioButton_Object->GetIsClicked() == false)
+	{
+		if (m_pConstruct)	SAFE_DELETE(m_pConstruct);
+	}
 }
 
 void cMainGame::Update_L_Object()
@@ -578,8 +762,25 @@ void cMainGame::Update_L_Object()
 	{
 		m_nPage = 1;
 		m_nObject_LIndex--;
-		m_nObject_MIndex = E_M_OBJECTID_H_DUSKWOOD;
-		m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
+
+		switch (m_nObject_LIndex)
+		{
+		case E_L_OBJECTID_HUMAN:
+			m_nObject_MIndex = E_M_OBJECTID_H_DUSKWOOD;
+			m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
+			break;
+
+		case E_L_OBJECTID_ORC:
+			m_nObject_MIndex = E_M_OBJECTID_O_KALIMDOR;
+			m_nObject_SIndex = E_S_OBJECTID_O_KD_START;
+			break;
+
+		case E_L_OBJECTID_PROPS:
+			m_nObject_MIndex = E_M_OBJECTID_P_DUSKWOOD;
+			m_nObject_SIndex = E_S_OBJECTID_P_DW_START;
+			break;
+		}
+
 	}
 	if (m_pUIButton_LRight->GetCurrentState() == E_UISTATE_CLICKED)
 	{
@@ -606,6 +807,20 @@ void cMainGame::Update_L_Object()
 		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_O_START) ? (E_M_OBJECTID_O_START + 1) : m_nObject_MIndex;
 		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_O_END) ? (E_M_OBJECTID_O_END - 1) : m_nObject_MIndex;
 		break;
+
+	case E_L_OBJECTID_PROPS:
+		m_pUIText_LID->SetText("PROPS");
+
+		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_P_START) ? (E_M_OBJECTID_P_START + 1) : m_nObject_MIndex;
+		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_P_END) ? (E_M_OBJECTID_P_END - 1) : m_nObject_MIndex;
+		break;
+
+	case E_L_OBJECTID_VILLAGE:
+		m_pUIText_LID->SetText("VILLAGE");
+
+		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_V_START) ? (E_M_OBJECTID_V_START + 1) : m_nObject_MIndex;
+		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_V_END) ? (E_M_OBJECTID_V_END - 1) : m_nObject_MIndex;
+		break;
 	}
 }
 
@@ -616,14 +831,33 @@ void cMainGame::Update_M_Object()
 		m_nObject_MIndex--;
 		m_nPage = 1;
 
-		if (m_nObject_LIndex == E_L_OBJECTID_HUMAN) m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
-		if (m_nObject_LIndex == E_L_OBJECTID_ORC)	m_nObject_SIndex = E_S_OBJECTID_O_KD_START;
+		switch (m_nObject_LIndex)
+		{
+		case E_L_OBJECTID_HUMAN:
+			m_nObject_SIndex = E_S_OBJECTID_H_DW_START;
+			break;
+
+		case E_L_OBJECTID_ORC:
+			m_nObject_SIndex = E_S_OBJECTID_O_KD_START;
+			break;
+
+		case E_L_OBJECTID_PROPS:
+			if (m_nObject_MIndex == E_M_OBJECTID_P_DUSKWOOD)	m_nObject_SIndex = E_S_OBJECTID_P_DW_START;
+			if (m_nObject_MIndex == E_M_OBJECTID_P_NORTHREND)	m_nObject_SIndex = E_S_OBJECTID_P_NR_START;
+			break;
+
+		case E_L_OBJECTID_VILLAGE:
+			m_nObject_SIndex = E_S_OBJECTID_V_START;
+			break;
+		}
 	}
+
 	if (m_pUIButton_MRight->GetCurrentState() == E_UISTATE_CLICKED)
 	{
 		m_nObject_MIndex++;
 		m_nPage = 1;
 	}
+
 
 	int nStartIndex = 1;
 
@@ -646,7 +880,7 @@ void cMainGame::Update_M_Object()
 	case E_M_OBJECTID_O_KALIMDOR:
 		m_pUIText_MID->SetText("KALIMDOR");
 		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_O_KD_START) ? (E_S_OBJECTID_O_KD_START + 1) : m_nObject_SIndex;
-		
+
 		nStartIndex = E_S_OBJECTID_O_KD_START + 1;
 		break;
 
@@ -656,9 +890,37 @@ void cMainGame::Update_M_Object()
 
 		nStartIndex = E_S_OBJECTID_O_NR_START + 1;
 		break;
+
+	case E_M_OBJECTID_P_DUSKWOOD:
+		m_pUIText_MID->SetText("DUSKWOOD");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_P_DW_START) ? (E_S_OBJECTID_P_DW_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_P_DW_START + 1;
+		break;
+
+	case E_M_OBJECTID_P_NORTHREND:
+		m_pUIText_MID->SetText("NORTHREND");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_P_NR_START) ? (E_S_OBJECTID_P_NR_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_P_NR_START + 1;
+		break;
+
+	case E_M_OBJECTID_P_ETC:
+		m_pUIText_MID->SetText("ETC");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_P_ETC_START) ? (E_S_OBJECTID_P_ETC_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_P_ETC_START + 1;
+		break;
+
+	case E_M_OBJECTID_V_VILLAGE:
+		m_pUIText_MID->SetText("VILLAGE");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_V_START) ? (E_S_OBJECTID_V_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_V_START + 1;
+		break;
 	}
 
-	if(m_nPage > 0) m_nObject_SIndex = 8 * (m_nPage - 1) + nStartIndex;
+	if (m_nPage > 0) m_nObject_SIndex = 8 * (m_nPage - 1) + nStartIndex;
 }
 
 void cMainGame::Update_S_Object()
@@ -669,77 +931,160 @@ void cMainGame::Update_S_Object()
 		else m_nPage--;
 	}
 
-	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+	switch (m_nObject_MIndex)
 	{
-		switch (m_nObject_MIndex)
-		{
-		case E_M_OBJECTID_H_DUSKWOOD:
+		// HUMAN
+	case E_M_OBJECTID_H_DUSKWOOD:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_H_DW_END)
 			{
 				m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			}
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_H_DW_END - E_S_OBJECTID_H_DW_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-			break;
 		}
 
-		case E_M_OBJECTID_H_DRAENOR:
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_H_DW_END - E_S_OBJECTID_H_DW_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_H_DRAENOR:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_H_DN_END) 	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_H_DN_END - E_S_OBJECTID_H_DN_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-			break;
 		}
 
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_H_DN_END - E_S_OBJECTID_H_DN_START - 1;
+			int maxPage = (count / 8) + 1;
 
-		case E_M_OBJECTID_O_KALIMDOR:
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	// ORC
+	case E_M_OBJECTID_O_KALIMDOR:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_O_KD_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_O_KD_END - E_S_OBJECTID_O_KD_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-break;
 		}
 
-		case E_M_OBJECTID_O_NORTHREND:
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_O_KD_END - E_S_OBJECTID_O_KD_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_O_NORTHREND:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 		{
 			if (m_nObject_SIndex + i >= E_S_OBJECTID_O_NR_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
 			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
-
-			if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
-			{
-				int count = E_S_OBJECTID_O_NR_END - E_S_OBJECTID_O_NR_START - 1;
-				int maxPage = (count / 8) + 1;
-
-				if (maxPage > m_nPage) m_nPage++;
-			}
-			break;
 		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_O_NR_END - E_S_OBJECTID_O_NR_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
 		}
+		break;
+	}
+
+	// PROPS
+	case E_M_OBJECTID_P_DUSKWOOD:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_P_DW_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_P_DW_END - E_S_OBJECTID_P_DW_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_P_NORTHREND:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_P_NR_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_P_NR_END - E_S_OBJECTID_P_NR_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_P_ETC:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_P_ETC_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_P_ETC_END - E_S_OBJECTID_P_ETC_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	// VILLAGE
+	case E_M_OBJECTID_V_VILLAGE:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_V_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_V_END - E_S_OBJECTID_V_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
 	}
 }
-
 // 오브젝트 랜더
 void cMainGame::Render_Object()
 {
@@ -750,13 +1095,44 @@ void cMainGame::Render_Object()
 	}
 }
 
-void cMainGame::Render_Object_Shadow()
+// 오브젝트 지우기
+void cMainGame::Delete_Object()
 {
-	if (m_pConstruct != NULL) m_pConstruct->Render_Shadow();
-	for (int i = 0; i < m_vecConstruct.size(); i++)
+	if (m_pRadioButton_Object->GetSID() == -1)
 	{
-		m_vecConstruct[i]->Render_Shadow();
+		D3DXVECTOR3 vDummy;
+		for (int i = 0; i < m_vecConstruct.size(); i++)
+		{
+			if (cRay::IsCollidedWithMesh(D3DXVECTOR2(INPUT->GetMousePos().x, INPUT->GetMousePos().y),
+				m_vecConstruct[i]->GetMesh(), vDummy))
+			{
+				if (m_pSphere) SAFE_RELEASE(m_pSphere);
+				m_vSpherePos = m_vecConstruct[i]->GetPosition();
+				D3DXCreateSphere(DEVICE, 20, 10, 10, &m_pSphere, NULL);
+			}
+		}
 	}
+}
+
+void cMainGame::Render_Sphere()
+{
+	if (!m_pSphere) return;
+
+	D3DXMATRIXA16 matWorld, matR, matT;
+	D3DXMatrixIdentity(&matWorld);
+	D3DXMatrixIdentity(&matR);
+	D3DXMatrixIdentity(&matT);
+
+	D3DXMatrixTranslation(&matT, m_vSpherePos.x, m_vSpherePos.y, m_vSpherePos.z);
+	matWorld = matR*matT;
+
+	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
+	DEVICE->SetMaterial(&m_mtlSPhere);
+	DEVICE->SetTexture(0, NULL);
+
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	m_pSphere->DrawSubset(0);
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 // 맵 브러쉬 업데이트 
@@ -945,5 +1321,81 @@ void cMainGame::LoadMap()
 void cMainGame::Setup_SkyBox()
 {
 	m_pSkyBox = new cSkyBox();
-	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2);
+	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox1");
+}
+
+void cMainGame::Update_Effect()
+{
+	// Fog 처리
+	if (m_pRadioButton_Fog->GetSID() != -1)
+	{
+		m_isFogOn = true;
+		m_pFog->Update(m_pCamera);
+
+		if (m_pUIButton_Fog_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nPassIndex--;
+			if (m_nPassIndex < 0) m_nPassIndex = 0;
+		}
+		if (m_pUIButton_Fog_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nPassIndex++;
+			if (m_nPassIndex > 5) m_nPassIndex = 5;
+		}
+	}
+	else if (m_pRadioButton_Fog->GetSID() == -1) m_isFogOn = false;
+
+	// Snow 처리
+	if (m_pRadioButton_Snow->GetSID() != -1)
+	{
+		m_isSnowOn = true;
+		m_pSnow->Update(0.1f, 0.1f);
+
+		if (m_pUIButton_Snow_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nSnowCount -= 500;
+			if (m_nSnowCount < 1000) m_nSnowCount = 1000;
+		}
+		if (m_pUIButton_Snow_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nSnowCount += 500;
+			if (m_nSnowCount > 2000) m_nSnowCount = 2000;
+		}
+	}
+	else if (m_pRadioButton_Snow->GetSID() == -1) m_isSnowOn = false;
+
+	// Rain 처리
+	if (m_pRadioButton_Rain->GetSID() != -1)
+	{
+		m_isRainOn = true;
+		m_pRain->Update(0.1f, 1.0f);
+
+		if (m_pUIButton_Rain_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nRainCount -= 1000;
+			if (m_nRainCount < 1000) m_nRainCount = 1000;
+		}
+		if (m_pUIButton_Rain_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nRainCount += 1000;
+			if (m_nRainCount > 5000) m_nRainCount = 5000;
+		}
+	}
+	else if (m_pRadioButton_Rain->GetSID() == -1) m_isRainOn = false;
+}
+
+void cMainGame::Render_Effect()
+{
+
+}
+
+void cMainGame::Render_Effect_Fog()
+{
+	m_pFog->Render_Begin(m_nPassIndex);
+
+	if (m_pMap) m_pMap->Render();
+	if (m_pSkyBox) m_pSkyBox->Render();
+	Render_Object();
+
+	m_pFog->Render_End();
 }

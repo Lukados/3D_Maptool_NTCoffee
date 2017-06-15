@@ -26,7 +26,7 @@ void cRadioButton::Update(float deltaTime)
 	{
 		if (INPUT->IsMouseDown(MOUSE_LEFT) &&
 			INPUT->IsCollided(D3DXVECTOR2(m_vecSIndex[i]->vPosition.x, m_vecSIndex[i]->vPosition.y),
-				D3DXVECTOR2(m_vecSIndex[i]->vPosition.x + m_vecSIndex[i]->stSize.nWidth, m_vecSIndex[i]->vPosition.y + m_vecSIndex[i]->stSize.nWidth)))
+				D3DXVECTOR2(m_vecSIndex[i]->vPosition.x + m_vecSIndex[i]->stSize.nWidth, m_vecSIndex[i]->vPosition.y + m_vecSIndex[i]->stSize.nHeight)))
 		{
 			if (m_vecSIndex[i]->eUIState == E_UISTATE_IDLE)
 			{
@@ -157,7 +157,7 @@ void cRadioButton::Render_Sprite(LPD3DXSPRITE pSprite)
 		pSprite->SetTransform(&matWorld);
 
 		int u = OBJECTDB->GetMapObject(m_vecSIndex[i]->eCurrentSID)->fU * 8;
-		int v = OBJECTDB->GetMapObject(m_vecSIndex[i]->eCurrentSID)->fV * 8;
+		int v = OBJECTDB->GetMapObject(m_vecSIndex[i]->eCurrentSID)->fV * 16;
 		SetRect(&rc, 128 * u, 128 * v, 128 * (u + 1), 128 * (v + 1));
 		pSprite->Draw(m_vecSIndex[i]->texture, &rc, &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 0, 0), D3DCOLOR_RGBA(255, 255, 255, 255));
 	}
