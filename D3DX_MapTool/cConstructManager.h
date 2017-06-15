@@ -2,18 +2,16 @@
 
 #define CONSTRUCT	cConstructManager::GetInstance()
 
-class cConstruct;
-
 class cConstructManager
 {
 	SINGLETON(cConstructManager);
 
 private:
-
+	map<int, LPD3DXMESH> m_mapMesh;
 
 public:
-	void AddConstruct(cConstruct* pConsturct);
-	void DeleteConstruct(cConstruct* pConstruct);
+	void AddConstruct(int nSID, LPD3DXMESH pMesh);
+	LPD3DXMESH FindConstruct(int nSID);
 	void Destroy();
 };
 

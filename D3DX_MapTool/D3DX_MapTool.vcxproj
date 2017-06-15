@@ -144,7 +144,6 @@
   <ItemGroup>
     <ClInclude Include="Asciitok.h" />
     <ClInclude Include="cConstruct.h" />
-    <ClInclude Include="cConstructManager.h" />
     <ClInclude Include="cFog.h" />
     <ClInclude Include="cGroup.h" />
     <ClInclude Include="cMtlTex.h" />
@@ -183,7 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cConstruct.cpp" />
-    <ClCompile Include="cConstructManager.cpp" />
     <ClCompile Include="cFog.cpp" />
     <ClCompile Include="cGroup.cpp" />
     <ClCompile Include="cMtlTex.cpp" />

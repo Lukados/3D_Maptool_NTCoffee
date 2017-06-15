@@ -1113,7 +1113,7 @@ void cMainGame::Delete_Object()
 		for (int i = 0; i < m_vecConstruct.size(); i++)
 		{
 			if (cRay::IsCollidedWithMesh(D3DXVECTOR2(INPUT->GetMousePos().x, INPUT->GetMousePos().y),
-				m_vecConstruct[i]->GetMesh(), vDummy))
+				m_vecConstruct[i]->GetObjMesh(), vDummy))
 			{
 				if (m_pSphere) SAFE_RELEASE(m_pSphere);
 				m_vSpherePos = m_vecConstruct[i]->GetPosition();
