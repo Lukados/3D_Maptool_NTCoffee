@@ -21,6 +21,8 @@
 #include "cFog.h"
 #include "cWeather.h"
 
+#include "cShadowManager.h"
+
 cMainGame::cMainGame() : m_pCamera(NULL), m_vStandardPos(0,0,0), m_pGrid(NULL), m_nSize(150), m_fCellSpace(1.0f), m_pMap(NULL), m_vDir(0,0,1), m_pUISprite(NULL), m_vCursorPos(0,0,0),
 m_pUITab_Menu(NULL), m_pUITab_Map(NULL), m_pUITab_Object(NULL), m_pUITab_Effect(NULL), m_fCamSpeed(10), m_isUpdateMap(false), m_isUpdateObj(false),
 m_pRadioButton_Brush(NULL), m_pUIButton_GetHeight(NULL), m_pUIInputField_SetHeight(NULL), m_pUIButton_SetHeight(NULL),
@@ -41,7 +43,8 @@ m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(
 m_pRadioButton_Snow(NULL), m_isSnowOn(false), m_nSnowCount(1500),
 m_pSphere(NULL), m_vSpherePos(0, 0, 0),
 m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
-m_pRadioButton_Rain(NULL), m_isRainOn(false), m_nRainCount(3000)
+m_pRadioButton_Rain(NULL), m_isRainOn(false), m_nRainCount(3000),
+m_diffuseAlpha(0.5f)
 {
 }
 
@@ -99,6 +102,9 @@ void cMainGame::Setup()
 	D3DXCreateSprite(DEVICE, &m_pUISprite);
 	Setup_UI();
 	Setup_SkyBox();
+
+	SHADOW->Setup(m_vecConstruct);
+
 }
 
 void cMainGame::Update(float deltaTime)
@@ -155,6 +161,7 @@ void cMainGame::Render()
 	{
 		if (m_pMap) m_pMap->Render();
 		if (m_pSkyBox) m_pSkyBox->Render();
+		SHADOW->Render();
 		Render_Object();
 	}
 
@@ -751,6 +758,8 @@ void cMainGame::Update_Object()
 	{
 		if (m_pConstruct)	SAFE_DELETE(m_pConstruct);
 	}
+
+	SHADOW->Update(m_vecConstruct);
 }
 
 void cMainGame::Update_L_Object()
@@ -1345,6 +1354,22 @@ void cMainGame::Update_Effect()
 	}
 	else if (m_pRadioButton_Fog->GetSID() == -1) m_isFogOn = false;
 
+	//shadow 贸府
+	if (m_pRadioButton_Shadow->GetSID() != -1)
+	{
+		m_isShodowOn = true;	
+		SHADOW->SetViewOk(true);
+		if (m_pUIButton_Shadow_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_diffuseAlpha = m_diffuseAlpha - 0.1f;
+		}
+		if (m_pUIButton_Shadow_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{		
+			m_diffuseAlpha = m_diffuseAlpha + 0.1f;
+		}
+		SHADOW->UpdateAlpha(m_diffuseAlpha);
+	}
+	else if (m_pRadioButton_Fog->GetSID() == -1) SHADOW->SetViewOk(false);
 	// Snow 贸府
 	if (m_pRadioButton_Snow->GetSID() != -1)
 	{

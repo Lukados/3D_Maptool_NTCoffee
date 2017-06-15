@@ -1,37 +1,29 @@
 #pragma once
+
 #define SHADOW cShadowManager::GetInstance()
 
-class cObject;
 class cMtlTex;
-class cObjLoader;
 class cConstruct;
 
-class cShadowManager : public cObject
+class cShadowManager 
 {
 protected:
-	D3DXVECTOR4         light;
-	D3DXMATRIXA16       matWorld;
-	LPD3DXMESH			m_pObjMesh;
-	vector<cMtlTex*>	m_vecObjMtlTex;
-
-	std::vector<cConstruct*> m_vecConstruct;
-
-	SYNTHESIZE(D3DXVECTOR3, m_vScale, Scale);
-	SYNTHESIZE(float, m_fRotX, RotationX);
-	SYNTHESIZE(float, m_fRotY, RotationY);
-	SYNTHESIZE(float, m_fRotZ, RotationZ);
-	SYNTHESIZE(D3DXVECTOR3, m_vPosition, Position);
-
+	vector<cConstruct*>      m_vecConstruct;
+	D3DLIGHT9				 m_light;
+	D3DXMATRIXA16            m_matWorld;
+	float                    diffuseAlpha;
+	D3DMATERIAL9			 m_mtrl;
+	bool                     isView;
+	D3DMATERIAL9 InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p);
 public:
 	SINGLETON(cShadowManager);
 
-	void Setup(char* szFolder, char* szFile);
-	void Setup(std::vector<cConstruct*> vList);
-	void Update(std::vector<cConstruct*> vList);
+	void Setup(std::vector<cConstruct*> vecList);
+	void Update(std::vector<cConstruct*> vecList);
+	void UpdateAlpha(float alpha);
 	void Render();
-	void ShadowRender();
 	void Destroy();
-
-	D3DMATERIAL9 InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p);
+	void SetLight();
+	void SetViewOk(bool b);
 };
 

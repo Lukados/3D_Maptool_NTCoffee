@@ -35,4 +35,9 @@ public:
 	LPD3DXMESH GetMesh() { return m_pObjMesh; }
 
 	D3DMATERIAL9 InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p);
+
+	vector<cMtlTex*> cConstruct::GetMtl()
+	{
+		return m_vecObjMtlTex;
+	}
 };
