@@ -17,6 +17,7 @@ void cConstructManager::AddConstruct(cConstruct* pConsturct)
 }
 
 void cConstructManager::DeleteConstruct(cConstruct* pConstruct)
+{
 
 }
 

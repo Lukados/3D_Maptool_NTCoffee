@@ -121,8 +121,11 @@
     <Filter Include="03. Entity\07. Effect\Weather">
       <UniqueIdentifier>{79bd0997-cc92-4e5e-b54c-5567f1908caf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Manager\ConstructManager">
+    <Filter Include="02. Manager\07. ConstructManager">
       <UniqueIdentifier>{a1dcf15d-6e25-4697-8aaa-ff9ac2460014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Manager\08. ShadowManager">
+      <UniqueIdentifier>{fe330d6c-f7f2-49e5-98dd-a5eb9537db9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -231,9 +234,11 @@
       <Filter>03. Entity\07. Effect\Weather</Filter>
     </ClInclude>
     <ClInclude Include="cConstructManager.h">
-      <Filter>02. Manager\ConstructManager</Filter>
+      <Filter>02. Manager\07. ConstructManager</Filter>
     </ClInclude>
-    <ClInclude Include="cShadowManager.h" />
+    <ClInclude Include="cShadowManager.h">
+      <Filter>02. Manager\08. ShadowManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -333,9 +338,11 @@
       <Filter>03. Entity\07. Effect\Weather</Filter>
     </ClCompile>
     <ClCompile Include="cConstructManager.cpp">
-      <Filter>02. Manager\ConstructManager</Filter>
+      <Filter>02. Manager\07. ConstructManager</Filter>
     </ClCompile>
-    <ClCompile Include="cShadowManager.cpp" />
+    <ClCompile Include="cShadowManager.cpp">
+      <Filter>02. Manager\08. ShadowManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="D3DX_MapTool.ico">
