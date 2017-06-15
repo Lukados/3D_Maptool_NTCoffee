@@ -137,12 +137,12 @@ void cSkyBox::Setup_Texture(char* szFolder)
 {
 	map<SKYBOX_FACE, LPDIRECT3DTEXTURE9> mapTexture;
 
-	mapTexture[SKYBOX_FACE_FRONT] = TEXTURE->GetTexture(szFolder + (string)"/Front.tga");
-	mapTexture[SKYBOX_FACE_BACK] = TEXTURE->GetTexture(szFolder + (string)"/Back.tga");
-	mapTexture[SKYBOX_FACE_LEFT] = TEXTURE->GetTexture(szFolder + (string)"/Left.tga");
-	mapTexture[SKYBOX_FACE_RIGHT] = TEXTURE->GetTexture(szFolder + (string)"/Right.tga");
-	mapTexture[SKYBOX_FACE_TOP] = TEXTURE->GetTexture(szFolder + (string)"/Top.tga");
-	mapTexture[SKYBOX_FACE_BOTTOM] = TEXTURE->GetTexture(szFolder + (string)"/Bottom.tga");
+	mapTexture[SKYBOX_FACE_FRONT] = TEXTURE->GetTexture(szFolder + (string)"/Front.bmp");
+	mapTexture[SKYBOX_FACE_BACK] = TEXTURE->GetTexture(szFolder + (string)"/Back.bmp");
+	mapTexture[SKYBOX_FACE_LEFT] = TEXTURE->GetTexture(szFolder + (string)"/Left.bmp");
+	mapTexture[SKYBOX_FACE_RIGHT] = TEXTURE->GetTexture(szFolder + (string)"/Right.bmp");
+	mapTexture[SKYBOX_FACE_TOP] = TEXTURE->GetTexture(szFolder + (string)"/Top.bmp");
+	mapTexture[SKYBOX_FACE_BOTTOM] = TEXTURE->GetTexture(szFolder + (string)"/Bottom.bmp");
 
 	m_mapWholeTexture[SKYBOX_TYPE_A] = mapTexture;
 

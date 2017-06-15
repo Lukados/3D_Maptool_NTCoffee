@@ -19,7 +19,7 @@
 #include "cSkyBox.h"
 
 #include "cFog.h"
-#include "cSnow.h"
+#include "cWeather.h"
 
 cMainGame::cMainGame() : m_pCamera(NULL), m_vStandardPos(0,0,0), m_pGrid(NULL), m_nSize(150), m_fCellSpace(1.0f), m_pMap(NULL), m_vDir(0,0,1), m_pUISprite(NULL), m_vCursorPos(0,0,0),
 m_pUITab_Menu(NULL), m_pUITab_Map(NULL), m_pUITab_Object(NULL), m_pUITab_Effect(NULL), m_fCamSpeed(10), m_isUpdateMap(false), m_isUpdateObj(false),
@@ -38,8 +38,10 @@ m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NUL
 m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
 m_pRadioButton_Shadow(NULL), m_isShodowOn(false),
 m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(NULL), m_pUIText_Snow_Plus(NULL),
-m_pRadioButton_Snow(NULL), m_isSnowOn(false),
-m_pSphere(NULL), m_vSpherePos(0, 0, 0)
+m_pRadioButton_Snow(NULL), m_isSnowOn(false), m_nSnowCount(1500),
+m_pSphere(NULL), m_vSpherePos(0, 0, 0),
+m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
+m_pRadioButton_Rain(NULL), m_isRainOn(false), m_nRainCount(3000)
 {
 }
 
@@ -66,6 +68,7 @@ cMainGame::~cMainGame()
 
 	m_pFog->Destroy();
 	SAFE_DELETE(m_pSnow);
+	SAFE_DELETE(m_pRain);
 	SAFE_RELEASE(m_pSphere);
 
 	TEXTURE->Destroy();
@@ -155,7 +158,8 @@ void cMainGame::Render()
 		Render_Object();
 	}
 
-	if (m_isSnowOn) m_pSnow->Render();
+	if (m_isSnowOn) m_pSnow->Render("obj/Effect/Snow/Snow.tga");
+	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain.tga");
 	Render_UI(m_pUISprite);
 
 	DEVICE->EndScene();
@@ -536,8 +540,8 @@ void cMainGame::Setup_UI()
 	m_UIText_Snow->Setup_Text(ST_SIZE(130, 80), "Snow");
 	m_pRadioButton_Snow->AddChild(m_UIText_Snow);
 
-	m_pSnow = new cSnow();
-	m_pSnow->Setup();
+	m_pSnow = new cWeather();
+	m_pSnow->Setup(m_nSnowCount);
 
 	m_pUIButton_Snow_Minus = new cUIButton();
 	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
@@ -558,6 +562,42 @@ void cMainGame::Setup_UI()
 	m_pUIText_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
 	m_pUIText_Snow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
 	pUITab_Effect_space->AddChild(m_pUIText_Snow_Plus);
+
+	// Rain
+	m_pRadioButton_Rain = new cRadioButton();
+	m_pRadioButton_Rain->Setup(D3DXVECTOR3(10, 110, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Rain->Setup_RadioButton();
+	pUITab_Effect_space->AddChild(m_pRadioButton_Rain);
+
+	m_pRadioButton_Rain->Add_RadioButton(D3DXVECTOR3(75, 190, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+
+	cUITextView* m_UIText_Rain = new cUITextView();
+	m_UIText_Rain->Setup(D3DXVECTOR3(70, 175, 0), E_UI_TEXT);
+	m_UIText_Rain->Setup_Text(ST_SIZE(130, 80), "Rain");
+	m_pRadioButton_Rain->AddChild(m_UIText_Rain);
+
+	m_pRain = new cWeather();
+	m_pRain->Setup(m_nRainCount);
+
+	m_pUIButton_Rain_Minus = new cUIButton();
+	m_pUIButton_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
+	m_pUIButton_Rain_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Rain_Minus);
+
+	m_pUIButton_Rain_Plus = new cUIButton();
+	m_pUIButton_Rain_Plus->Setup(D3DXVECTOR3(210, 310, 0), E_UI_BUTTON);
+	m_pUIButton_Rain_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	pUITab_Effect_space->AddChild(m_pUIButton_Rain_Plus);
+
+	m_pUIText_Rain_Minus = new cUITextView();
+	m_pUIText_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
+	m_pUIText_Rain_Minus->Setup_Text(ST_SIZE(50, 40), "-");
+	pUITab_Effect_space->AddChild(m_pUIText_Rain_Minus);
+
+	m_pUIText_Rain_Plus = new cUITextView();
+	m_pUIText_Rain_Plus->Setup(D3DXVECTOR3(210, 310, 0), E_UI_BUTTON);
+	m_pUIText_Rain_Plus->Setup_Text(ST_SIZE(60, 40), "+");
+	pUITab_Effect_space->AddChild(m_pUIText_Rain_Plus);
 
 	m_pUITab_Effect->SetHiddenAll(true);
 	// << 
@@ -1309,16 +1349,39 @@ void cMainGame::Update_Effect()
 	if (m_pRadioButton_Snow->GetSID() != -1)
 	{
 		m_isSnowOn = true;
-		m_pSnow->Update();
+		m_pSnow->Update(0.1f, 0.1f);
 
 		if (m_pUIButton_Snow_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
+			m_nSnowCount -= 500;
+			if (m_nSnowCount < 1000) m_nSnowCount = 1000;
 		}
 		if (m_pUIButton_Snow_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
+			m_nSnowCount += 500;
+			if (m_nSnowCount > 2000) m_nSnowCount = 2000;
 		}
 	}
 	else if (m_pRadioButton_Snow->GetSID() == -1) m_isSnowOn = false;
+
+	// Rain Ã³¸®
+	if (m_pRadioButton_Rain->GetSID() != -1)
+	{
+		m_isRainOn = true;
+		m_pRain->Update(0.1f, 1.0f);
+
+		if (m_pUIButton_Rain_Minus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nRainCount -= 1000;
+			if (m_nRainCount < 1000) m_nRainCount = 1000;
+		}
+		if (m_pUIButton_Rain_Plus->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			m_nRainCount += 1000;
+			if (m_nRainCount > 5000) m_nRainCount = 5000;
+		}
+	}
+	else if (m_pRadioButton_Rain->GetSID() == -1) m_isRainOn = false;
 }
 
 void cMainGame::Render_Effect()

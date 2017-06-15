@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Asciitok.h" />
     <ClInclude Include="cConstruct.h" />
+    <ClInclude Include="cConstructManager.h" />
     <ClInclude Include="cFog.h" />
     <ClInclude Include="cGroup.h" />
     <ClInclude Include="cMtlTex.h" />
@@ -153,7 +154,6 @@
     <ClInclude Include="cObjLoader.h" />
     <ClInclude Include="cRadioButton.h" />
     <ClInclude Include="cSkyBox.h" />
-    <ClInclude Include="cSnow.h" />
     <ClInclude Include="cUIButton.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cDeviceManager.h" />
@@ -173,6 +173,7 @@
     <ClInclude Include="cUIScrollbar.h" />
     <ClInclude Include="cUITab.h" />
     <ClInclude Include="cUITextView.h" />
+    <ClInclude Include="cWeather.h" />
     <ClInclude Include="D3DX_MapTool.h" />
     <ClInclude Include="Note.h" />
     <ClInclude Include="Resource.h" />
@@ -181,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cConstruct.cpp" />
+    <ClCompile Include="cConstructManager.cpp" />
     <ClCompile Include="cFog.cpp" />
     <ClCompile Include="cGroup.cpp" />
     <ClCompile Include="cMtlTex.cpp" />
@@ -190,7 +192,6 @@
     <ClCompile Include="cObjLoader.cpp" />
     <ClCompile Include="cRadioButton.cpp" />
     <ClCompile Include="cSkyBox.cpp" />
-    <ClCompile Include="cSnow.cpp" />
     <ClCompile Include="cUIButton.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
@@ -210,6 +211,7 @@
     <ClCompile Include="cUIScrollbar.cpp" />
     <ClCompile Include="cUITab.cpp" />
     <ClCompile Include="cUITextView.cpp" />
+    <ClCompile Include="cWeather.cpp" />
     <ClCompile Include="D3DX_MapTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

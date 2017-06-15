@@ -118,7 +118,10 @@
     <Filter Include="03. Entity\07. Effect\Fog">
       <UniqueIdentifier>{01e02db8-3a80-40d8-8656-0fcecb652771}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Entity\07. Effect\Snow">
+    <Filter Include="02. Manager\07. ConstuctManager">
+      <UniqueIdentifier>{7064eb3b-50ce-4a9c-a8c2-39f800304298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Entity\07. Effect\Weather">
       <UniqueIdentifier>{79bd0997-cc92-4e5e-b54c-5567f1908caf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -224,8 +227,11 @@
     <ClInclude Include="cFog.h">
       <Filter>03. Entity\07. Effect\Fog</Filter>
     </ClInclude>
-    <ClInclude Include="cSnow.h">
-      <Filter>03. Entity\07. Effect\Snow</Filter>
+    <ClInclude Include="cConstructManager.h">
+      <Filter>02. Manager\07. ConstuctManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cWeather.h">
+      <Filter>03. Entity\07. Effect\Weather</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -322,8 +328,11 @@
     <ClCompile Include="cFog.cpp">
       <Filter>03. Entity\07. Effect\Fog</Filter>
     </ClCompile>
-    <ClCompile Include="cSnow.cpp">
-      <Filter>03. Entity\07. Effect\Snow</Filter>
+    <ClCompile Include="cConstructManager.cpp">
+      <Filter>02. Manager\07. ConstuctManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cWeather.cpp">
+      <Filter>03. Entity\07. Effect\Weather</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

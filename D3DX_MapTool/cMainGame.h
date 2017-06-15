@@ -15,7 +15,7 @@ class cConstruct;
 class cSkyBox;
 
 class cFog;
-class cSnow;
+class cWeather;
 
 class cMainGame
 {
@@ -120,16 +120,27 @@ class cMainGame
 
 	bool					m_isShodowOn;
 	
-	// >> : SNOW
+	// >> : Weather
 	cUIButton*              m_pUIButton_Snow_Minus;
 	cUIButton*              m_pUIButton_Snow_Plus;
 	cUITextView*            m_pUIText_Snow_Minus;
 	cUITextView*            m_pUIText_Snow_Plus;
 
 	cRadioButton*			m_pRadioButton_Snow;
-	cSnow*					m_pSnow;
+	cWeather*				m_pSnow;
+
+	cUIButton*              m_pUIButton_Rain_Minus;
+	cUIButton*              m_pUIButton_Rain_Plus;
+	cUITextView*            m_pUIText_Rain_Minus;
+	cUITextView*            m_pUIText_Rain_Plus;
+
+	cRadioButton*			m_pRadioButton_Rain;
+	cWeather*				m_pRain;
 
 	bool					m_isSnowOn;
+	int						m_nSnowCount;
+	bool					m_isRainOn;
+	int						m_nRainCount;
 	// << :
 
 	// >> : Object 클릭시 생성되는 구체 -> 추후 삭제예정
