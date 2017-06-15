@@ -10,3 +10,17 @@ cConstructManager::cConstructManager()
 cConstructManager::~cConstructManager()
 {
 }
+
+void cConstructManager::AddConstruct(cConstruct* pConsturct)
+{
+	
+}
+
+void cConstructManager::DeleteConstruct(cConstruct* pConstruct)
+
+}
+
+void cConstructManager::Destroy()
+{
+
+}

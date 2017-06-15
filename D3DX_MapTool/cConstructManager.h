@@ -1,8 +1,8 @@
 #pragma once
 
-class cConstruct;
+#define CONSTRUCT	cConstructManager::GetInstance()
 
-#define CONSTRUCT cConstructManager::GetInstance()
+class cConstruct;
 
 class cConstructManager
 {
@@ -10,9 +10,10 @@ class cConstructManager
 
 private:
 
+
 public:
-	void CreateConstruct();
-	void RemoveConstruct();
+	void AddConstruct(cConstruct* pConsturct);
+	void DeleteConstruct(cConstruct* pConstruct);
 	void Destroy();
 };
 
