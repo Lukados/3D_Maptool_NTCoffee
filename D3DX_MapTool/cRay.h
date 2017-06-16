@@ -19,5 +19,9 @@ public:
 	static bool IsCollidedWithMesh(IN D3DXVECTOR2& cursorPos, IN LPD3DXMESH pMesh, OUT D3DXVECTOR3& collidedPos);
 	static bool IsCollidedWithMesh(IN D3DXVECTOR2& cursorPos, IN LPD3DXMESH pMesh, OUT int& index, OUT D3DXVECTOR3& outPos, IN float& minX, IN float& maxX);
 	static bool IsMounseInMap(IN D3DXVECTOR2& cursorPos, IN float& minX, IN float& maxX);
+
+	static stRay RayAtViewSpace(int nScreenX, int nScreenY);
+	static stRay RayAtWorldSpace(int nScreenX, int nScreenY);
+	static bool IsPicked(D3DXVECTOR2 cursorPos, ST_SPHERE* pSphere);
 };
 
