@@ -12,6 +12,10 @@ cConstruct::cConstruct()
 {
 }
 
+cConstruct::cConstruct(const cConstruct& pConstruct)
+{
+
+}
 
 cConstruct::~cConstruct()
 {
@@ -155,6 +159,7 @@ void cConstruct::Create(int sIndex)
 
 	if (sIndex >= E_S_OBJECTID_P_DW_START && sIndex <= E_S_OBJECTID_P_ETC_END) Setup(folder, file, false);
 	else Setup(folder, file, true);
+
 	Update();
 }
 

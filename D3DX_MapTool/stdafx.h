@@ -145,6 +145,7 @@ enum eFONTTYPE
 #include "cTimeManager.h"
 #include "cFontManager.h"
 #include "cObjectManager.h"
+#include "cConstructManager.h"
 #include "cObjectDB.h"
 #include "cObject.h"
 #include "cMath.h"
