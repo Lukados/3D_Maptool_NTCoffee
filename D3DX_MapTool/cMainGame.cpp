@@ -1196,7 +1196,7 @@ void cMainGame::SaveMap()
 			fileOut_mtl << "Ka " << "0.700000 0.700000 0.700000" << endl;
 			fileOut_mtl << "Kd " << "0.700000 0.700000 0.700000" << endl;
 			fileOut_mtl << "Ks " << "0.700000 0.700000 0.700000" << endl;
-			fileOut_mtl << "map_Kd ground2.png" << endl;
+			fileOut_mtl << "map_Kd bottom.bmp" << endl;
 		}
 
 		vector<ST_PNT_VERTEX> vecVertex = m_pMap->GetVecVertex();
