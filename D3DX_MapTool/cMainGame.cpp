@@ -40,10 +40,10 @@ m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NUL
 m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
 m_pRadioButton_Shadow(NULL), m_isShodowOn(false),
 m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(NULL), m_pUIText_Snow_Plus(NULL),
-m_pRadioButton_Snow(NULL), m_isSnowOn(false), m_nSnowCount(1500),
+m_pRadioButton_Snow(NULL), m_isSnowOn(false), 
 m_pSphere(NULL), m_vSpherePos(0, 0, 0),
 m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
-m_pRadioButton_Rain(NULL), m_isRainOn(false), m_nRainCount(3000),
+m_pRadioButton_Rain(NULL), m_isRainOn(false), 
 m_diffuseAlpha(0.5f)
 {
 }
@@ -548,7 +548,7 @@ void cMainGame::Setup_UI()
 	m_pRadioButton_Snow->AddChild(m_UIText_Snow);
 
 	m_pSnow = new cWeather();
-	m_pSnow->Setup(m_nSnowCount);
+	m_pSnow->Setup(m_nSize, m_nSize, m_nSize, 1500);
 
 	m_pUIButton_Snow_Minus = new cUIButton();
 	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
@@ -584,7 +584,7 @@ void cMainGame::Setup_UI()
 	m_pRadioButton_Rain->AddChild(m_UIText_Rain);
 
 	m_pRain = new cWeather();
-	m_pRain->Setup(m_nRainCount);
+	m_pRain->Setup(m_nSize, m_nSize, m_nSize, 3000);
 
 	m_pUIButton_Rain_Minus = new cUIButton();
 	m_pUIButton_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
@@ -1378,13 +1378,11 @@ void cMainGame::Update_Effect()
 
 		if (m_pUIButton_Snow_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nSnowCount -= 500;
-			if (m_nSnowCount < 1000) m_nSnowCount = 1000;
+			m_pSnow->DeleteParticle(1000);
 		}
 		if (m_pUIButton_Snow_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nSnowCount += 500;
-			if (m_nSnowCount > 2000) m_nSnowCount = 2000;
+			if (m_pSnow->GetVerParticleVertex().size() <= 5000) m_pSnow->AddParticle(1000);
 		}
 	}
 	else if (m_pRadioButton_Snow->GetSID() == -1) m_isSnowOn = false;
@@ -1397,13 +1395,11 @@ void cMainGame::Update_Effect()
 
 		if (m_pUIButton_Rain_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nRainCount -= 1000;
-			if (m_nRainCount < 1000) m_nRainCount = 1000;
+			m_pRain->DeleteParticle(1000);
 		}
 		if (m_pUIButton_Rain_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nRainCount += 1000;
-			if (m_nRainCount > 5000) m_nRainCount = 5000;
+			if(m_pRain->GetVerParticleVertex().size() <= 7000) m_pRain->AddParticle(1000);
 		}
 	}
 	else if (m_pRadioButton_Rain->GetSID() == -1) m_isRainOn = false;
