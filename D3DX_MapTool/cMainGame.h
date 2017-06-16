@@ -174,7 +174,6 @@ public:
 	void Update_M_Object();
 	void Update_S_Object();
 	void Render_Object();
-	void Render_Object_Shadow();
 
 	// >> 
 	void Delete_Object();

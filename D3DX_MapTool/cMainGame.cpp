@@ -95,6 +95,7 @@ void cMainGame::Setup()
 	m_mtlSPhere.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_mtlSPhere.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
+	SHADOW->Setup(m_vecConstruct);
 	cHeightMap* pMap = new cHeightMap;
 	pMap->Setup(m_nSize, m_fCellSpace);
 	m_pMap = pMap;	
@@ -103,7 +104,6 @@ void cMainGame::Setup()
 	Setup_UI();
 	Setup_SkyBox();
 
-	SHADOW->Setup(m_vecConstruct);
 
 }
 
@@ -160,8 +160,8 @@ void cMainGame::Render()
 	else
 	{
 		if (m_pMap) m_pMap->Render();
-		if (m_pSkyBox) m_pSkyBox->Render();
 		SHADOW->Render();
+		if (m_pSkyBox) m_pSkyBox->Render();
 		Render_Object();
 	}
 

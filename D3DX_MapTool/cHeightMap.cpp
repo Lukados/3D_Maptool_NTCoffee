@@ -5,7 +5,7 @@
 
 cHeightMap::cHeightMap() : m_pMesh(NULL), m_nCellSpace(0.0f), m_nBrushSize_Outside(0), m_nBrushSize_Inside(0), m_fFixedHeight(0), m_nFaceIndex(-1),
 m_vCursorPos(0,0,0), m_nBrushDepth_OutSide(0), m_nBrushDepth_InSide(0), m_nBrushSharpness(0), m_pTexture_Brush_Inside(NULL), m_pTexture_Brush_Outside(NULL),
-m_isCursorOn(true), m_nOption(0)
+m_isCursorOn(true), m_nOption(0), m_sMesh(NULL)
 {
 }
 
@@ -134,6 +134,7 @@ void cHeightMap::Setup(int cellPerRow, float cellSpace)
 	vector<DWORD> vecAdj(vecIndex.size());
 	m_pMesh->GenerateAdjacency(0.0f, &vecAdj[0]);
 
+	m_sMesh = &m_pMesh;
 	//m_pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0);
 }
 
@@ -176,14 +177,15 @@ void cHeightMap::Render()
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
-	if(m_drawWired) DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	if(m_drawWired) 
+		DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 	DEVICE->SetMaterial(&(m_vecMtlTex[0]->GetMaterial()));
 	DEVICE->SetTexture(0, m_vecMtlTex[0]->GetTexture());
 	m_pMesh->DrawSubset(0);
 
 	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-
 	if(m_isCursorOn) RenderBrush();
 }
 
@@ -265,6 +267,9 @@ void cHeightMap::RenderBrush()
 			vecVertex_Inner.push_back(vertex);
 		}
 	}
+
+	m_sVeretx = &vecVertex_Inner;
+
 	// <<
 
 	// >> Outer Brush의 삼각형 면 만들어주는 부분
@@ -300,6 +305,7 @@ void cHeightMap::RenderBrush()
 	DEVICE->SetTexture(0, m_pTexture_Brush_Inside);
 
 	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+
 	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, false);
 	//
 	//DEVICE->SetRenderState(D3DRS_POINTSCALEENABLE, true);
@@ -372,6 +378,7 @@ void cHeightMap::PickingCursor()
 		}
 	}
 	// <<
+
 }
 
 void cHeightMap::SetMapHeight_Inside()
@@ -542,4 +549,14 @@ void cHeightMap::SetNoramlVector(IN OUT ST_PNT_VERTEX& v0, IN OUT ST_PNT_VERTEX&
 	v0.n = n;
 	v1.n = n;
 	v2.n = n;	
+}
+
+LPD3DXMESH cHeightMap::GetMesh()
+{
+	return *m_sMesh;
+}
+
+vector<ST_PNT_VERTEX> cHeightMap::GetVertex()
+{
+	return *m_sVeretx;
 }

@@ -4,7 +4,8 @@
 
 cShadowManager::cShadowManager() :
 	diffuseAlpha(0.5),
-	isView(false)
+	isView(false),
+	m_pMesh(NULL)
 {
 	
 }
@@ -33,6 +34,15 @@ void cShadowManager::Setup(std::vector<cConstruct*> vecList)
 	m_mtrl.Diffuse.a = diffuseAlpha;
 }
 
+void cShadowManager::SetupMap(std::vector<cConstruct*> vecList, LPD3DXMESH pMesh)
+{
+	SetLight();
+	m_vecConstruct = vecList;
+	m_mtrl = InitMtrl(D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), 0.0f);
+	m_mtrl.Diffuse.a = diffuseAlpha;
+	m_pMesh = &pMesh;
+}
+
 void cShadowManager::Update(std::vector<cConstruct*> vecList)
 {
 	m_vecConstruct = vecList;
@@ -47,11 +57,10 @@ void cShadowManager::Render()
 {
 	if (isView)
 	{
-		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 		DEVICE->Clear(NULL, NULL, D3DCLEAR_STENCIL, D3DCOLOR_XRGB(47, 121, 112), 1.0f, 0);
+		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 		for (int i = 0; i < m_vecConstruct.size(); i++)
 		{
-
 			DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 			DEVICE->SetRenderState(D3DRS_STENCILENABLE, TRUE);
 
@@ -65,7 +74,7 @@ void cShadowManager::Render()
 			DEVICE->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
 			DEVICE->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
 
-			D3DXPLANE groundPlane(0.0f, -1.0f, 0.0f, 0.0f);
+			D3DXPLANE groundPlane(0.0f, m_vecConstruct[i]->GetPosition().y -1.0f , 0.0f, 0.0f);
 
 			D3DXVECTOR4 lightTest(-m_light.Direction.x, -m_light.Direction.y, -m_light.Direction.z, 0.0f);
 
@@ -79,6 +88,7 @@ void cShadowManager::Render()
 			D3DXMatrixTranslation(
 				&T,
 				m_vecConstruct[i]->GetPosition().x, m_vecConstruct[i]->GetPosition().y, m_vecConstruct[i]->GetPosition().z);
+	
 
 			D3DXMATRIXA16 matS;
 			D3DXMatrixScaling(&matS, m_vecConstruct[i]->GetScale().x, m_vecConstruct[i]->GetScale().y, m_vecConstruct[i]->GetScale().z);
@@ -111,6 +121,18 @@ void cShadowManager::Render()
 			DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 		}
 		DEVICE->SetRenderState(D3DRS_LIGHTING, false);
+
+	}
+}
+
+void cShadowManager::Render2()
+{
+	if (isView)
+	{
+		DEVICE->Clear(NULL, NULL, D3DCLEAR_STENCIL, D3DCOLOR_XRGB(47, 121, 112), 1.0f, 0);
+		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
+		DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
 	}
 }
 
