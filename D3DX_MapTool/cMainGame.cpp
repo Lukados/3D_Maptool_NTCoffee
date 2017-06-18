@@ -1330,7 +1330,7 @@ void cMainGame::LoadMap()
 void cMainGame::Setup_SkyBox()
 {
 	m_pSkyBox = new cSkyBox();
-	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox1");
+	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox3", "png");
 }
 
 void cMainGame::Update_Effect()
