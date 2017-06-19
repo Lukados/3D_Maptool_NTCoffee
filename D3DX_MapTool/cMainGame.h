@@ -91,6 +91,7 @@ class cMainGame
 	cRadioButton*			m_pRadioButton_Object;
 	cConstruct*				m_pConstruct;
 	vector<cConstruct*>		m_vecConstruct;
+	vector<cConstruct*>		m_vecNPC;
 	// << :
 
 	// >> : SkyBox에 관한 변수
@@ -137,9 +138,8 @@ class cMainGame
 	cWeather*				m_pRain;
 
 	bool					m_isSnowOn;
-	int						m_nSnowCount;
 	bool					m_isRainOn;
-	int						m_nRainCount;
+
 	// << :
 
 	// >> : 디퓨즈값 날려줄거

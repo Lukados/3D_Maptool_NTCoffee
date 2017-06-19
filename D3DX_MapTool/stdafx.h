@@ -26,6 +26,7 @@
 #include <assert.h>
 #include <fstream>
 #include <ctime>
+#include <iostream>
 
 #include <d3dx9.h>
 #pragma comment(lib, "d3d9.lib")

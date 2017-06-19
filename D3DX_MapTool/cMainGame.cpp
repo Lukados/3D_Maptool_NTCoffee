@@ -40,10 +40,10 @@ m_pUIButton_Fog_Minus(NULL), m_pUIButton_Fog_Plus(NULL), m_pUIText_Fog_Minus(NUL
 m_pUIButton_Shadow_Minus(NULL), m_pUIButton_Shadow_Plus(NULL), m_pUIText_Shadow_Minus(NULL), m_pUIText_Shadow_Plus(NULL),
 m_pRadioButton_Shadow(NULL), m_isShodowOn(false),
 m_pUIButton_Snow_Minus(NULL), m_pUIButton_Snow_Plus(NULL), m_pUIText_Snow_Minus(NULL), m_pUIText_Snow_Plus(NULL),
-m_pRadioButton_Snow(NULL), m_isSnowOn(false), m_nSnowCount(1500),
+m_pRadioButton_Snow(NULL), m_isSnowOn(false), 
 m_pSphere(NULL), m_vSpherePos(0, 0, 0),
 m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
-m_pRadioButton_Rain(NULL), m_isRainOn(false), m_nRainCount(3000),
+m_pRadioButton_Rain(NULL), m_isRainOn(false), 
 m_diffuseAlpha(0.5f)
 {
 }
@@ -448,7 +448,7 @@ void cMainGame::Setup_UI()
 
 	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 	{
-		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Construct/Image/Construct1.png"));
+		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Image/Object1.png"));
 	}
 
 
@@ -551,7 +551,7 @@ void cMainGame::Setup_UI()
 	m_pRadioButton_Snow->AddChild(m_UIText_Snow);
 
 	m_pSnow = new cWeather();
-	m_pSnow->Setup(m_nSnowCount);
+	m_pSnow->Setup(m_nSize, m_nSize, m_nSize, 1500);
 
 	m_pUIButton_Snow_Minus = new cUIButton();
 	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
@@ -587,7 +587,7 @@ void cMainGame::Setup_UI()
 	m_pRadioButton_Rain->AddChild(m_UIText_Rain);
 
 	m_pRain = new cWeather();
-	m_pRain->Setup(m_nRainCount);
+	m_pRain->Setup(m_nSize, m_nSize, m_nSize, 3000);
 
 	m_pUIButton_Rain_Minus = new cUIButton();
 	m_pUIButton_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
@@ -723,7 +723,8 @@ void cMainGame::Update_Object()
 			char* file = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->szFile;
 			m_pConstruct->SetSObjID(m_pRadioButton_Object->GetSID());
 
-			if (m_pConstruct->GetSObjID() >= E_S_OBJECTID_P_DW_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_P_ETC_END)
+			if (m_pConstruct->GetSObjID() >= E_S_OBJECTID_P_DW_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_P_ETC_END
+				 || m_pConstruct->GetSObjID() >= E_S_OBJECTID_N_H_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_N_O_END)
 			{
 				m_pConstruct->Setup(folder, file, false);
 			}
@@ -753,6 +754,9 @@ void cMainGame::Update_Object()
 			pConstruct->Create(m_pRadioButton_Object->GetSID());
 
 			m_vecConstruct.push_back(pConstruct);
+
+			E_L_OBJECTID largeID = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->eLargeID;
+			if (largeID == E_L_OBJECTID_NPC) m_vecNPC.push_back(pConstruct);
 		}
 	}
 
@@ -790,6 +794,10 @@ void cMainGame::Update_L_Object()
 		case E_L_OBJECTID_PROPS:
 			m_nObject_MIndex = E_M_OBJECTID_P_DUSKWOOD;
 			m_nObject_SIndex = E_S_OBJECTID_P_DW_START;
+
+		case E_L_OBJECTID_VILLAGE:
+			m_nObject_MIndex = E_M_OBJECTID_V_VILLAGE;
+			m_nObject_SIndex = E_S_OBJECTID_V_STORMWIND;
 			break;
 		}
 
@@ -833,6 +841,13 @@ void cMainGame::Update_L_Object()
 		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_V_START) ? (E_M_OBJECTID_V_START + 1) : m_nObject_MIndex;
 		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_V_END) ? (E_M_OBJECTID_V_END - 1) : m_nObject_MIndex;
 		break;
+
+	case E_L_OBJECTID_NPC:
+		m_pUIText_LID->SetText("NPC");
+
+		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_N_START) ? (E_M_OBJECTID_N_START + 1) : m_nObject_MIndex;
+		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_N_END) ? (E_M_OBJECTID_N_END - 1) : m_nObject_MIndex;
+		break;
 	}
 }
 
@@ -860,6 +875,10 @@ void cMainGame::Update_M_Object()
 
 		case E_L_OBJECTID_VILLAGE:
 			m_nObject_SIndex = E_S_OBJECTID_V_START;
+			break;
+
+		case E_L_OBJECTID_NPC:
+			m_nObject_SIndex = E_S_OBJECTID_N_H_START;
 			break;
 		}
 	}
@@ -929,6 +948,20 @@ void cMainGame::Update_M_Object()
 		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_V_START) ? (E_S_OBJECTID_V_START + 1) : m_nObject_SIndex;
 
 		nStartIndex = E_S_OBJECTID_V_START + 1;
+		break;
+
+	case E_M_OBJECTID_N_HUMAN:
+		m_pUIText_MID->SetText("HUMAN");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_N_H_START) ? (E_S_OBJECTID_N_H_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_N_H_START + 1;
+		break;
+
+	case E_M_OBJECTID_N_ORC:
+		m_pUIText_MID->SetText("ORC");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_N_O_START) ? (E_S_OBJECTID_N_O_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_N_O_START + 1;
 		break;
 	}
 
@@ -1089,6 +1122,43 @@ void cMainGame::Update_S_Object()
 		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
 		{
 			int count = E_S_OBJECTID_V_END - E_S_OBJECTID_V_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_N_HUMAN:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_N_H_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_N_H_END - E_S_OBJECTID_N_H_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+
+	case E_M_OBJECTID_N_ORC:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_N_O_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_N_O_END - E_S_OBJECTID_N_O_START - 1;
 			int maxPage = (count / 8) + 1;
 
 			if (maxPage > m_nPage) m_nPage++;
@@ -1333,7 +1403,7 @@ void cMainGame::LoadMap()
 void cMainGame::Setup_SkyBox()
 {
 	m_pSkyBox = new cSkyBox();
-	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox1");
+	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox3", "png");
 }
 
 void cMainGame::Update_Effect()
@@ -1381,13 +1451,11 @@ void cMainGame::Update_Effect()
 
 		if (m_pUIButton_Snow_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nSnowCount -= 500;
-			if (m_nSnowCount < 1000) m_nSnowCount = 1000;
+			m_pSnow->DeleteParticle(1000);
 		}
 		if (m_pUIButton_Snow_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nSnowCount += 500;
-			if (m_nSnowCount > 2000) m_nSnowCount = 2000;
+			if (m_pSnow->GetVerParticleVertex().size() <= 5000) m_pSnow->AddParticle(1000);
 		}
 	}
 	else if (m_pRadioButton_Snow->GetSID() == -1) m_isSnowOn = false;
@@ -1400,13 +1468,11 @@ void cMainGame::Update_Effect()
 
 		if (m_pUIButton_Rain_Minus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nRainCount -= 1000;
-			if (m_nRainCount < 1000) m_nRainCount = 1000;
+			m_pRain->DeleteParticle(1000);
 		}
 		if (m_pUIButton_Rain_Plus->GetCurrentState() == E_UISTATE_CLICKED)
 		{
-			m_nRainCount += 1000;
-			if (m_nRainCount > 5000) m_nRainCount = 5000;
+			if(m_pRain->GetVerParticleVertex().size() <= 7000) m_pRain->AddParticle(1000);
 		}
 	}
 	else if (m_pRadioButton_Rain->GetSID() == -1) m_isRainOn = false;
