@@ -13,7 +13,7 @@ public:
 
 	void Setup_field(int width, int height, string sPath_idle, string sPath_selected);
 	virtual void Update(float deltaTime);
-	virtual void Render(LPD3DXSPRITE pSprite);
+	virtual void Render(LPD3DXSPRITE pSprite); 
 	virtual void Destroy();
 	eUISTATE GetCurrentState() { return m_eCurrentState; }
 };

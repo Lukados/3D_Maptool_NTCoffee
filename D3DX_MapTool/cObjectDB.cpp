@@ -123,6 +123,7 @@ void cObjectDB::Setup()
 	Add(new ST_OBJECTDATA(E_L_OBJECTID_VILLAGE, E_M_OBJECTID_V_VILLAGE, E_S_OBJECTID_V_STORMWIND,				"obj/Village/Stormwind",							"stormwind.obj",											0,			(float)13 / 16));;
 	Add(new ST_OBJECTDATA(E_L_OBJECTID_VILLAGE, E_M_OBJECTID_V_VILLAGE, E_S_OBJECTID_V_TOLVIR,					"obj/Village/Tolvir",								"tolvir_city_01.obj",								(float)1 / 8,		(float)13 / 16));;
 
+	// NPC
 	Add(new ST_OBJECTDATA(E_L_OBJECTID_NPC, E_M_OBJECTID_N_HUMAN,	E_S_OBJECTID_N_H_NPC1,						"obj/Npc/Human/Weapon",								"Human_weapon.obj",											0,			(float)14 / 16));
 	Add(new ST_OBJECTDATA(E_L_OBJECTID_NPC, E_M_OBJECTID_N_HUMAN,	E_S_OBJECTID_N_H_NPC2,						"obj/Npc/Human/Armor",								"Human_armor.obj",									(float)1 / 8,		(float)14 / 16));
 	Add(new ST_OBJECTDATA(E_L_OBJECTID_NPC, E_M_OBJECTID_N_HUMAN,	E_S_OBJECTID_N_H_NPC3,						"obj/Npc/Human/Stuff",								"humanfemalepeasant.obj",							(float)2 / 8,		(float)14 / 16));
