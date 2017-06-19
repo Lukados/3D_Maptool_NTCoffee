@@ -15,6 +15,8 @@ protected:
 	D3DMATERIAL9			 m_mtrl;
 	bool                     isView;
 	LPD3DXMESH*              m_pMesh;
+	D3DXMATRIXA16            m_cameraMatirx;
+
 
 	D3DMATERIAL9 InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p);
 public:
@@ -29,5 +31,6 @@ public:
 	void Destroy();
 	void SetLight();
 	void SetViewOk(bool b);
+	void SetMatrix(D3DXMATRIXA16* mat);
 };
 

@@ -57,24 +57,24 @@ void cShadowManager::Render()
 {
 	if (isView)
 	{
-		DEVICE->Clear(NULL, NULL, D3DCLEAR_STENCIL, D3DCOLOR_XRGB(47, 121, 112), 1.0f, 0);
 		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 		for (int i = 0; i < m_vecConstruct.size(); i++)
 		{
 			DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 			DEVICE->SetRenderState(D3DRS_STENCILENABLE, TRUE);
+			//false 는 이전 z버퍼에 저장된 값 무시하고 무조건 zbuffer 검사 통과해야됨
+			DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 			DEVICE->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
 
 			DEVICE->SetRenderState(D3DRS_STENCILREF, 0x0);
 			DEVICE->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
 			DEVICE->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
-
 			DEVICE->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_INCR);
 			DEVICE->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
 			DEVICE->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
 
-			D3DXPLANE groundPlane(0.0f, m_vecConstruct[i]->GetPosition().y -1.0f , 0.0f, 0.0f);
+			D3DXPLANE groundPlane(0.0f, -1.0f, 0.0f, m_vecConstruct[i]->GetPosition().y + 0.001f);
 
 			D3DXVECTOR4 lightTest(-m_light.Direction.x, -m_light.Direction.y, -m_light.Direction.z, 0.0f);
 
@@ -88,21 +88,19 @@ void cShadowManager::Render()
 			D3DXMatrixTranslation(
 				&T,
 				m_vecConstruct[i]->GetPosition().x, m_vecConstruct[i]->GetPosition().y, m_vecConstruct[i]->GetPosition().z);
-	
+
 
 			D3DXMATRIXA16 matS;
 			D3DXMatrixScaling(&matS, m_vecConstruct[i]->GetScale().x, m_vecConstruct[i]->GetScale().y, m_vecConstruct[i]->GetScale().z);
 
 			D3DXMATRIX W = matS *T * S;
 
-			DEVICE->SetTransform(D3DTS_WORLD, &W);
-
 			DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 			DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 			DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 
-			DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
+			DEVICE->SetTransform(D3DTS_WORLD, &W);
 
 			for (int j = 0; j < m_vecConstruct[i]->GetVecObjMtlTex().size(); j++)
 			{
@@ -111,17 +109,13 @@ void cShadowManager::Render()
 				m_vecConstruct[i]->GetObjMesh()->DrawSubset(j);
 			}
 
-			DEVICE->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
-
 			DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 			DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
-			DEVICE->SetRenderState(D3DRS_STENCILENABLE, FALSE);
 			DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-			DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-			DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+			DEVICE->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+
 		}
 		DEVICE->SetRenderState(D3DRS_LIGHTING, false);
-
 	}
 }
 
@@ -159,4 +153,9 @@ void cShadowManager::SetLight()
 void cShadowManager::SetViewOk(bool b)
 {
 	isView = b;
+}
+
+void cShadowManager::SetMatrix(D3DXMATRIXA16 * mat)
+{
+	m_cameraMatirx = *mat;
 }

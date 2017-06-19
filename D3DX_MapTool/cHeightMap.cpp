@@ -177,15 +177,18 @@ void cHeightMap::Render()
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
+
 	if(m_drawWired) 
 		DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 
 	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 	DEVICE->SetMaterial(&(m_vecMtlTex[0]->GetMaterial()));
 	DEVICE->SetTexture(0, m_vecMtlTex[0]->GetTexture());
 	m_pMesh->DrawSubset(0);
 
-	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
+	//DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 	if(m_isCursorOn) RenderBrush();
 }
 
@@ -304,9 +307,10 @@ void cHeightMap::RenderBrush()
 	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 	DEVICE->SetTexture(0, m_pTexture_Brush_Inside);
 
-	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	//DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	//
+	//DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, false)s;
 
-	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, false);
 	//
 	//DEVICE->SetRenderState(D3DRS_POINTSCALEENABLE, true);
 	//DEVICE->SetRenderState(D3DRS_POINTSIZE, FtoDw(5.0f));
@@ -324,15 +328,15 @@ void cHeightMap::RenderBrush()
 	//DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	//DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	//DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
-	DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	//DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
 
 	if (vecVertex_Inner.size() > 0) DEVICE->DrawPrimitiveUP(D3DPT_TRIANGLELIST, vecVertex_Inner.size() / 3, &vecVertex_Inner[0], sizeof(ST_PNT_VERTEX));
 
 	//if (vecVertex_Outer.size() > 0)DEVICE->DrawPrimitiveUP(D3DPT_TRIANGLELIST, vecVertex_Outer.size() / 3, &vecVertex_Outer[0], sizeof(ST_PC_VERTEX));
 
-	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
-	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, true);
+	//DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	//DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, true);
 }
 
 void cHeightMap::PickingCursor()

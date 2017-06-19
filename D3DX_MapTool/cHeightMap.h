@@ -47,6 +47,6 @@ public:
 	LPD3DXMESH* m_sMesh;
 	LPD3DXMESH GetMesh();
 	vector<ST_PNT_VERTEX>* m_sVeretx;
-	vector<ST_PNT_VERTEX> GetVertex();
+	vector<ST_PNT_VERTEX> GetVertex();	
 };
 
