@@ -1304,10 +1304,10 @@ void cMainGame::SaveMap()
 		{
 			fileOut << "cs " << m_pMap->GetCellSpace() << endl;
 			fileOut << "cr " << m_pMap->GetCellPerRow() << endl;
-			fileOut << "ws " << m_isSnowOn << endl;		// 눈 정보
-			fileOut << "wr " << m_isRainOn << endl;		// 비 정보
-			fileOut << "wf " << m_isFogOn << m_nPassIndex << endl;		// 안개 정보
-			fileOut << "es " << m_isShodowOn << endl;
+			fileOut << "ws " << m_isSnowOn << ' ' << m_pSnow->GetCount() << ' ' << m_pSnow->GetMove() << ' ' << m_pSnow->GetSpeed() <<  endl;		// 눈 정보
+			fileOut << "wr " << m_isRainOn << ' ' << m_pRain->GetCount() << ' ' << m_pRain->GetMove() << ' ' << m_pRain->GetSpeed() << endl;		// 비 정보
+			fileOut << "wf " << m_isFogOn << ' ' << m_nPassIndex << endl;		// 안개 정보
+			fileOut << "es " << m_isShodowOn << ' ' << m_diffuseAlpha << endl;
 		}
 
 		cMtlTex* pMtlTex = m_pMap->GetVecMtlTex()[0];
