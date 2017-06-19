@@ -4,6 +4,7 @@
 
 cWeather::cWeather()
 	: m_nMapSizeX(0), m_nMapSizeY(0), m_nMapSizeZ(0)
+	, m_fMove(0), m_fSpeed(0), m_nCount(0)
 {
 }
 
@@ -25,6 +26,7 @@ void cWeather::Setup(int mapSizeX, int mapSizeY, int mapSizeZ, int count)
 	m_vecParticleVertex.clear();
 	m_vecParticleVertex.resize(count);
 
+	m_nCount = count;
 	m_nMapSizeX = mapSizeX;
 	m_nMapSizeY = mapSizeY;
 	m_nMapSizeZ = mapSizeZ;
@@ -65,18 +67,15 @@ void cWeather::Update(float fMove, float fSpeed)
 	int nAlpha = 0;
 	int nDelta = 50;
 
+	m_fMove = fMove;
+	m_fSpeed = fSpeed;
+
 	for (int i = 0; i < m_vecParticleVertex.size(); ++i)
 	{
 		m_vecParticleVertex[i].c = D3DCOLOR_ARGB(150, 255, 255, 255);	// alpha 값만 변경
 
 		if (m_vecParticleVertex[i].p.y < -5) m_vecParticleVertex[i].p.y = 50 + rand() % 50;
 		else m_vecParticleVertex[i].p.y -= fSpeed;
-
-		// if (m_vecParticleVertex[i].p.y < 5)
-		// {
-		// 	nAlpha += nDelta;
-		// 	m_vecParticleVertex[i].c = D3DCOLOR_ARGB(nAlpha, 255, 255, 255);
-		// }
 
 		if (m_vecParticleVertex[i].p.x < -m_nMapSizeX / 2) m_vecParticleVertex[i].p.x = m_nMapSizeX / 2;
 		else m_vecParticleVertex[i].p.x -= fMove;
