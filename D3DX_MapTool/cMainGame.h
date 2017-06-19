@@ -91,7 +91,6 @@ class cMainGame
 	cRadioButton*			m_pRadioButton_Object;
 	cConstruct*				m_pConstruct;
 	vector<cConstruct*>		m_vecConstruct;
-	vector<cConstruct*>		m_vecNPC;
 	// << :
 
 	// >> : SkyBox에 관한 변수

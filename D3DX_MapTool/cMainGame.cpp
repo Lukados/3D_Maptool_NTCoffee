@@ -753,7 +753,6 @@ void cMainGame::Update_Object()
 			m_vecConstruct.push_back(pConstruct);
 
 			E_L_OBJECTID largeID = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->eLargeID;
-			if (largeID == E_L_OBJECTID_NPC) m_vecNPC.push_back(pConstruct);
 		}
 	}
 
@@ -1305,6 +1304,10 @@ void cMainGame::SaveMap()
 		{
 			fileOut << "cs " << m_pMap->GetCellSpace() << endl;
 			fileOut << "cr " << m_pMap->GetCellPerRow() << endl;
+			fileOut << "ws " << m_isSnowOn << endl;		// 눈 정보
+			fileOut << "wr " << m_isRainOn << endl;		// 비 정보
+			fileOut << "wf " << m_isFogOn << m_nPassIndex << endl;		// 안개 정보
+			fileOut << "es " << m_isShodowOn << endl;
 		}
 
 		cMtlTex* pMtlTex = m_pMap->GetVecMtlTex()[0];
