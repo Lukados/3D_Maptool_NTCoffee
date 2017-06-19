@@ -32,7 +32,7 @@ void cHeightMap::Setup(int cellPerRow, float cellSpace)
 
 	// >> ¸ÊÀÇ Mtl & Tex ¼³Á¤
 	cMtlTex* pMtlTex = new cMtlTex;
-	pMtlTex->SetTexture(TEXTURE->GetTexture("map/ground3.png"));
+	pMtlTex->SetTexture(TEXTURE->GetTexture("map/Town_Orc.png"));
 
 	D3DMATERIAL9 stMtl;
 	ZeroMemory(&stMtl, sizeof(D3DMATERIAL9));
