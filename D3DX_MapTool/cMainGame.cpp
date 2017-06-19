@@ -445,7 +445,7 @@ void cMainGame::Setup_UI()
 
 	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 	{
-		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Construct/Image/Construct1.png"));
+		m_pRadioButton_Object->SetTexture(i, TEXTURE->GetTexture("obj/Image/Object1.png"));
 	}
 
 
@@ -720,7 +720,8 @@ void cMainGame::Update_Object()
 			char* file = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->szFile;
 			m_pConstruct->SetSObjID(m_pRadioButton_Object->GetSID());
 
-			if (m_pConstruct->GetSObjID() >= E_S_OBJECTID_P_DW_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_P_ETC_END)
+			if (m_pConstruct->GetSObjID() >= E_S_OBJECTID_P_DW_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_P_ETC_END
+				 || m_pConstruct->GetSObjID() >= E_S_OBJECTID_N_H_START && m_pConstruct->GetSObjID() <= E_S_OBJECTID_N_O_END)
 			{
 				m_pConstruct->Setup(folder, file, false);
 			}
@@ -750,6 +751,9 @@ void cMainGame::Update_Object()
 			pConstruct->Create(m_pRadioButton_Object->GetSID());
 
 			m_vecConstruct.push_back(pConstruct);
+
+			E_L_OBJECTID largeID = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->eLargeID;
+			if (largeID == E_L_OBJECTID_NPC) m_vecNPC.push_back(pConstruct);
 		}
 	}
 
@@ -787,6 +791,10 @@ void cMainGame::Update_L_Object()
 		case E_L_OBJECTID_PROPS:
 			m_nObject_MIndex = E_M_OBJECTID_P_DUSKWOOD;
 			m_nObject_SIndex = E_S_OBJECTID_P_DW_START;
+
+		case E_L_OBJECTID_VILLAGE:
+			m_nObject_MIndex = E_M_OBJECTID_V_VILLAGE;
+			m_nObject_SIndex = E_S_OBJECTID_V_STORMWIND;
 			break;
 		}
 
@@ -830,6 +838,13 @@ void cMainGame::Update_L_Object()
 		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_V_START) ? (E_M_OBJECTID_V_START + 1) : m_nObject_MIndex;
 		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_V_END) ? (E_M_OBJECTID_V_END - 1) : m_nObject_MIndex;
 		break;
+
+	case E_L_OBJECTID_NPC:
+		m_pUIText_LID->SetText("NPC");
+
+		m_nObject_MIndex = (m_nObject_MIndex <= E_M_OBJECTID_N_START) ? (E_M_OBJECTID_N_START + 1) : m_nObject_MIndex;
+		m_nObject_MIndex = (m_nObject_MIndex >= E_M_OBJECTID_N_END) ? (E_M_OBJECTID_N_END - 1) : m_nObject_MIndex;
+		break;
 	}
 }
 
@@ -857,6 +872,10 @@ void cMainGame::Update_M_Object()
 
 		case E_L_OBJECTID_VILLAGE:
 			m_nObject_SIndex = E_S_OBJECTID_V_START;
+			break;
+
+		case E_L_OBJECTID_NPC:
+			m_nObject_SIndex = E_S_OBJECTID_N_H_START;
 			break;
 		}
 	}
@@ -926,6 +945,20 @@ void cMainGame::Update_M_Object()
 		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_V_START) ? (E_S_OBJECTID_V_START + 1) : m_nObject_SIndex;
 
 		nStartIndex = E_S_OBJECTID_V_START + 1;
+		break;
+
+	case E_M_OBJECTID_N_HUMAN:
+		m_pUIText_MID->SetText("HUMAN");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_N_H_START) ? (E_S_OBJECTID_N_H_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_N_H_START + 1;
+		break;
+
+	case E_M_OBJECTID_N_ORC:
+		m_pUIText_MID->SetText("ORC");
+		m_nObject_SIndex = (m_nObject_SIndex <= E_S_OBJECTID_N_O_START) ? (E_S_OBJECTID_N_O_START + 1) : m_nObject_SIndex;
+
+		nStartIndex = E_S_OBJECTID_N_O_START + 1;
 		break;
 	}
 
@@ -1086,6 +1119,43 @@ void cMainGame::Update_S_Object()
 		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
 		{
 			int count = E_S_OBJECTID_V_END - E_S_OBJECTID_V_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+	case E_M_OBJECTID_N_HUMAN:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_N_H_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_N_H_END - E_S_OBJECTID_N_H_START - 1;
+			int maxPage = (count / 8) + 1;
+
+			if (maxPage > m_nPage) m_nPage++;
+		}
+		break;
+	}
+
+
+	case E_M_OBJECTID_N_ORC:
+	{
+		for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
+		{
+			if (m_nObject_SIndex + i >= E_S_OBJECTID_N_O_END)	m_pRadioButton_Object->SetSID(i, E_S_OBJECTID_BLANK);
+			else m_pRadioButton_Object->SetSID(i, m_nObject_SIndex + i);
+		}
+
+		if (m_pUIButton_SRight->GetCurrentState() == E_UISTATE_CLICKED)
+		{
+			int count = E_S_OBJECTID_N_O_END - E_S_OBJECTID_N_O_START - 1;
 			int maxPage = (count / 8) + 1;
 
 			if (maxPage > m_nPage) m_nPage++;
