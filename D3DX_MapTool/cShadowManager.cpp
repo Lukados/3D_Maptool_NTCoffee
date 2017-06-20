@@ -28,7 +28,6 @@ D3DMATERIAL9 cShadowManager::InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3D
 
 void cShadowManager::Setup(std::vector<cConstruct*> vecList)
 {
-	SetLight();
 	m_vecConstruct = vecList;
 	m_mtrl = InitMtrl(D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), 0.0f);
 	m_mtrl.Diffuse.a = diffuseAlpha;
@@ -36,7 +35,6 @@ void cShadowManager::Setup(std::vector<cConstruct*> vecList)
 
 void cShadowManager::SetupMap(std::vector<cConstruct*> vecList, LPD3DXMESH pMesh)
 {
-	SetLight();
 	m_vecConstruct = vecList;
 	m_mtrl = InitMtrl(D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), D3DCOLOR_XRGB(0, 0, 0), 0.0f);
 	m_mtrl.Diffuse.a = diffuseAlpha;
@@ -76,7 +74,7 @@ void cShadowManager::Render()
 
 			D3DXPLANE groundPlane(0.0f, -1.0f, 0.0f, m_vecConstruct[i]->GetPosition().y + 0.001f);
 
-			D3DXVECTOR4 lightTest(-m_light.Direction.x, -m_light.Direction.y, -m_light.Direction.z, 0.0f);
+			D3DXVECTOR4 lightTest(m_lightDir.x, m_lightDir.y, m_lightDir.z, 0.0f);
 
 			D3DXMATRIX S;
 			D3DXMatrixShadow(
@@ -134,20 +132,10 @@ void cShadowManager::Destroy()
 {
 }
 
-void cShadowManager::SetLight()
+void cShadowManager::SetLight(D3DLIGHT9 light, D3DXVECTOR3 dir)
 {
-	ZeroMemory(&m_light, sizeof(D3DLIGHT9));
-
-	m_light.Type = D3DLIGHT_DIRECTIONAL;
-	m_light.Ambient = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);            // 주변에 영향을 받는 것들은 색을 띄게 만듬
-	m_light.Diffuse = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
-	m_light.Specular = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
-
-	D3DXVECTOR3   vDir(1.0f, 1.0f, 1.0f);
-	D3DXVec3Normalize(&vDir, &vDir);
-	m_light.Direction = vDir;
-	DEVICE->SetLight(0, &m_light);
-	DEVICE->LightEnable(0, true);
+	m_light = light;
+	m_lightDir = dir;
 }
 
 void cShadowManager::SetViewOk(bool b)

@@ -1292,6 +1292,7 @@ void cMainGame::Setup_DirLight()
 	D3DXVec3Normalize(&vDir, &vDir);
 	stLight.Direction = vDir;
 	DEVICE->SetLight(0, &stLight);
+	SHADOW->SetLight(stLight, vDir);
 	DEVICE->LightEnable(0, true);
 }
 
