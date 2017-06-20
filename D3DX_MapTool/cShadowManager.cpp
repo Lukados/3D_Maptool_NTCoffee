@@ -56,6 +56,7 @@ void cShadowManager::Render()
 	if (isView)
 	{
 		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
+		//DEVICE->LightEnable(0, true);
 		for (int i = 0; i < m_vecConstruct.size(); i++)
 		{
 			DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -74,7 +75,7 @@ void cShadowManager::Render()
 
 			D3DXPLANE groundPlane(0.0f, -1.0f, 0.0f, m_vecConstruct[i]->GetPosition().y + 0.001f);
 
-			D3DXVECTOR4 lightTest(m_lightDir.x, m_lightDir.y, m_lightDir.z, 0.0f);
+			D3DXVECTOR4 lightTest(-m_lightDir.x, -m_lightDir.y, -m_lightDir.z, 0.0f);
 
 			D3DXMATRIX S;
 			D3DXMatrixShadow(
@@ -95,10 +96,11 @@ void cShadowManager::Render()
 
 			D3DXMATRIX W = matS * matRY * T * S;
 
+			DEVICE->SetTransform(D3DTS_WORLD, &W);
+
 			DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 			DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 			DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
 
 			DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 
@@ -117,6 +119,7 @@ void cShadowManager::Render()
 		}
 		DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 	}
+
 }
 
 void cShadowManager::Render2()

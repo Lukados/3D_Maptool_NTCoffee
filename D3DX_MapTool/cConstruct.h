@@ -28,7 +28,7 @@ public:
 	void Setup(char* szFolder, char* szFile, bool isChecked);
 	void Update();
 	void Render();
-	void Render_Shadow();
+	//void Render_Shadow();
 
 	void Create(int sIndex);
 	void Destroy();

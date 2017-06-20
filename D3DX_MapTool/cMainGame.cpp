@@ -167,6 +167,7 @@ void cMainGame::Render()
 
 		if (m_pSkyBox) m_pSkyBox->Render();
 		SHADOW->Render();
+
 		Render_Object();
 	}
 
