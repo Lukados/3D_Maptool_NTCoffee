@@ -87,18 +87,20 @@ void cShadowManager::Render()
 				&T,
 				m_vecConstruct[i]->GetPosition().x, m_vecConstruct[i]->GetPosition().y, m_vecConstruct[i]->GetPosition().z);
 
+			D3DXMATRIXA16 matRY;
+			D3DXMatrixRotationY(&matRY, m_vecConstruct[i]->GetRotationY());
 
 			D3DXMATRIXA16 matS;
 			D3DXMatrixScaling(&matS, m_vecConstruct[i]->GetScale().x, m_vecConstruct[i]->GetScale().y, m_vecConstruct[i]->GetScale().z);
 
-			D3DXMATRIX W = matS *T * S;
+			D3DXMATRIX W = matS * matRY * T * S;
 
 			DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 			DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 			DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 
-			DEVICE->SetTransform(D3DTS_WORLD, &W);
+			DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 			for (int j = 0; j < m_vecConstruct[i]->GetVecObjMtlTex().size(); j++)
 			{
