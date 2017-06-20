@@ -1354,8 +1354,10 @@ void cMainGame::SaveMap()
 			float fRotY = (pConstruct->GetRotationY());
 			float fRotZ = (pConstruct->GetRotationZ());
 
-			fileOut << "o "
-				<< nSID << ' '
+			if(nSID < E_S_OBJECTID_N_H_START) fileOut << "o ";
+			else fileOut << "n ";
+			
+			fileOut<< nSID << ' '
 				<< vPos.x << ' ' << vPos.y << ' ' << vPos.z << ' '
 				<< vScale.x << ' ' << vScale.y << ' ' << vScale.z << ' '
 				<< fRotX << ' ' << fRotY << ' ' << fRotZ << endl;
