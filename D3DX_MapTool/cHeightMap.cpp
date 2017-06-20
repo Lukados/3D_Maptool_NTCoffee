@@ -182,13 +182,13 @@ void cHeightMap::Render()
 		DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 
-	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
+	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 	DEVICE->SetMaterial(&(m_vecMtlTex[0]->GetMaterial()));
 	DEVICE->SetTexture(0, m_vecMtlTex[0]->GetTexture());
 	m_pMesh->DrawSubset(0);
 
 
-	//DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 	if(m_isCursorOn) RenderBrush();
 }
 

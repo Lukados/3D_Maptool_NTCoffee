@@ -172,7 +172,7 @@ void cMainGame::Render()
 	}
 
 	if (m_isSnowOn) m_pSnow->Render("obj/Effect/Snow/Snow.tga");
-	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain.tga");
+	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain2.tga");
 	Render_UI(m_pUISprite);
 
 	DEVICE->EndScene();

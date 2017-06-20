@@ -176,7 +176,7 @@ void cSkyBox::Render()
 
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
 	DEVICE->SetFVF(ST_PT_VERTEX::FVF);
-	//DEVICE->SetRenderState(D3DRS_LIGHTING, false);
+	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 
 	LPDIRECT3DTEXTURE9 texture;
 
