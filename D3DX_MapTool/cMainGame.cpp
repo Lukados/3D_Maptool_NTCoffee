@@ -46,6 +46,8 @@ m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(
 m_pRadioButton_Rain(NULL), m_isRainOn(false), 
 m_diffuseAlpha(0.5f)
 {
+	m_stWeather = ST_WEATHER();
+	m_stShadow = ST_SHADOW();
 }
 
 
@@ -1358,7 +1360,7 @@ void cMainGame::SaveMap()
 			float fRotZ = (pConstruct->GetRotationZ());
 
 			if(nSID < E_S_OBJECTID_N_H_START) fileOut << "o ";
-			else fileOut << "n ";
+			else fileOut << "p ";
 			
 			fileOut<< nSID << ' '
 				<< vPos.x << ' ' << vPos.y << ' ' << vPos.z << ' '
@@ -1401,6 +1403,8 @@ void cMainGame::LoadMap()
 	int nCellPerRow = 0;
 	float fCellSpace = 0.0f;
 	LPD3DXMESH pMesh = loader.LoadMesh_Map(vecMtlTex, vecVertex, vecIndex, nCellPerRow, fCellSpace, m_vecConstruct, folderPath, filePath, false);
+	m_stWeather = loader.GetWeatherInfo();
+	m_stShadow = loader.GetShadowInfo();
 	m_pMap->Setup(nCellPerRow, fCellSpace, vecVertex, vecIndex);
 	m_pMap->SetMesh(pMesh);
 	m_pMap->SetVecMtlTex(vecMtlTex);
