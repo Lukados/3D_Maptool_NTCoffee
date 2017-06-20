@@ -5,7 +5,7 @@
 
 cHeightMap::cHeightMap() : m_pMesh(NULL), m_nCellSpace(0.0f), m_nBrushSize_Outside(0), m_nBrushSize_Inside(0), m_fFixedHeight(0), m_nFaceIndex(-1),
 m_vCursorPos(0,0,0), m_nBrushDepth_OutSide(0), m_nBrushDepth_InSide(0), m_nBrushSharpness(0), m_pTexture_Brush_Inside(NULL), m_pTexture_Brush_Outside(NULL),
-m_isCursorOn(true), m_nOption(0)
+m_isCursorOn(true), m_nOption(0), m_sMesh(NULL)
 {
 }
 
@@ -65,34 +65,11 @@ void cHeightMap::Setup(int cellPerRow, float cellSpace)
 	{
 		ST_PNT_VERTEX v;
 		v.p = D3DXVECTOR3(i%nCol * m_nCellSpace, 0.0f, i / nCol * m_nCellSpace) + startPos;
-		v.n = D3DXVECTOR3(0, 1, 0);
+		v.n = D3DXVECTOR3(0, -1, 0);
 		v.t = D3DXVECTOR2((i%nCol) / (float)nCol, (i / nCol) / (float)nCol);
 		vecVertex[i] = v;
 		m_vecVertex[i] = v;
 	}
-
-	for (int z = 1; z < nTileN; ++z)
-	{
-		for (int x = 1; x < nTileN; ++x)
-		{
-			int left = (z + 0) * nCol + x - 1;
-			int right = (z + 0) * nCol + x + 1;
-			int up = (z + 1) * nCol + x + 0;
-			int down = (z - 1) * nCol + x + 0;
-
-			D3DXVECTOR3 leftToRight = m_vecVertex[right].p - m_vecVertex[left].p;
-			D3DXVECTOR3 downToUp = m_vecVertex[up].p - m_vecVertex[down].p;
-
-			D3DXVECTOR3 normal;
-			D3DXVec3Cross(&normal, &downToUp, &leftToRight);
-			D3DXVec3Normalize(&normal, &normal);
-
-			int nIndex = z*nCol + x;
-			vecVertex[nIndex].n = normal;
-			m_vecVertex = vecVertex;
-		}
-	}
-
 	for (int z = 0; z < nTileN; z++)
 	{
 		for (int x = 0; x < nTileN; ++x)
@@ -134,6 +111,7 @@ void cHeightMap::Setup(int cellPerRow, float cellSpace)
 	vector<DWORD> vecAdj(vecIndex.size());
 	m_pMesh->GenerateAdjacency(0.0f, &vecAdj[0]);
 
+	m_sMesh = &m_pMesh;
 	//m_pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0);
 }
 
@@ -176,14 +154,18 @@ void cHeightMap::Render()
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
-	if(m_drawWired) DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
+
+	if(m_drawWired) 
+		DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+
+	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 	DEVICE->SetMaterial(&(m_vecMtlTex[0]->GetMaterial()));
 	DEVICE->SetTexture(0, m_vecMtlTex[0]->GetTexture());
 	m_pMesh->DrawSubset(0);
 
-	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 	if(m_isCursorOn) RenderBrush();
 }
 
@@ -265,6 +247,9 @@ void cHeightMap::RenderBrush()
 			vecVertex_Inner.push_back(vertex);
 		}
 	}
+
+	m_sVeretx = &vecVertex_Inner;
+
 	// <<
 
 	// >> Outer Brush의 삼각형 면 만들어주는 부분
@@ -299,8 +284,10 @@ void cHeightMap::RenderBrush()
 	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
 	DEVICE->SetTexture(0, m_pTexture_Brush_Inside);
 
-	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, false);
+	//DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	//
+	//DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, false)s;
+
 	//
 	//DEVICE->SetRenderState(D3DRS_POINTSCALEENABLE, true);
 	//DEVICE->SetRenderState(D3DRS_POINTSIZE, FtoDw(5.0f));
@@ -318,15 +305,15 @@ void cHeightMap::RenderBrush()
 	//DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	//DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	//DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
-	DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	//DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
 
 	if (vecVertex_Inner.size() > 0) DEVICE->DrawPrimitiveUP(D3DPT_TRIANGLELIST, vecVertex_Inner.size() / 3, &vecVertex_Inner[0], sizeof(ST_PNT_VERTEX));
 
 	//if (vecVertex_Outer.size() > 0)DEVICE->DrawPrimitiveUP(D3DPT_TRIANGLELIST, vecVertex_Outer.size() / 3, &vecVertex_Outer[0], sizeof(ST_PC_VERTEX));
 
-	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
-	DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, true);
+	//DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	//DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, true);
 }
 
 void cHeightMap::PickingCursor()
@@ -372,6 +359,7 @@ void cHeightMap::PickingCursor()
 		}
 	}
 	// <<
+
 }
 
 void cHeightMap::SetMapHeight_Inside()
@@ -542,4 +530,14 @@ void cHeightMap::SetNoramlVector(IN OUT ST_PNT_VERTEX& v0, IN OUT ST_PNT_VERTEX&
 	v0.n = n;
 	v1.n = n;
 	v2.n = n;	
+}
+
+LPD3DXMESH cHeightMap::GetMesh()
+{
+	return *m_sMesh;
+}
+
+vector<ST_PNT_VERTEX> cHeightMap::GetVertex()
+{
+	return *m_sVeretx;
 }

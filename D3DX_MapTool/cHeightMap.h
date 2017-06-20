@@ -44,5 +44,9 @@ public:
 	void SetMapHeight_Outside();
 	void GetYInFormula(IN D3DXVECTOR3& vertex, OUT float& addingY);
 	void SetNoramlVector(IN OUT ST_PNT_VERTEX& v0, IN OUT ST_PNT_VERTEX& v1, IN OUT ST_PNT_VERTEX& v2);
+	LPD3DXMESH* m_sMesh;
+	LPD3DXMESH GetMesh();
+	vector<ST_PNT_VERTEX>* m_sVeretx;
+	vector<ST_PNT_VERTEX> GetVertex();	
 };
 

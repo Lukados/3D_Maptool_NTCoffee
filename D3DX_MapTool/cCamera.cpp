@@ -59,6 +59,7 @@ void cCamera::Update()
 	D3DXMATRIXA16 matView;
 	D3DXMatrixLookAtLH(&matView, &m_vEye, &m_vLookAt, &m_vUp);
 
+	m_useShadow = matView;
 	DEVICE->SetTransform(D3DTS_VIEW, &matView);
 }
 
@@ -100,4 +101,9 @@ void cCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			m_fCameraDistance = 0.0001f;
 		break;
 	}
+}
+
+D3DXMATRIXA16 cCamera::GetMatrix()
+{
+	return m_useShadow;
 }

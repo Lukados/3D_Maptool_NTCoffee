@@ -28,6 +28,9 @@ public :
 	// >> : SkyBox에서 끌어쓰기 위해 추가
 	D3DXVECTOR3& GetLookAt() { return m_vLookAt; }
 	D3DXVECTOR3& GetUp() { return m_vUp; }
+
+	D3DXMATRIXA16 m_useShadow;
+	D3DXMATRIXA16 GetMatrix();
 	// << :
 };
 

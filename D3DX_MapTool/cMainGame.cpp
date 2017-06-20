@@ -104,8 +104,8 @@ void cMainGame::Setup()
 	D3DXCreateSprite(DEVICE, &m_pUISprite);
 	Setup_UI();
 	Setup_SkyBox();
-
 	SHADOW->Setup(m_vecConstruct);
+
 
 }
 
@@ -147,6 +147,7 @@ void cMainGame::Update(float deltaTime)
 	}
 
 	if (m_pCamera) m_pCamera->Update();	
+	SHADOW->SetMatrix(&m_pCamera->GetMatrix());
 	if (m_pSkyBox) m_pSkyBox->Update(m_pCamera);
 }
 
@@ -160,15 +161,16 @@ void cMainGame::Render()
 
 	if (m_isFogOn) Render_Effect_Fog();
 	else
-	{
+	{		
 		if (m_pMap) m_pMap->Render();
 		if (m_pSkyBox) m_pSkyBox->Render();
 		SHADOW->Render();
+
 		Render_Object();
 	}
 
 	if (m_isSnowOn) m_pSnow->Render("obj/Effect/Snow/Snow.tga");
-	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain.tga");
+	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain2.tga");
 	Render_UI(m_pUISprite);
 
 	DEVICE->EndScene();
@@ -1290,6 +1292,7 @@ void cMainGame::Setup_DirLight()
 	D3DXVec3Normalize(&vDir, &vDir);
 	stLight.Direction = vDir;
 	DEVICE->SetLight(0, &stLight);
+	SHADOW->SetLight(stLight, vDir);
 	DEVICE->LightEnable(0, true);
 }
 
