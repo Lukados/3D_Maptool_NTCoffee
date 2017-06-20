@@ -65,34 +65,11 @@ void cHeightMap::Setup(int cellPerRow, float cellSpace)
 	{
 		ST_PNT_VERTEX v;
 		v.p = D3DXVECTOR3(i%nCol * m_nCellSpace, 0.0f, i / nCol * m_nCellSpace) + startPos;
-		v.n = D3DXVECTOR3(0, 1, 0);
+		v.n = D3DXVECTOR3(0, -1, 0);
 		v.t = D3DXVECTOR2((i%nCol) / (float)nCol, (i / nCol) / (float)nCol);
 		vecVertex[i] = v;
 		m_vecVertex[i] = v;
 	}
-
-	for (int z = 1; z < nTileN; ++z)
-	{
-		for (int x = 1; x < nTileN; ++x)
-		{
-			int left = (z + 0) * nCol + x - 1;
-			int right = (z + 0) * nCol + x + 1;
-			int up = (z + 1) * nCol + x + 0;
-			int down = (z - 1) * nCol + x + 0;
-
-			D3DXVECTOR3 leftToRight = m_vecVertex[right].p - m_vecVertex[left].p;
-			D3DXVECTOR3 downToUp = m_vecVertex[up].p - m_vecVertex[down].p;
-
-			D3DXVECTOR3 normal;
-			D3DXVec3Cross(&normal, &downToUp, &leftToRight);
-			D3DXVec3Normalize(&normal, &normal);
-
-			int nIndex = z*nCol + x;
-			vecVertex[nIndex].n = normal;
-			m_vecVertex = vecVertex;
-		}
-	}
-
 	for (int z = 0; z < nTileN; z++)
 	{
 		for (int x = 0; x < nTileN; ++x)

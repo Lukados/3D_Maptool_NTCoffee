@@ -163,8 +163,6 @@ void cMainGame::Render()
 	else
 	{		
 		if (m_pMap) m_pMap->Render();
-
-
 		if (m_pSkyBox) m_pSkyBox->Render();
 		SHADOW->Render();
 
