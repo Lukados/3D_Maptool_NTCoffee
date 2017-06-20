@@ -468,7 +468,7 @@ LPD3DXMESH cObjLoader::LoadMesh_Map(OUT vector<cMtlTex*> &vecMtlTex, OUT vector<
 				m_stShadow.SetShadowDiffuseAlpha(diffuseAlpha);
 			}
 		}
-		else if (szTemp[0] == 'o' || szTemp[0] == 'n')
+		else if (szTemp[0] == 'o' || szTemp[0] == 'p')
 		{
 			int nSID = -1;
 			D3DXVECTOR3 vPos = D3DXVECTOR3(0,0,0);
