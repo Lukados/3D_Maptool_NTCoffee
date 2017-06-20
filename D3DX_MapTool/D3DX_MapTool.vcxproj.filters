@@ -94,9 +94,6 @@
     <Filter Include="04. Utility\08. ObjLoader">
       <UniqueIdentifier>{8e6bc2f0-bd26-41a9-ae51-7e60e2451273}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Utility\09. ObjSaver">
-      <UniqueIdentifier>{162fab9b-2d79-4de8-9624-6439e2cdd175}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. DB">
       <UniqueIdentifier>{cacec0a4-eec8-457d-8a03-8e965ea539cd}</UniqueIdentifier>
     </Filter>

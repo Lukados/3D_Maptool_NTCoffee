@@ -5,8 +5,9 @@ class cWeather
 	SYNTHESIZE(vector<ST_PC_VERTEX>, m_vecParticleVertex, VerParticleVertex);
 	int m_nMapSizeX, m_nMapSizeY, m_nMapSizeZ;
 
-	float m_fMove, m_fSpeed;
-	int m_nCount;
+	SYNTHESIZE(float, m_fMove, Move)
+	SYNTHESIZE(	float, m_fSpeed, Speed);
+	SYNTHESIZE(int, m_nCount,Count);
 
 public:
 	cWeather();

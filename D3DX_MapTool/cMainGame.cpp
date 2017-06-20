@@ -46,6 +46,8 @@ m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(
 m_pRadioButton_Rain(NULL), m_isRainOn(false), 
 m_diffuseAlpha(0.5f)
 {
+	m_stWeather = ST_WEATHER();
+	m_stShadow = ST_SHADOW();
 }
 
 
@@ -753,7 +755,6 @@ void cMainGame::Update_Object()
 			m_vecConstruct.push_back(pConstruct);
 
 			E_L_OBJECTID largeID = OBJECTDB->GetMapObject(m_pRadioButton_Object->GetSID())->eLargeID;
-			if (largeID == E_L_OBJECTID_NPC) m_vecNPC.push_back(pConstruct);
 		}
 	}
 
@@ -1305,6 +1306,10 @@ void cMainGame::SaveMap()
 		{
 			fileOut << "cs " << m_pMap->GetCellSpace() << endl;
 			fileOut << "cr " << m_pMap->GetCellPerRow() << endl;
+			fileOut << "ws " << m_isSnowOn << ' ' << m_pSnow->GetCount() << ' ' << m_pSnow->GetMove() << ' ' << m_pSnow->GetSpeed() <<  endl;		// 눈 정보
+			fileOut << "wr " << m_isRainOn << ' ' << m_pRain->GetCount() << ' ' << m_pRain->GetMove() << ' ' << m_pRain->GetSpeed() << endl;		// 비 정보
+			fileOut << "wf " << m_isFogOn << ' ' << m_nPassIndex << endl;		// 안개 정보
+			fileOut << "es " << m_isShodowOn << ' ' << m_diffuseAlpha << endl;
 		}
 
 		cMtlTex* pMtlTex = m_pMap->GetVecMtlTex()[0];
@@ -1349,8 +1354,10 @@ void cMainGame::SaveMap()
 			float fRotY = (pConstruct->GetRotationY());
 			float fRotZ = (pConstruct->GetRotationZ());
 
-			fileOut << "o "
-				<< nSID << ' '
+			if(nSID < E_S_OBJECTID_N_H_START) fileOut << "o ";
+			else fileOut << "n ";
+			
+			fileOut<< nSID << ' '
 				<< vPos.x << ' ' << vPos.y << ' ' << vPos.z << ' '
 				<< vScale.x << ' ' << vScale.y << ' ' << vScale.z << ' '
 				<< fRotX << ' ' << fRotY << ' ' << fRotZ << endl;
@@ -1391,6 +1398,8 @@ void cMainGame::LoadMap()
 	int nCellPerRow = 0;
 	float fCellSpace = 0.0f;
 	LPD3DXMESH pMesh = loader.LoadMesh_Map(vecMtlTex, vecVertex, vecIndex, nCellPerRow, fCellSpace, m_vecConstruct, folderPath, filePath, false);
+	m_stWeather = loader.GetWeatherInfo();
+	m_stShadow = loader.GetShadowInfo();
 	m_pMap->Setup(nCellPerRow, fCellSpace, vecVertex, vecIndex);
 	m_pMap->SetMesh(pMesh);
 	m_pMap->SetVecMtlTex(vecMtlTex);
