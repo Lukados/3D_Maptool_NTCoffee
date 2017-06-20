@@ -12,8 +12,6 @@ public:
 private:
 	map<string, cMtlTex* > m_mapMtlTex;
 
-	ST_WEATHER				m_stWeather;
-	ST_SHADOW				m_stShadow;
 public:
 	void LoadMtlLib(char* szFolder, char* szFile);
 	LPD3DXMESH LoadMesh(OUT vector<cMtlTex*> &vecMtlTex, IN char* szFolder, IN char* szFile);
@@ -22,7 +20,4 @@ public:
 						OUT int& cellPerRow, OUT float& cellSpace, 
 						OUT vector<cConstruct*>& vecConstruct,
 						IN char* szFolder, IN char* szFile, bool doOptimizeInplace = true);
-
-	ST_WEATHER& GetWeatherInfo();
-	ST_SHADOW& GetShadowInfo();
 };

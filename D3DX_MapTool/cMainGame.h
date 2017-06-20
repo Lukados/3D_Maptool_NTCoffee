@@ -151,8 +151,6 @@ class cMainGame
 	D3DXVECTOR3				m_vSpherePos;
 	// << :
 
-	ST_WEATHER				m_stWeather;
-	ST_SHADOW				m_stShadow;
 public:
 	cMainGame();
 	~cMainGame();

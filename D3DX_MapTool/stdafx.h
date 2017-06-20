@@ -124,44 +124,6 @@ struct ST_SPHERE
 	float fRadius;
 };
 
-struct ST_WEATHER
-{
-	SYNTHESIZE(bool, m_isSnowOn, SnowOn);
-	SYNTHESIZE(float, m_fMove_Snow, Move_Snow);
-	SYNTHESIZE(float, m_fSpeed_Snow, Speed_Snow);
-	SYNTHESIZE(int, m_nCount_Snow, Count_Snow);
-
-	SYNTHESIZE(bool, m_isRainOn, RainOn);
-	SYNTHESIZE(float, m_fMove_Rain, Move_Rain);
-	SYNTHESIZE(float, m_fSpeed_Rain, Speed_Rain);
-	SYNTHESIZE(int, m_nCount_Rain, Count_Rain);
-
-	SYNTHESIZE(int, m_nPassIndex, FogPassIndex);
-	SYNTHESIZE(bool, m_isFogOn, FogOn);
-
-	ST_WEATHER()
-	{
-		m_isSnowOn = false;
-		m_fMove_Snow = 0;
-		m_fSpeed_Snow = 0;
-		m_nCount_Snow = 0;
-
-		m_isRainOn = false;
-		m_fMove_Rain = 0;
-		m_fSpeed_Rain = 0;
-		m_nCount_Rain = 0;
-
-		m_nPassIndex = 0;
-		m_isFogOn = false;
-	}
-};
-
-struct ST_SHADOW
-{
-	SYNTHESIZE(bool, m_isShadowOn, ShadowOn);
-	SYNTHESIZE(float, m_diffuseAlpha, ShadowDiffuseAlpha);
-};
-
 enum eUIOBJECT
 {
 	E_UI_NONE, E_UI_TAB, E_UI_BUTTON, E_UI_SCROLL, E_UI_TEXT, E_UI_RADIOBUTTON, E_UI_INPUTFIELD, 
