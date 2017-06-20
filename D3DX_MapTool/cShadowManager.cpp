@@ -130,7 +130,7 @@ void cShadowManager::SetLight()
 	m_light.Diffuse = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
 	m_light.Specular = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
 
-	D3DXVECTOR3   vDir(1.0f, 1.0f, 1.0f);
+	D3DXVECTOR3   vDir(1.0f, 1.0f, 1.0f);;
 	D3DXVec3Normalize(&vDir, &vDir);
 	m_light.Direction = vDir;
 	DEVICE->SetLight(0, &m_light);
