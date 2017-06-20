@@ -65,7 +65,7 @@ void cShadowManager::Render()
 			DEVICE->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
 			DEVICE->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
 
-			D3DXPLANE groundPlane(0.0f, -1.0f, 0.0f, 0.0f);
+			D3DXPLANE groundPlane(0.0f, -1.0f, 0.0f, m_vecConstruct[i]->GetPosition().y + 0.001f);
 
 			D3DXVECTOR4 lightTest(-m_light.Direction.x, -m_light.Direction.y, -m_light.Direction.z, 0.0f);
 
@@ -80,10 +80,13 @@ void cShadowManager::Render()
 				&T,
 				m_vecConstruct[i]->GetPosition().x, m_vecConstruct[i]->GetPosition().y, m_vecConstruct[i]->GetPosition().z);
 
+			D3DXMATRIXA16 matRY;
+			D3DXMatrixRotationY(&matRY, m_vecConstruct[i]->GetRotationY());
+
 			D3DXMATRIXA16 matS;
 			D3DXMatrixScaling(&matS, m_vecConstruct[i]->GetScale().x, m_vecConstruct[i]->GetScale().y, m_vecConstruct[i]->GetScale().z);
 
-			D3DXMATRIX W = matS *T * S;
+			D3DXMATRIX W = matS * matRY * T * S;
 
 			DEVICE->SetTransform(D3DTS_WORLD, &W);
 
@@ -92,7 +95,7 @@ void cShadowManager::Render()
 			DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 
-			DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
+			DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 			for (int j = 0; j < m_vecConstruct[i]->GetVecObjMtlTex().size(); j++)
 			{
