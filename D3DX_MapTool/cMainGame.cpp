@@ -733,11 +733,11 @@ void cMainGame::Update_Object()
 
 		}
 
-		if (INPUT->GetKeyState('Z'))	m_pConstruct->SetScale(m_pConstruct->GetScale() + D3DXVECTOR3(0.05f, 0.05f, 0.05f));
-		if (INPUT->GetKeyState('X'))	m_pConstruct->SetScale(m_pConstruct->GetScale() - D3DXVECTOR3(0.05f, 0.05f, 0.05f));
+		if (INPUT->GetKeyState('Z'))	m_pConstruct->SetScale(m_pConstruct->GetScale() + D3DXVECTOR3(0.02f, 0.02f, 0.02f));
+		if (INPUT->GetKeyState('X'))	m_pConstruct->SetScale(m_pConstruct->GetScale() - D3DXVECTOR3(0.02f, 0.02f, 0.02f));
 
-		if (INPUT->GetKeyState('Q'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() + 0.05f);
-		if (INPUT->GetKeyState('E'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() - 0.05f);
+		if (INPUT->GetKeyState('Q'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() + 0.02f);
+		if (INPUT->GetKeyState('E'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() - 0.02f);
 
 		m_pConstruct->SetPosition(D3DXVECTOR3(m_vCursorPos.x, m_vCursorPos.y, m_vCursorPos.z));
 
@@ -1412,7 +1412,7 @@ void cMainGame::LoadMap()
 void cMainGame::Setup_SkyBox()
 {
 	m_pSkyBox = new cSkyBox();
-	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox/Town_Orc", "png");
+	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox/Town_Human", "png");
 }
 
 void cMainGame::Update_Effect()
