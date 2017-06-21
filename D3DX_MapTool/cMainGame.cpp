@@ -157,7 +157,7 @@ void cMainGame::Render()
 
 	DEVICE->BeginScene();
 	
-	if (m_pGrid) m_pGrid->Render();
+	// if (m_pGrid) m_pGrid->Render();
 
 	if (m_isFogOn) Render_Effect_Fog();
 	else
