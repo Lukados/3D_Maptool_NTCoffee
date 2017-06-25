@@ -12,6 +12,7 @@
 #include "cUITextView.h"
 #include "cRadioButton.h"
 #include "cUIInputField.h"
+#include "cUIImage.h"
 
 #include "cObjLoader.h"
 #include "cObjectDB.h"
@@ -44,7 +45,7 @@ m_pRadioButton_Snow(NULL), m_isSnowOn(false),
 m_pSphere(NULL), m_vSpherePos(0, 0, 0),
 m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
 m_pRadioButton_Rain(NULL), m_isRainOn(false), 
-m_diffuseAlpha(0.5f)
+m_diffuseAlpha(0.5f),m_pImage_Board(NULL)
 {
 	m_stWeather = ST_WEATHER();
 	m_stShadow = ST_SHADOW();
@@ -53,6 +54,7 @@ m_diffuseAlpha(0.5f)
 
 cMainGame::~cMainGame()
 {
+	SAFE_DELETE(m_pImage_Board);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pGrid);
 	SAFE_RELEASE(m_pUISprite);
@@ -111,6 +113,7 @@ void cMainGame::Setup()
 
 void cMainGame::Update(float deltaTime)
 {
+	m_pImage_Board->Update(deltaTime);
 	Update_UI();
 
 	if (m_pMap)
@@ -157,20 +160,20 @@ void cMainGame::Render()
 
 	DEVICE->BeginScene();
 	
-	if (m_pGrid) m_pGrid->Render();
+	// if (m_pGrid) m_pGrid->Render();
 
+	m_pImage_Board->Render(m_pUISprite);
 	if (m_isFogOn) Render_Effect_Fog();
 	else
 	{		
 		if (m_pMap) m_pMap->Render();
-
 		if (m_pSkyBox) m_pSkyBox->Render();
 
 		SHADOW->Render();
 		Render_Object();
 	}
 	if (m_isSnowOn) m_pSnow->Render("obj/Effect/Snow/Snow.tga");
-	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain.tga");
+	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain2.tga");
 	Render_UI(m_pUISprite);
 
 	DEVICE->EndScene();
@@ -237,55 +240,72 @@ void cMainGame::Setup_UI()
 	int index = 0;
 	// << 
 
+	// >> 이미지에 대한 탭
+	m_pImage_Board = new cUIImage();
+	m_pImage_Board->Setup(D3DXVECTOR3(1100, 0, 0.0f), E_UI_IMAGE);
+	m_pImage_Board->Setup_Image("Image/UI/MapTool_Board.png");
+	m_pImage_Board->SetSize(ST_SIZE(m_pImage_Board->GetSize().nWidth, m_pImage_Board->GetSize().nHeight));
+	m_pImage_Board->SetHidden(false);
 
 	// >> 메뉴에 대한 탭
 	m_pUITab_Menu = new cUITab();
-	m_pUITab_Menu->Setup(D3DXVECTOR3(titleX_standard, 0, 0), E_UI_TAB);
-	m_pUITab_Menu->Setup_tab(titleW, titleH, "Menu", "image/rect/darkgray.png", "image/rect/gray.png");
+	m_pUITab_Menu->Setup(D3DXVECTOR3(titleX_standard, 30, 0), E_UI_TAB);
+	m_pUITab_Menu->Setup_tab("Image/UI/Button/MENU_TAP/MENU_TAP_BT_STAND.png", "Image/UI/Button/MENU_TAP/MENU_TAP_BT_SELECT.png");
 
 	cUITab* pUITab_Menu_space = new cUITab();
 	pUITab_Menu_space->Setup(D3DXVECTOR3(-(titleW + titleGap) * index, menuspaceY, 0), E_UI_TAB);
-	pUITab_Menu_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
+	pUITab_Menu_space->Setup_tab("", "");
 	m_pUITab_Menu->AddChild(pUITab_Menu_space);
 
 	m_pUIButton_create = new cUIButton();
-	m_pUIButton_create->Setup(D3DXVECTOR3(100, 220, 0), E_UI_BUTTON);
-	m_pUIButton_create->Setup_button(100, 50, "Create", "image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_create->Setup(D3DXVECTOR3(170, 130, 0), E_UI_BUTTON);
+	m_pUIButton_create->Setup_button("Image/UI/Button/MENU_TAP/CREATE_BT_STAND.png", "Image/UI/Button/MENU_TAP/CREATE_BT_SELECT.png", "Image/UI/Button/MENU_TAP/CREATE_BT_STAND.png");
 	pUITab_Menu_space->AddChild(m_pUIButton_create);
 
-	cUITextView* pUIText_CellSpace = new cUITextView;
-	pUIText_CellSpace->Setup(D3DXVECTOR3(30, 30, 0), E_UI_TEXT);
-	pUIText_CellSpace->Setup_Text(ST_SIZE(100, 35), "Celll Space");
+	cUIImage* pUIText_CellSpace = new cUIImage();
+	pUIText_CellSpace->Setup(D3DXVECTOR3(30, 30, 0), E_UI_IMAGE);
+	pUIText_CellSpace->Setup_Image("Image/UI/Text/Text_CellSpace.png");
+	pUIText_CellSpace->SetSize(ST_SIZE(pUIText_CellSpace->GetSize().nWidth, pUIText_CellSpace->GetSize().nHeight));
 	pUITab_Menu_space->AddChild(pUIText_CellSpace);
+	pUIText_CellSpace->SetHidden(false);
 
 	m_pUIInputField_CellSpace = new cUIInputField;
-	m_pUIInputField_CellSpace->Setup(D3DXVECTOR3(170, 30, 0), E_UI_INPUTFIELD);
-	m_pUIInputField_CellSpace->Setup_field(70, 35, "image/rect/darkgray.png", "image/rect/white.png");
+	m_pUIInputField_CellSpace->Setup(D3DXVECTOR3(170, 33, 0), E_UI_INPUTFIELD);
+	m_pUIInputField_CellSpace->Setup_field("Image/UI/InputField/darkgray.png", "Image/UI/InputField/white.png");
 	pUITab_Menu_space->AddChild(m_pUIInputField_CellSpace);
 
-	cUITextView* pUIText_CellNum = new cUITextView;
-	pUIText_CellNum->Setup(D3DXVECTOR3(30, 80, 0), E_UI_TEXT);
-	pUIText_CellNum->Setup_Text(ST_SIZE(100, 35), "Celll Num");
+	cUIImage* pUIText_CellNum = new cUIImage();
+	pUIText_CellNum->Setup(D3DXVECTOR3(30, 80, 0), E_UI_IMAGE);
+	pUIText_CellNum->Setup_Image("Image/UI/Text/Text_CellNum.png");
+	pUIText_CellNum->SetSize(ST_SIZE(pUIText_CellNum->GetSize().nWidth, pUIText_CellNum->GetSize().nHeight));
 	pUITab_Menu_space->AddChild(pUIText_CellNum);
+	pUIText_CellNum->SetHidden(false);
 
 	m_pUIInputField_CellNum = new  cUIInputField;
-	m_pUIInputField_CellNum->Setup(D3DXVECTOR3(170, 80, 0), E_UI_INPUTFIELD);
-	m_pUIInputField_CellNum->Setup_field(70, 35, "image/rect/darkgray.png", "image/rect/white.png");
+	m_pUIInputField_CellNum->Setup(D3DXVECTOR3(170, 82, 0), E_UI_INPUTFIELD);
+	m_pUIInputField_CellNum->Setup_field("Image/UI/InputField/darkgray.png", "Image/UI/InputField/white.png");
 	pUITab_Menu_space->AddChild(m_pUIInputField_CellNum);
 
-	m_pUIInputField_FilePath = new	  cUIInputField;
-	m_pUIInputField_FilePath->Setup(D3DXVECTOR3(20, 350, 0), E_UI_INPUTFIELD);
-	m_pUIInputField_FilePath->Setup_field(250, 35, "image/rect/darkgray.png", "image/rect/white.png");
+	cUIImage* pUIText_FileName = new cUIImage();
+	pUIText_FileName->Setup(D3DXVECTOR3(10, 220, 0), E_UI_IMAGE);
+	pUIText_FileName->Setup_Image("Image/UI/Text/Text_FileName.png");
+	pUIText_FileName->SetSize(ST_SIZE(pUIText_FileName->GetSize().nWidth, pUIText_FileName->GetSize().nHeight));
+	pUITab_Menu_space->AddChild(pUIText_FileName);
+	pUIText_FileName->SetHidden(false);
+
+	m_pUIInputField_FilePath = new  cUIInputField;
+	m_pUIInputField_FilePath->Setup(D3DXVECTOR3(25, 250, 0), E_UI_INPUTFIELD);
+	m_pUIInputField_FilePath->Setup_field("Image/UI/InputField/FilePath_DarkGray.png", "Image/UI/InputField/FilePath_White.png");
 	pUITab_Menu_space->AddChild(m_pUIInputField_FilePath);
 
 	m_pUIButton_save = new cUIButton();
-	m_pUIButton_save->Setup(D3DXVECTOR3(50, 400, 0), E_UI_BUTTON);
-	m_pUIButton_save->Setup_button(70, 50, "Save", "image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_save->Setup(D3DXVECTOR3(65, 285, 0), E_UI_BUTTON);
+	m_pUIButton_save->Setup_button("Image/UI/Button/MENU_TAP/SAVE_BT_STAND.png", "Image/UI/Button/MENU_TAP/SAVE_BT_SELECT.png", "Image/UI/Button/MENU_TAP/SAVE_BT_STAND.png");
 	pUITab_Menu_space->AddChild(m_pUIButton_save);
 
 	m_pUIButton_load = new cUIButton();
-	m_pUIButton_load->Setup(D3DXVECTOR3(170, 400, 0), E_UI_BUTTON);
-	m_pUIButton_load->Setup_button(70, 50, "Load", "image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_load->Setup(D3DXVECTOR3(145, 285, 0), E_UI_BUTTON);
+	m_pUIButton_load->Setup_button("Image/UI/Button/MENU_TAP/LOAD_BT_STAND.png", "Image/UI/Button/MENU_TAP/LOAD_BT_SELECT.png", "Image/UI/Button/MENU_TAP/LOAD_BT_STAND.png");
 	pUITab_Menu_space->AddChild(m_pUIButton_load);
 
 	m_pUITab_Menu->SetHiddenAll(false);
@@ -297,79 +317,92 @@ void cMainGame::Setup_UI()
 	index++; 
 
 	m_pUITab_Map = new cUITab();
-	m_pUITab_Map->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 1, 0, 0), E_UI_TAB);
-	m_pUITab_Map->Setup_tab(titleW, titleH, "Map", "image/rect/darkgray.png", "image/rect/gray.png");
+	m_pUITab_Map->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 1, 30, 0), E_UI_TAB);
+	m_pUITab_Map->Setup_tab("Image/UI/Button/MAP_TAP/MAP_TAP_BT_STAND.png", "Image/UI/Button/MAP_TAP/MAP_TAP_BT_SELECT.png");
 
 	cUITab* pUITab_Map_space = new cUITab();
 	pUITab_Map_space->Setup(D3DXVECTOR3(-(titleW + titleGap) * index, menuspaceY, 0), E_UI_TAB);
-	pUITab_Map_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
+	pUITab_Map_space->Setup_tab("", "");
 	m_pUITab_Map->AddChild(pUITab_Map_space);
 
 	m_pRadioButton_Brush = new cRadioButton;
 	m_pRadioButton_Brush->Setup(D3DXVECTOR3(10, 10, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Brush->Setup_RadioButton();
+	m_pRadioButton_Brush->Setup_RadioButton("Image/UI/Button/MAP_TAP/CHECK_BT_STAND.png", "Image/UI/Button/MAP_TAP/CHECK_BT_SELECT.png");
+	
 	pUITab_Map_space->AddChild(m_pRadioButton_Brush);
-	m_pRadioButton_Brush->Add_RadioButton(D3DXVECTOR3(15, 10, 0), ST_SIZE(130, 45), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Brush->Add_RadioButton(D3DXVECTOR3(145, 10, 0), ST_SIZE(130, 45), E_S_OBJECTID_BLANK2, E_UISTATE_IDLE, NULL);
-	cUITextView* m_pUIText_DefaultBrush = new cUITextView();
-	m_pUIText_DefaultBrush->Setup(D3DXVECTOR3(15, 10, 0), E_UI_TEXT);
-	m_pUIText_DefaultBrush->Setup_Text(ST_SIZE(120, 45), "Def Brush");
-	m_pRadioButton_Brush->AddChild(m_pUIText_DefaultBrush);
-	cUITextView* m_pUIText_FixedBrush = new cUITextView();
-	m_pUIText_FixedBrush->Setup(D3DXVECTOR3(145, 10, 0), E_UI_TEXT);
-	m_pUIText_FixedBrush->Setup_Text(ST_SIZE(120, 45), "Fixed Brush");
-	m_pRadioButton_Brush->AddChild(m_pUIText_FixedBrush);
+	
+	m_pRadioButton_Brush->Add_RadioButton(D3DXVECTOR3(15, 10, 0), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Brush->Add_RadioButton(D3DXVECTOR3(145, 10, 0),  E_S_OBJECTID_BLANK2, E_UISTATE_IDLE, NULL);
+	
+	cUIImage* m_pUIText_DefaultBrush = new cUIImage();
+	m_pUIText_DefaultBrush->Setup(D3DXVECTOR3(20, 20, 0), E_UI_IMAGE);
+	m_pUIText_DefaultBrush->Setup_Image("Image/UI/Text/Text_DefBrush.png");
+	m_pUIText_DefaultBrush->SetSize(ST_SIZE(m_pUIText_DefaultBrush->GetSize().nWidth, m_pUIText_DefaultBrush->GetSize().nHeight));
+	pUITab_Map_space->AddChild(m_pUIText_DefaultBrush);
+	m_pUIText_DefaultBrush->SetHidden(false);
 
-	cUITextView* pUIText_InnerBrush = new cUITextView();
-	pUIText_InnerBrush->Setup(D3DXVECTOR3(25, 100, 0), E_UI_TEXT);
-	pUIText_InnerBrush->Setup_Text(ST_SIZE(100, 50), "Brush-Inner");
+	cUIImage* m_pUIText_FixedBrush = new cUIImage();
+	m_pUIText_FixedBrush->Setup(D3DXVECTOR3(148, 20, 0), E_UI_IMAGE);
+	m_pUIText_FixedBrush->Setup_Image("Image/UI/Text/Text_FixedBrush.png");
+	m_pUIText_FixedBrush->SetSize(ST_SIZE(m_pUIText_FixedBrush->GetSize().nWidth, m_pUIText_FixedBrush->GetSize().nHeight));
+	pUITab_Map_space->AddChild(m_pUIText_FixedBrush);
+	m_pUIText_FixedBrush->SetHidden(false);
+
+	cUIImage* pUIText_InnerBrush = new cUIImage();
+	pUIText_InnerBrush->Setup(D3DXVECTOR3(25, 100, 0), E_UI_IMAGE);
+	pUIText_InnerBrush->Setup_Image("Image/UI/Text/Text_BrushInner.png");
+	pUIText_InnerBrush->SetSize(ST_SIZE(pUIText_InnerBrush->GetSize().nWidth, pUIText_InnerBrush->GetSize().nHeight));
 	pUITab_Map_space->AddChild(pUIText_InnerBrush);
+	pUIText_InnerBrush->SetHidden(false);
 
 	cUIScrollbar* pUIScroll_BrushSize_inside = new cUIScrollbar();
 	pUIScroll_BrushSize_inside->Setup(D3DXVECTOR3(80, 150, 0), E_UI_SCROLL);
-	pUIScroll_BrushSize_inside->Setup_scroll(150, 50, "Size", "image/rect/sky.png", 1, 10);
+	pUIScroll_BrushSize_inside->Setup_scroll(150, 50, "Size", "Image/UI/Button/MAP_TAP/Bar.png", 1, 10);
 	pUITab_Map_space->AddChild(pUIScroll_BrushSize_inside);
 	pUIScroll_BrushSize_inside->Setup_bar(15, 30);
 	m_pUIScroll_BrushSize_inside = pUIScroll_BrushSize_inside;
 
 	cUIScrollbar* pUIScroll_BrushDepth_inside = new cUIScrollbar();
 	pUIScroll_BrushDepth_inside->Setup(D3DXVECTOR3(80, 190, 0), E_UI_SCROLL);
-	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "image/rect/sky.png", -15, 15);
+	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "Image/UI/Button/MAP_TAP/Bar.png", -15, 15);
 	pUITab_Map_space->AddChild(pUIScroll_BrushDepth_inside);
 	pUIScroll_BrushDepth_inside->Setup_bar(15, 30);
 	m_pUIScroll_BrushDepth_inside = pUIScroll_BrushDepth_inside;
 
-	cUITextView* pUIText_OuterBrush = new cUITextView();
-	pUIText_OuterBrush->Setup(D3DXVECTOR3(25, 250, 0), E_UI_TEXT);
-	pUIText_OuterBrush->Setup_Text(ST_SIZE(100, 50), "Brush-Outer");
+	cUIImage* pUIText_OuterBrush = new cUIImage();
+	pUIText_OuterBrush->Setup(D3DXVECTOR3(25, 250, 0), E_UI_IMAGE);
+	pUIText_OuterBrush->Setup_Image("Image/UI/Text/Text_BrushOuter.png");
+	pUIText_OuterBrush->SetSize(ST_SIZE(pUIText_OuterBrush->GetSize().nWidth, pUIText_OuterBrush->GetSize().nHeight));
 	pUITab_Map_space->AddChild(pUIText_OuterBrush);
+	pUIText_OuterBrush->SetHidden(false);
+
 
 	cUIScrollbar* pUIScroll_BrushSize_Outside = new cUIScrollbar();
 	pUIScroll_BrushSize_Outside->Setup(D3DXVECTOR3(80, 290, 0), E_UI_SCROLL);
-	pUIScroll_BrushSize_Outside->Setup_scroll(150, 50, "Size", "image/rect/sky.png", 5, 20);
+	pUIScroll_BrushSize_Outside->Setup_scroll(150, 50, "Size", "Image/UI/Button/MAP_TAP/Bar.png", 5, 20);
 	pUITab_Map_space->AddChild(pUIScroll_BrushSize_Outside);
 	pUIScroll_BrushSize_Outside->Setup_bar(15, 30);
 	m_pUIScroll_BrushSize_Outside = pUIScroll_BrushSize_Outside;	
 
 	m_pUIScroll_BrushSharpness = new cUIScrollbar();
 	m_pUIScroll_BrushSharpness->Setup(D3DXVECTOR3(80, 340, 0), E_UI_SCROLL);
-	m_pUIScroll_BrushSharpness->Setup_scroll(150, 50, "Sharp\n-ness", "image/rect/sky.png", -1, 1);
+	m_pUIScroll_BrushSharpness->Setup_scroll(150, 50, "Sharp\n-ness", "Image/UI/Button/MAP_TAP/Bar.png", -1, 1);
 	pUITab_Map_space->AddChild(m_pUIScroll_BrushSharpness);
 	m_pUIScroll_BrushSharpness->Setup_bar(15, 30);
 
 	m_pUIButton_GetHeight = new cUIButton();
-	m_pUIButton_GetHeight->Setup(D3DXVECTOR3(30, 450, 0), E_UI_BUTTON);
-	m_pUIButton_GetHeight->Setup_button(60, 40, "Get Y", "image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_GetHeight->Setup(D3DXVECTOR3(10, 450, 0), E_UI_BUTTON);
+	m_pUIButton_GetHeight->Setup_button("Image/UI/Button/MAP_TAP/GET_BT_STAND.png", "Image/UI/Button/MAP_TAP/GET_BT_SELECT.png", "Image/UI/Button/MAP_TAP/GET_BT_STAND.png");
 	pUITab_Map_space->AddChild(m_pUIButton_GetHeight);
 	
 	m_pUIInputField_SetHeight = new  cUIInputField;
-	m_pUIInputField_SetHeight->Setup(D3DXVECTOR3(100, 450, 0), E_UI_INPUTFIELD);
-	m_pUIInputField_SetHeight->Setup_field(90, 40, "image/rect/darkgray.png", "image/rect/white.png");
+	m_pUIInputField_SetHeight->Setup(D3DXVECTOR3(96, 450, 0), E_UI_INPUTFIELD);
+	m_pUIInputField_SetHeight->Setup_field("Image/UI/InputField/ValueY_DarkGray.png", "Image/UI/InputField/ValueY_White.png");
 	pUITab_Map_space->AddChild(m_pUIInputField_SetHeight);
 
 	m_pUIButton_SetHeight = new cUIButton();
-	m_pUIButton_SetHeight->Setup(D3DXVECTOR3(200, 450, 0), E_UI_BUTTON);
-	m_pUIButton_SetHeight->Setup_button(60, 40, "Set Y", "image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_SetHeight->Setup(D3DXVECTOR3(190, 450, 0), E_UI_BUTTON);
+	m_pUIButton_SetHeight->Setup_button("Image/UI/Button/MAP_TAP/SET_BT_STAND.png", "Image/UI/Button/MAP_TAP/SET_BT_SELECT.png", "Image/UI/Button/MAP_TAP/SET_BT_STAND.png");
 	pUITab_Map_space->AddChild(m_pUIButton_SetHeight);
 
 	m_pUITab_Map->SetHiddenAll(true);
@@ -380,52 +413,52 @@ void cMainGame::Setup_UI()
 	// >> 오브젝트에 대한 탭
 	index++;
 	m_pUITab_Object = new cUITab();
-	m_pUITab_Object->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 2, 0, 0), E_UI_TAB);
-	m_pUITab_Object->Setup_tab(titleW, titleH, "Object", "image/rect/darkgray.png", "image/rect/gray.png");
+	m_pUITab_Object->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 2,30, 0), E_UI_TAB);
+	m_pUITab_Object->Setup_tab("Image/UI/Button/OBJECT_TAP/OBJECT_TAP_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/OBJECT_TAP_BT_SELECT.png");
 
 	cUITab* pUITab_Object_space = new cUITab();
 	pUITab_Object_space->Setup(D3DXVECTOR3(-(titleW + titleGap) * index, menuspaceY, 0), E_UI_TAB);
-	pUITab_Object_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
+	pUITab_Object_space->Setup_tab("", "");
 	m_pUITab_Object->AddChild(pUITab_Object_space);
 
 	m_pUIButton_LLeft = new cUIButton();
-	m_pUIButton_LLeft->Setup(D3DXVECTOR3(30, 20, 0), E_UI_BUTTON);
-	m_pUIButton_LLeft->Setup_button(40, 40, "", "image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_LLeft->Setup(D3DXVECTOR3(20, 20, 0), E_UI_BUTTON);
+	m_pUIButton_LLeft->Setup_button("Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_LLeft);
 
 	m_pUIButton_LRight = new cUIButton();
-	m_pUIButton_LRight->Setup(D3DXVECTOR3(230, 20, 0), E_UI_BUTTON);
-	m_pUIButton_LRight->Setup_button(40, 40, "", "image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_LRight->Setup(D3DXVECTOR3(205, 20, 0), E_UI_BUTTON);
+	m_pUIButton_LRight->Setup_button("Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_LRight);
 
 	m_pUIText_LID = new cUITextView();
-	m_pUIText_LID->Setup(D3DXVECTOR3(110, 20, 0), E_UI_BUTTON);
+	m_pUIText_LID->Setup(D3DXVECTOR3(95, 25, 0), E_UI_BUTTON);
 	m_pUIText_LID->Setup_Text(ST_SIZE(100, 40), "");
 	pUITab_Object_space->AddChild(m_pUIText_LID);
 
 	m_pUIButton_MLeft = new cUIButton;
-	m_pUIButton_MLeft->Setup(D3DXVECTOR3(30, 70, 0), E_UI_BUTTON);
-	m_pUIButton_MLeft->Setup_button(40, 40, "", "image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_MLeft->Setup(D3DXVECTOR3(20, 80, 0), E_UI_BUTTON);
+	m_pUIButton_MLeft->Setup_button("Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_MLeft);
 
 	m_pUIButton_MRight = new cUIButton;
-	m_pUIButton_MRight->Setup(D3DXVECTOR3(230, 70, 0), E_UI_BUTTON);
-	m_pUIButton_MRight->Setup_button(40, 40, "", "image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_MRight->Setup(D3DXVECTOR3(205, 80, 0), E_UI_BUTTON);
+	m_pUIButton_MRight->Setup_button("Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_MRight);
 
 	m_pUIText_MID = new cUITextView();
-	m_pUIText_MID->Setup(D3DXVECTOR3(110, 70, 0), E_UI_BUTTON);
+	m_pUIText_MID->Setup(D3DXVECTOR3(95, 85, 0), E_UI_BUTTON);
 	m_pUIText_MID->Setup_Text(ST_SIZE(100, 40), "");
 	pUITab_Object_space->AddChild(m_pUIText_MID);
 
 	m_pUIButton_SLeft = new cUIButton;
-	m_pUIButton_SLeft->Setup(D3DXVECTOR3(30, 700, 0), E_UI_BUTTON);
-	m_pUIButton_SLeft->Setup_button(40, 40, "", "image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_SLeft->Setup(D3DXVECTOR3(20, 700, 0), E_UI_BUTTON);
+	m_pUIButton_SLeft->Setup_button("Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_SLeft);
 
 	m_pUIButton_SRight = new cUIButton;
-	m_pUIButton_SRight->Setup(D3DXVECTOR3(230, 700, 0), E_UI_BUTTON);
-	m_pUIButton_SRight->Setup_button(40, 40, "", "image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_SRight->Setup(D3DXVECTOR3(205, 700, 0), E_UI_BUTTON);
+	m_pUIButton_SRight->Setup_button("Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_SRight);
 
 	m_pUIText_SID = new cUITextView();
@@ -435,17 +468,17 @@ void cMainGame::Setup_UI()
 
 	m_pRadioButton_Object = new cRadioButton;
 	m_pRadioButton_Object->Setup(D3DXVECTOR3(10, 130, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Object->Setup_RadioButton();
+	m_pRadioButton_Object->Setup_RadioButton("Image/UI/Button/OBJECT_TAP/check_box_stand.png", "Image/UI/Button/OBJECT_TAP/check_box.png");
 	pUITab_Object_space->AddChild(m_pRadioButton_Object);
 
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 10, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_BARN, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 10, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_BLACKSMITH, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 140, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_CHAPEL, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 140, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_FARM, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 270, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_INN, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 270, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_LUMBERMILL, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 400, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_MAGETOWER, E_UISTATE_IDLE, NULL);
-	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 400, 0), ST_SIZE(128, 128), E_S_OBJECTID_H_DW_STABLE, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 10, 0),  E_S_OBJECTID_H_DW_BARN, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 10, 0), E_S_OBJECTID_H_DW_BLACKSMITH, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 140, 0), E_S_OBJECTID_H_DW_CHAPEL, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 140, 0), E_S_OBJECTID_H_DW_FARM, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 270, 0), E_S_OBJECTID_H_DW_INN, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 270, 0), E_S_OBJECTID_H_DW_LUMBERMILL, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 400, 0), E_S_OBJECTID_H_DW_MAGETOWER, E_UISTATE_IDLE, NULL);
+	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(145, 400, 0), E_S_OBJECTID_H_DW_STABLE, E_UISTATE_IDLE, NULL);
 
 	for (int i = 0; i < m_pRadioButton_Object->GetVecSIndex().size(); i++)
 	{
@@ -461,154 +494,102 @@ void cMainGame::Setup_UI()
 // >> 효과에 대한 탭
 	index++;
 	m_pUITab_Effect = new cUITab();
-	m_pUITab_Effect->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 3, 0, 0), E_UI_TAB);
-	m_pUITab_Effect->Setup_tab(titleW, titleH, "Effect", "image/rect/darkgray.png", "image/rect/gray.png");
+	m_pUITab_Effect->Setup(D3DXVECTOR3(titleX_standard + (titleW + titleGap) * 3, 30, 0), E_UI_TAB);
+	m_pUITab_Effect->Setup_tab("Image/UI/Button/EFFECT_TAP/EFFECT_TAP_BT_STAND.png", "Image/UI/Button/EFFECT_TAP/EFFECT_TAP_BT_SELECT.png");
 
 	cUITab* pUITab_Effect_space = new cUITab();
 	pUITab_Effect_space->Setup(D3DXVECTOR3(-(titleW + titleGap) * index, menuspaceY, 0), E_UI_TAB);
-	pUITab_Effect_space->Setup_tab(menuspaceW, menuspaceH, "", "image/rect/darkgray.png", "image/rect/gray.png");
+	pUITab_Effect_space->Setup_tab("", "");
 	m_pUITab_Effect->AddChild(pUITab_Effect_space);
+
+	cUIImage* pUIText_OnOff = new cUIImage();
+	pUIText_OnOff->Setup(D3DXVECTOR3(90, 38, 0), E_UI_IMAGE);
+	pUIText_OnOff->Setup_Image("Image/UI/Text/Text_On&Off.png");
+	pUIText_OnOff->SetSize(ST_SIZE(pUIText_OnOff->GetSize().nWidth, pUIText_OnOff->GetSize().nHeight));
+	pUITab_Effect_space->AddChild(pUIText_OnOff);
+	pUIText_OnOff->SetHidden(false);
 
 	// Fog
 	m_pRadioButton_Fog = new cRadioButton();
-	m_pRadioButton_Fog->Setup(D3DXVECTOR3(10, 50, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Fog->Setup_RadioButton();
+	m_pRadioButton_Fog->Setup(D3DXVECTOR3(10, 55, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Fog->Setup_RadioButton("Image/UI/Button/EFFECT_TAP/Fog_Stand.png", "Image/UI/Button/EFFECT_TAP/Fog_Select.png");
 	pUITab_Effect_space->AddChild(m_pRadioButton_Fog);
 
-	m_pRadioButton_Fog->Add_RadioButton(D3DXVECTOR3(75, 10, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
-
-	cUITextView* m_UIText_Fog = new cUITextView();
-	m_UIText_Fog->Setup(D3DXVECTOR3(70, -5, 0), E_UI_TEXT);
-	m_UIText_Fog->Setup_Text(ST_SIZE(130, 80), "Fog");
-	m_pRadioButton_Fog->AddChild(m_UIText_Fog);
+	m_pRadioButton_Fog->Add_RadioButton(D3DXVECTOR3(75, 10, 0), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 
 	m_pFog = new cFog();
 	m_pFog->Setup("obj/Effect/Fog/fog.txt");
 
 	m_pUIButton_Fog_Minus = new cUIButton();
-	m_pUIButton_Fog_Minus->Setup(D3DXVECTOR3(20, 70, 0), E_UI_BUTTON);
-	m_pUIButton_Fog_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Fog_Minus->Setup(D3DXVECTOR3(25, 63, 0), E_UI_BUTTON);
+	m_pUIButton_Fog_Minus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Fog_Minus);
 
 	m_pUIButton_Fog_Plus = new cUIButton();
-	m_pUIButton_Fog_Plus->Setup(D3DXVECTOR3(210, 70, 0), E_UI_BUTTON);
-	m_pUIButton_Fog_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Fog_Plus->Setup(D3DXVECTOR3(205, 63, 0), E_UI_BUTTON);
+	m_pUIButton_Fog_Plus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Fog_Plus);
 
-	m_pUIText_Fog_Minus = new cUITextView();
-	m_pUIText_Fog_Minus->Setup(D3DXVECTOR3(20, 70, 0), E_UI_BUTTON);
-	m_pUIText_Fog_Minus->Setup_Text(ST_SIZE(50, 40), "-");
-	pUITab_Effect_space->AddChild(m_pUIText_Fog_Minus);
-
-	m_pUIText_Fog_Plus = new cUITextView();
-	m_pUIText_Fog_Plus->Setup(D3DXVECTOR3(210, 70, 0), E_UI_BUTTON);
-	m_pUIText_Fog_Plus->Setup_Text(ST_SIZE(60, 40), "+");
-	pUITab_Effect_space->AddChild(m_pUIText_Fog_Plus);
 
 	// Shadow
 	m_pRadioButton_Shadow = new cRadioButton();
-	m_pRadioButton_Shadow->Setup(D3DXVECTOR3(10, 70, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Shadow->Setup_RadioButton();
+	m_pRadioButton_Shadow->Setup(D3DXVECTOR3(10, 75, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Shadow->Setup_RadioButton("Image/UI/Button/EFFECT_TAP/Shadow_Stand.png", "Image/UI/Button/EFFECT_TAP/Shadow_Select.png");
 	pUITab_Effect_space->AddChild(m_pRadioButton_Shadow);
 
-	m_pRadioButton_Shadow->Add_RadioButton(D3DXVECTOR3(75, 70, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
-
-	cUITextView* m_UIText_Shadow = new cUITextView();
-	m_UIText_Shadow->Setup(D3DXVECTOR3(70, 55, 0), E_UI_TEXT);
-	m_UIText_Shadow->Setup_Text(ST_SIZE(130, 80), "Shadow");
-	m_pRadioButton_Shadow->AddChild(m_UIText_Shadow);
+	m_pRadioButton_Shadow->Add_RadioButton(D3DXVECTOR3(75, 70, 0), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 
 	m_pUIButton_Shadow_Minus = new cUIButton();
-	m_pUIButton_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
-	m_pUIButton_Shadow_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Shadow_Minus->Setup(D3DXVECTOR3(25, 143, 0), E_UI_BUTTON);
+	m_pUIButton_Shadow_Minus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Shadow_Minus);
 
 	m_pUIButton_Shadow_Plus = new cUIButton();
-	m_pUIButton_Shadow_Plus->Setup(D3DXVECTOR3(210, 150, 0), E_UI_BUTTON);
-	m_pUIButton_Shadow_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Shadow_Plus->Setup(D3DXVECTOR3(205, 143, 0), E_UI_BUTTON);
+	m_pUIButton_Shadow_Plus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Shadow_Plus);
-
-	m_pUIText_Shadow_Minus = new cUITextView();
-	m_pUIText_Shadow_Minus->Setup(D3DXVECTOR3(20, 150, 0), E_UI_BUTTON);
-	m_pUIText_Shadow_Minus->Setup_Text(ST_SIZE(50, 40), "-");
-	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Minus);
-
-	m_pUIText_Shadow_Plus = new cUITextView();
-	m_pUIText_Shadow_Plus->Setup(D3DXVECTOR3(210, 150, 0), E_UI_BUTTON);
-	m_pUIText_Shadow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
-	pUITab_Effect_space->AddChild(m_pUIText_Shadow_Plus);
 
 	// Snow
 	m_pRadioButton_Snow = new cRadioButton();
-	m_pRadioButton_Snow->Setup(D3DXVECTOR3(10, 90, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Snow->Setup_RadioButton();
+	m_pRadioButton_Snow->Setup(D3DXVECTOR3(10, 95, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Snow->Setup_RadioButton("Image/UI/Button/EFFECT_TAP/Snow_Stand.png", "Image/UI/Button/EFFECT_TAP/Snow_Select.png");
 	pUITab_Effect_space->AddChild(m_pRadioButton_Snow);
 
-	m_pRadioButton_Snow->Add_RadioButton(D3DXVECTOR3(75, 130, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
-
-	cUITextView* m_UIText_Snow = new cUITextView();
-	m_UIText_Snow->Setup(D3DXVECTOR3(70, 115, 0), E_UI_TEXT);
-	m_UIText_Snow->Setup_Text(ST_SIZE(130, 80), "Snow");
-	m_pRadioButton_Snow->AddChild(m_UIText_Snow);
+	m_pRadioButton_Snow->Add_RadioButton(D3DXVECTOR3(75, 130, 0), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 
 	m_pSnow = new cWeather();
 	m_pSnow->Setup(m_nSize, m_nSize, m_nSize, 1500);
 
 	m_pUIButton_Snow_Minus = new cUIButton();
-	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
-	m_pUIButton_Snow_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Snow_Minus->Setup(D3DXVECTOR3(25, 223, 0), E_UI_BUTTON);
+	m_pUIButton_Snow_Minus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Snow_Minus);
 
 	m_pUIButton_Snow_Plus = new cUIButton();
-	m_pUIButton_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
-	m_pUIButton_Snow_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Snow_Plus->Setup(D3DXVECTOR3(205, 223, 0), E_UI_BUTTON);
+	m_pUIButton_Snow_Plus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Snow_Plus);
-
-	m_pUIText_Snow_Minus = new cUITextView();
-	m_pUIText_Snow_Minus->Setup(D3DXVECTOR3(20, 230, 0), E_UI_BUTTON);
-	m_pUIText_Snow_Minus->Setup_Text(ST_SIZE(50, 40), "-");
-	pUITab_Effect_space->AddChild(m_pUIText_Snow_Minus);
-
-	m_pUIText_Snow_Plus = new cUITextView();
-	m_pUIText_Snow_Plus->Setup(D3DXVECTOR3(210, 230, 0), E_UI_BUTTON);
-	m_pUIText_Snow_Plus->Setup_Text(ST_SIZE(60, 40), "+");
-	pUITab_Effect_space->AddChild(m_pUIText_Snow_Plus);
 
 	// Rain
 	m_pRadioButton_Rain = new cRadioButton();
-	m_pRadioButton_Rain->Setup(D3DXVECTOR3(10, 110, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Rain->Setup_RadioButton();
+	m_pRadioButton_Rain->Setup(D3DXVECTOR3(10, 115, 0), E_UI_RADIOBUTTON);
+	m_pRadioButton_Rain->Setup_RadioButton("Image/UI/Button/EFFECT_TAP/Rain_Stand.png", "Image/UI/Button/EFFECT_TAP/Rain_Select.png");
 	pUITab_Effect_space->AddChild(m_pRadioButton_Rain);
 
-	m_pRadioButton_Rain->Add_RadioButton(D3DXVECTOR3(75, 190, 0), ST_SIZE(130, 60), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
-
-	cUITextView* m_UIText_Rain = new cUITextView();
-	m_UIText_Rain->Setup(D3DXVECTOR3(70, 175, 0), E_UI_TEXT);
-	m_UIText_Rain->Setup_Text(ST_SIZE(130, 80), "Rain");
-	m_pRadioButton_Rain->AddChild(m_UIText_Rain);
+	m_pRadioButton_Rain->Add_RadioButton(D3DXVECTOR3(75, 190, 0),  E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 
 	m_pRain = new cWeather();
 	m_pRain->Setup(m_nSize, m_nSize, m_nSize, 3000);
 
 	m_pUIButton_Rain_Minus = new cUIButton();
-	m_pUIButton_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
-	m_pUIButton_Rain_Minus->Setup_button(50, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Rain_Minus->Setup(D3DXVECTOR3(25, 303, 0), E_UI_BUTTON);
+	m_pUIButton_Rain_Minus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_MINUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Rain_Minus);
 
 	m_pUIButton_Rain_Plus = new cUIButton();
-	m_pUIButton_Rain_Plus->Setup(D3DXVECTOR3(210, 310, 0), E_UI_BUTTON);
-	m_pUIButton_Rain_Plus->Setup_button(60, 40, "", "image/rect/sky.png", "image/rect/sky.png", "image/rect/black.png");
+	m_pUIButton_Rain_Plus->Setup(D3DXVECTOR3(205, 303, 0), E_UI_BUTTON);
+	m_pUIButton_Rain_Plus->Setup_button("Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS.png", "Image/UI/Button/EFFECT_TAP/CHECK_PLUS_CLICK.png");
 	pUITab_Effect_space->AddChild(m_pUIButton_Rain_Plus);
-
-	m_pUIText_Rain_Minus = new cUITextView();
-	m_pUIText_Rain_Minus->Setup(D3DXVECTOR3(20, 310, 0), E_UI_BUTTON);
-	m_pUIText_Rain_Minus->Setup_Text(ST_SIZE(50, 40), "-");
-	pUITab_Effect_space->AddChild(m_pUIText_Rain_Minus);
-
-	m_pUIText_Rain_Plus = new cUITextView();
-	m_pUIText_Rain_Plus->Setup(D3DXVECTOR3(210, 310, 0), E_UI_BUTTON);
-	m_pUIText_Rain_Plus->Setup_Text(ST_SIZE(60, 40), "+");
-	pUITab_Effect_space->AddChild(m_pUIText_Rain_Plus);
 
 	m_pUITab_Effect->SetHiddenAll(true);
 	// << 
@@ -733,11 +714,11 @@ void cMainGame::Update_Object()
 
 		}
 
-		if (INPUT->GetKeyState('Z'))	m_pConstruct->SetScale(m_pConstruct->GetScale() + D3DXVECTOR3(0.05f, 0.05f, 0.05f));
-		if (INPUT->GetKeyState('X'))	m_pConstruct->SetScale(m_pConstruct->GetScale() - D3DXVECTOR3(0.05f, 0.05f, 0.05f));
+		if (INPUT->GetKeyState('Z'))	m_pConstruct->SetScale(m_pConstruct->GetScale() + D3DXVECTOR3(0.02f, 0.02f, 0.02f));
+		if (INPUT->GetKeyState('X'))	m_pConstruct->SetScale(m_pConstruct->GetScale() - D3DXVECTOR3(0.02f, 0.02f, 0.02f));
 
-		if (INPUT->GetKeyState('Q'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() + 0.05f);
-		if (INPUT->GetKeyState('E'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() - 0.05f);
+		if (INPUT->GetKeyState('Q'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() + 0.02f);
+		if (INPUT->GetKeyState('E'))	m_pConstruct->SetRotationY(m_pConstruct->GetRotationY() - 0.02f);
 
 		m_pConstruct->SetPosition(D3DXVECTOR3(m_vCursorPos.x, m_vCursorPos.y, m_vCursorPos.z));
 
@@ -1412,7 +1393,7 @@ void cMainGame::LoadMap()
 void cMainGame::Setup_SkyBox()
 {
 	m_pSkyBox = new cSkyBox();
-	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox/Town_Orc", "png");
+	m_pSkyBox->Setup(m_nSize / 2, m_nSize / 2, m_nSize / 2, "map/SkyBox/Town_Human", "png");
 }
 
 void cMainGame::Update_Effect()

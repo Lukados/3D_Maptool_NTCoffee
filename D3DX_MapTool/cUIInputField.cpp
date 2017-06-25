@@ -11,12 +11,15 @@ cUIInputField::~cUIInputField()
 {
 }
 
-void cUIInputField::Setup_field(int width, int height, string sPath_idle, string sPath_selected)
+void cUIInputField::Setup_field(string sPath_idle, string sPath_selected)
 {
-	m_stSize.nWidth = width;
-	m_stSize.nHeight = height;
-	m_mapTexture[E_UISTATE_IDLE] = TEXTURE->GetTexture(sPath_idle);
-	m_mapTexture[E_UISTATE_SELECTED] = TEXTURE->GetTexture(sPath_selected);
+	D3DXIMAGE_INFO imageInfo;
+
+	m_mapTexture[E_UISTATE_IDLE] = TEXTURE->GetTexture(sPath_idle, imageInfo);
+	m_mapTexture[E_UISTATE_SELECTED] = TEXTURE->GetTexture(sPath_selected, imageInfo);
+
+	m_stSize.nWidth = imageInfo.Width;
+	m_stSize.nHeight = imageInfo.Height;
 }
 
 void cUIInputField::Update(float deltaTime)

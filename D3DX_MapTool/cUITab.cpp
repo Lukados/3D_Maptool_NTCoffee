@@ -13,15 +13,17 @@ cUITab::~cUITab()
 {
 }
 
-void cUITab::Setup_tab(int titleWidth, int titleHeight, string title, string path_idleState, string path_selected)
+void cUITab::Setup_tab(string path_idleState, string path_selected)
 {
-	m_stSize.nWidth = titleWidth;
-	m_stSize.nHeight = titleHeight;
-	m_sTitle = title;
+	D3DXIMAGE_INFO imageInfo;
+
 	m_currentState = E_UISTATE_IDLE;
 
-	m_mapColor[E_UISTATE_IDLE] = TEXTURE->GetTexture(path_idleState);
-	m_mapColor[E_UISTATE_SELECTED] = TEXTURE->GetTexture(path_selected);
+	m_mapColor[E_UISTATE_IDLE] = TEXTURE->GetTexture(path_idleState, imageInfo);
+	m_mapColor[E_UISTATE_SELECTED] = TEXTURE->GetTexture(path_selected, imageInfo);
+
+	m_stSize.nWidth = imageInfo.Width;
+	m_stSize.nHeight = imageInfo.Height;
 }
 
 void cUITab::Update(float deltaTime)
