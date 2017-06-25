@@ -53,8 +53,8 @@ void cConstruct::Update()
 
 void cConstruct::Render()
 {
-//	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
-	DEVICE->LightEnable(0, true);
+	DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+
 	if (m_nSObjID >= E_S_OBJECTID_H_DW_START && m_nSObjID <= E_S_OBJECTID_H_DW_END ||
 		m_nSObjID >= E_S_OBJECTID_P_DW_START && m_nSObjID <= E_S_OBJECTID_P_ETC_END)
 	{
@@ -75,8 +75,9 @@ void cConstruct::Render()
 
 	DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	/*DEVICE->SetRenderState(D3DRS_LIGHTING, false);*/
+	//DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+	DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 //
 //void cConstruct::Render_Shadow()

@@ -164,13 +164,11 @@ void cMainGame::Render()
 	{		
 		if (m_pMap) m_pMap->Render();
 
-
 		if (m_pSkyBox) m_pSkyBox->Render();
-		SHADOW->Render();
 
+		SHADOW->Render();
 		Render_Object();
 	}
-
 	if (m_isSnowOn) m_pSnow->Render("obj/Effect/Snow/Snow.tga");
 	if (m_isRainOn)	m_pRain->Render("obj/Effect/Rain/Rain.tga");
 	Render_UI(m_pUISprite);

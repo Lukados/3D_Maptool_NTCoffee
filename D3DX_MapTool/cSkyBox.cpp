@@ -176,7 +176,7 @@ void cSkyBox::Render()
 
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
 	DEVICE->SetFVF(ST_PT_VERTEX::FVF);
-	//DEVICE->SetRenderState(D3DRS_LIGHTING, false);
+	DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	LPDIRECT3DTEXTURE9 texture;
 
@@ -223,7 +223,7 @@ void cSkyBox::Render()
 	//	&m_vecVertex[30],
 	//	sizeof(ST_PT_VERTEX));
 
-	//DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+	DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	DEVICE->EndScene();
 }
 

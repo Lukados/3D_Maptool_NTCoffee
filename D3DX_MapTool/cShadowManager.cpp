@@ -55,8 +55,7 @@ void cShadowManager::Render()
 {
 	if (isView)
 	{
-		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
-		//DEVICE->LightEnable(0, true);
+		DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 		for (int i = 0; i < m_vecConstruct.size(); i++)
 		{
 			DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -117,7 +116,7 @@ void cShadowManager::Render()
 			DEVICE->SetRenderState(D3DRS_STENCILENABLE, FALSE);
 
 		}
-		DEVICE->SetRenderState(D3DRS_LIGHTING, false);
+		DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 	}
 
 }
