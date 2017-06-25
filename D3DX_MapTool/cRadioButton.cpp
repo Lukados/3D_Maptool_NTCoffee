@@ -11,11 +11,14 @@ cRadioButton::~cRadioButton()
 {
 }
 
-void cRadioButton::Setup_RadioButton()
+void cRadioButton::Setup_RadioButton(string sPath_idle, string sPath_selected)
 {
-	// 맵 변수의 상태값에 따라 텍스쳐값 가지고 오기
-	m_mapTexture[E_UISTATE_IDLE] = TEXTURE->GetTexture("image/rect/white.png");
-	m_mapTexture[E_UISTATE_CLICKED] = TEXTURE->GetTexture("image/rect/yellow.png");
+	D3DXIMAGE_INFO	imageInfo;
+	m_mapTexture[E_UISTATE_IDLE] = TEXTURE->GetTexture(sPath_idle, imageInfo);
+	m_mapTexture[E_UISTATE_CLICKED] = TEXTURE->GetTexture(sPath_selected, imageInfo);
+
+	m_stSize.nWidth = imageInfo.Width;
+	m_stSize.nHeight = imageInfo.Height;
 }
 
 void cRadioButton::Update(float deltaTime)
@@ -85,10 +88,10 @@ void cRadioButton::SetSID(int index, int eSID)
 	m_vecSIndex[index]->SetSID(eSID);
 }
 
-void cRadioButton::Add_RadioButton(D3DXVECTOR3 position, ST_SIZE size, E_S_OBJECTID sID, eUISTATE state, LPDIRECT3DTEXTURE9 t)
+void cRadioButton::Add_RadioButton(D3DXVECTOR3 position, E_S_OBJECTID sID, eUISTATE state, LPDIRECT3DTEXTURE9 t)
 {
 	// RadioButton의 구조체 값 삽입
-	ST_SINDEX* st = new ST_SINDEX(position, size, sID, state);
+	ST_SINDEX* st = new ST_SINDEX(position, m_stSize, sID, state);
 	st->SetTexture(t);
 	st->vPosition = position + m_vPosition;
 

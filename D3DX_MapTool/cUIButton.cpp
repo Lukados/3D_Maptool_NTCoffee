@@ -12,14 +12,16 @@ cUIButton::~cUIButton()
 {
 }
 
-void cUIButton::Setup_button(int width, int height, string name, string sPath_idle, string sPath_mouseover, string sPath_clicked)
+void cUIButton::Setup_button(string sPath_idle, string sPath_mouseover, string sPath_clicked)
 {
-	m_stSize.nWidth = width;
-	m_stSize.nHeight = height;
-	m_sName = name;
-	m_mapTexture[E_UISTATE_IDLE] = TEXTURE->GetTexture(sPath_idle);
-	m_mapTexture[E_UISTATE_MOUSEOVER] = TEXTURE->GetTexture(sPath_mouseover);
-	m_mapTexture[E_UISTATE_CLICKED] = TEXTURE->GetTexture(sPath_clicked);
+	D3DXIMAGE_INFO imageInfo;
+
+	m_mapTexture[E_UISTATE_IDLE] = TEXTURE->GetTexture(sPath_idle, imageInfo);
+	m_mapTexture[E_UISTATE_MOUSEOVER] = TEXTURE->GetTexture(sPath_mouseover, imageInfo);
+	m_mapTexture[E_UISTATE_CLICKED] = TEXTURE->GetTexture(sPath_clicked, imageInfo);
+
+	m_stSize.nWidth = imageInfo.Width;
+	m_stSize.nHeight = imageInfo.Height;
 }
 
 void cUIButton::Update(float deltaTime)

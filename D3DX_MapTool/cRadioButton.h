@@ -28,13 +28,14 @@ class cRadioButton : public cUIObject
 {
 	vector<ST_SINDEX*>					m_vecSIndex;
 	map<eUISTATE, LPDIRECT3DTEXTURE9>	m_mapTexture;
+
 	SYNTHESIZE(bool, m_isClicked, IsClicked);
 
 public:
 	cRadioButton();
 	~cRadioButton();
 
-	void Setup_RadioButton();
+	void Setup_RadioButton(string sPath_idle, string sPath_selected);
 	void Render_ButtonUI(LPD3DXSPRITE pSprite);
 	void Render_Sprite(LPD3DXSPRITE pSprite);
 
@@ -46,7 +47,7 @@ public:
 
 	void SetTexture(int index, LPDIRECT3DTEXTURE9 texture);
 	void SetSID(int index, int eSID);
-	void Add_RadioButton(D3DXVECTOR3 position, ST_SIZE size, E_S_OBJECTID sID, eUISTATE state, LPDIRECT3DTEXTURE9 t);
+	void Add_RadioButton(D3DXVECTOR3 position, E_S_OBJECTID sID, eUISTATE state, LPDIRECT3DTEXTURE9 t);
 
 	vector<ST_SINDEX*>	GetVecSIndex() { return m_vecSIndex; }
 	int GetSID();
