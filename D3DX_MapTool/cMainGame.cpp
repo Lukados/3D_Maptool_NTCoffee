@@ -328,69 +328,82 @@ void cMainGame::Setup_UI()
 
 	m_pRadioButton_Brush = new cRadioButton;
 	m_pRadioButton_Brush->Setup(D3DXVECTOR3(10, 10, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Brush->Setup_RadioButton("", "");
+	m_pRadioButton_Brush->Setup_RadioButton("Image/UI/Button/MAP_TAP/CHECK_BT_STAND.png", "Image/UI/Button/MAP_TAP/CHECK_BT_SELECT.png");
+	
 	pUITab_Map_space->AddChild(m_pRadioButton_Brush);
+	
 	m_pRadioButton_Brush->Add_RadioButton(D3DXVECTOR3(15, 10, 0), E_S_OBJECTID_BLANK, E_UISTATE_IDLE, NULL);
 	m_pRadioButton_Brush->Add_RadioButton(D3DXVECTOR3(145, 10, 0),  E_S_OBJECTID_BLANK2, E_UISTATE_IDLE, NULL);
-	cUITextView* m_pUIText_DefaultBrush = new cUITextView();
-	m_pUIText_DefaultBrush->Setup(D3DXVECTOR3(15, 10, 0), E_UI_TEXT);
-	m_pUIText_DefaultBrush->Setup_Text(ST_SIZE(120, 45), "Def Brush");
-	m_pRadioButton_Brush->AddChild(m_pUIText_DefaultBrush);
-	cUITextView* m_pUIText_FixedBrush = new cUITextView();
-	m_pUIText_FixedBrush->Setup(D3DXVECTOR3(145, 10, 0), E_UI_TEXT);
-	m_pUIText_FixedBrush->Setup_Text(ST_SIZE(120, 45), "Fixed Brush");
-	m_pRadioButton_Brush->AddChild(m_pUIText_FixedBrush);
+	
+	cUIImage* m_pUIText_DefaultBrush = new cUIImage();
+	m_pUIText_DefaultBrush->Setup(D3DXVECTOR3(20, 20, 0), E_UI_IMAGE);
+	m_pUIText_DefaultBrush->Setup_Image("Image/UI/Text/Text_DefBrush.png");
+	m_pUIText_DefaultBrush->SetSize(ST_SIZE(m_pUIText_DefaultBrush->GetSize().nWidth, m_pUIText_DefaultBrush->GetSize().nHeight));
+	pUITab_Map_space->AddChild(m_pUIText_DefaultBrush);
+	m_pUIText_DefaultBrush->SetHidden(false);
 
-	cUITextView* pUIText_InnerBrush = new cUITextView();
-	pUIText_InnerBrush->Setup(D3DXVECTOR3(25, 100, 0), E_UI_TEXT);
-	pUIText_InnerBrush->Setup_Text(ST_SIZE(100, 50), "Brush-Inner");
+	cUIImage* m_pUIText_FixedBrush = new cUIImage();
+	m_pUIText_FixedBrush->Setup(D3DXVECTOR3(148, 20, 0), E_UI_IMAGE);
+	m_pUIText_FixedBrush->Setup_Image("Image/UI/Text/Text_FixedBrush.png");
+	m_pUIText_FixedBrush->SetSize(ST_SIZE(m_pUIText_FixedBrush->GetSize().nWidth, m_pUIText_FixedBrush->GetSize().nHeight));
+	pUITab_Map_space->AddChild(m_pUIText_FixedBrush);
+	m_pUIText_FixedBrush->SetHidden(false);
+
+	cUIImage* pUIText_InnerBrush = new cUIImage();
+	pUIText_InnerBrush->Setup(D3DXVECTOR3(25, 100, 0), E_UI_IMAGE);
+	pUIText_InnerBrush->Setup_Image("Image/UI/Text/Text_BrushInner.png");
+	pUIText_InnerBrush->SetSize(ST_SIZE(pUIText_InnerBrush->GetSize().nWidth, pUIText_InnerBrush->GetSize().nHeight));
 	pUITab_Map_space->AddChild(pUIText_InnerBrush);
+	pUIText_InnerBrush->SetHidden(false);
 
 	cUIScrollbar* pUIScroll_BrushSize_inside = new cUIScrollbar();
 	pUIScroll_BrushSize_inside->Setup(D3DXVECTOR3(80, 150, 0), E_UI_SCROLL);
-	pUIScroll_BrushSize_inside->Setup_scroll(150, 50, "Size", "image/rect/sky.png", 1, 10);
+	pUIScroll_BrushSize_inside->Setup_scroll(150, 50, "Size", "Image/UI/Button/MAP_TAP/Bar.png", 1, 10);
 	pUITab_Map_space->AddChild(pUIScroll_BrushSize_inside);
 	pUIScroll_BrushSize_inside->Setup_bar(15, 30);
 	m_pUIScroll_BrushSize_inside = pUIScroll_BrushSize_inside;
 
 	cUIScrollbar* pUIScroll_BrushDepth_inside = new cUIScrollbar();
 	pUIScroll_BrushDepth_inside->Setup(D3DXVECTOR3(80, 190, 0), E_UI_SCROLL);
-	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "image/rect/sky.png", -15, 15);
+	pUIScroll_BrushDepth_inside->Setup_scroll(150, 50, "Depth", "Image/UI/Button/MAP_TAP/Bar.png", -15, 15);
 	pUITab_Map_space->AddChild(pUIScroll_BrushDepth_inside);
 	pUIScroll_BrushDepth_inside->Setup_bar(15, 30);
 	m_pUIScroll_BrushDepth_inside = pUIScroll_BrushDepth_inside;
 
-	cUITextView* pUIText_OuterBrush = new cUITextView();
-	pUIText_OuterBrush->Setup(D3DXVECTOR3(25, 250, 0), E_UI_TEXT);
-	pUIText_OuterBrush->Setup_Text(ST_SIZE(100, 50), "Brush-Outer");
+	cUIImage* pUIText_OuterBrush = new cUIImage();
+	pUIText_OuterBrush->Setup(D3DXVECTOR3(25, 250, 0), E_UI_IMAGE);
+	pUIText_OuterBrush->Setup_Image("Image/UI/Text/Text_BrushOuter.png");
+	pUIText_OuterBrush->SetSize(ST_SIZE(pUIText_OuterBrush->GetSize().nWidth, pUIText_OuterBrush->GetSize().nHeight));
 	pUITab_Map_space->AddChild(pUIText_OuterBrush);
+	pUIText_OuterBrush->SetHidden(false);
+
 
 	cUIScrollbar* pUIScroll_BrushSize_Outside = new cUIScrollbar();
 	pUIScroll_BrushSize_Outside->Setup(D3DXVECTOR3(80, 290, 0), E_UI_SCROLL);
-	pUIScroll_BrushSize_Outside->Setup_scroll(150, 50, "Size", "image/rect/sky.png", 5, 20);
+	pUIScroll_BrushSize_Outside->Setup_scroll(150, 50, "Size", "Image/UI/Button/MAP_TAP/Bar.png", 5, 20);
 	pUITab_Map_space->AddChild(pUIScroll_BrushSize_Outside);
 	pUIScroll_BrushSize_Outside->Setup_bar(15, 30);
 	m_pUIScroll_BrushSize_Outside = pUIScroll_BrushSize_Outside;	
 
 	m_pUIScroll_BrushSharpness = new cUIScrollbar();
 	m_pUIScroll_BrushSharpness->Setup(D3DXVECTOR3(80, 340, 0), E_UI_SCROLL);
-	m_pUIScroll_BrushSharpness->Setup_scroll(150, 50, "Sharp\n-ness", "image/rect/sky.png", -1, 1);
+	m_pUIScroll_BrushSharpness->Setup_scroll(150, 50, "Sharp\n-ness", "Image/UI/Button/MAP_TAP/Bar.png", -1, 1);
 	pUITab_Map_space->AddChild(m_pUIScroll_BrushSharpness);
 	m_pUIScroll_BrushSharpness->Setup_bar(15, 30);
 
 	m_pUIButton_GetHeight = new cUIButton();
-	m_pUIButton_GetHeight->Setup(D3DXVECTOR3(30, 450, 0), E_UI_BUTTON);
-	m_pUIButton_GetHeight->Setup_button("image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_GetHeight->Setup(D3DXVECTOR3(10, 450, 0), E_UI_BUTTON);
+	m_pUIButton_GetHeight->Setup_button("Image/UI/Button/MAP_TAP/GET_BT_STAND.png", "Image/UI/Button/MAP_TAP/GET_BT_SELECT.png", "Image/UI/Button/MAP_TAP/GET_BT_STAND.png");
 	pUITab_Map_space->AddChild(m_pUIButton_GetHeight);
 	
 	m_pUIInputField_SetHeight = new  cUIInputField;
-	m_pUIInputField_SetHeight->Setup(D3DXVECTOR3(100, 450, 0), E_UI_INPUTFIELD);
-	m_pUIInputField_SetHeight->Setup_field("image/rect/darkgray.png", "image/rect/white.png");
+	m_pUIInputField_SetHeight->Setup(D3DXVECTOR3(96, 450, 0), E_UI_INPUTFIELD);
+	m_pUIInputField_SetHeight->Setup_field("Image/UI/InputField/ValueY_DarkGray.png", "Image/UI/InputField/ValueY_White.png");
 	pUITab_Map_space->AddChild(m_pUIInputField_SetHeight);
 
 	m_pUIButton_SetHeight = new cUIButton();
-	m_pUIButton_SetHeight->Setup(D3DXVECTOR3(200, 450, 0), E_UI_BUTTON);
-	m_pUIButton_SetHeight->Setup_button("image/rect/white.png", "image/rect/black.png", "image/rect/yellow.png");
+	m_pUIButton_SetHeight->Setup(D3DXVECTOR3(190, 450, 0), E_UI_BUTTON);
+	m_pUIButton_SetHeight->Setup_button("Image/UI/Button/MAP_TAP/SET_BT_STAND.png", "Image/UI/Button/MAP_TAP/SET_BT_SELECT.png", "Image/UI/Button/MAP_TAP/SET_BT_STAND.png");
 	pUITab_Map_space->AddChild(m_pUIButton_SetHeight);
 
 	m_pUITab_Map->SetHiddenAll(true);

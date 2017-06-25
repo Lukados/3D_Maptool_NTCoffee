@@ -93,10 +93,10 @@ void cUIScrollbar::Render(LPD3DXSPRITE pSprite)
 	LPD3DXFONT pFont = FONT->GetFont(E_FONT_DEFAULT);
 	
 	SetRect(&rc, LeftTop().x - 100, LeftTop().y, LeftTop().x - 20, RightBottom().y);	
-	pFont->DrawText(NULL, m_sName.c_str(), m_sName.length(), &rc, DT_RIGHT | DT_VCENTER, D3DCOLOR_XRGB(0, 0, 0));
+	pFont->DrawText(NULL, m_sName.c_str(), m_sName.length(), &rc, DT_RIGHT | DT_VCENTER, D3DCOLOR_XRGB(150, 150, 150));
 
 	SetRect(&rc, RightBottom().x + 20, LeftTop().y, RightBottom().x + 50, RightBottom().y);
-	pFont->DrawText(NULL, to_string(m_nValue).c_str(), to_string(m_nValue).length(), &rc, DT_LEFT | DT_VCENTER, D3DCOLOR_XRGB(0, 0, 0));
+	pFont->DrawText(NULL, to_string(m_nValue).c_str(), to_string(m_nValue).length(), &rc, DT_LEFT | DT_VCENTER, D3DCOLOR_XRGB(150, 150, 150));
 	// <<
 
 	cUIObject::Render(pSprite);
