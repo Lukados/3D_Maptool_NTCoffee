@@ -423,43 +423,43 @@ void cMainGame::Setup_UI()
 	m_pUITab_Object->AddChild(pUITab_Object_space);
 
 	m_pUIButton_LLeft = new cUIButton();
-	m_pUIButton_LLeft->Setup(D3DXVECTOR3(30, 20, 0), E_UI_BUTTON);
-	m_pUIButton_LLeft->Setup_button("image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_LLeft->Setup(D3DXVECTOR3(20, 20, 0), E_UI_BUTTON);
+	m_pUIButton_LLeft->Setup_button("Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_LLeft);
 
 	m_pUIButton_LRight = new cUIButton();
-	m_pUIButton_LRight->Setup(D3DXVECTOR3(230, 20, 0), E_UI_BUTTON);
-	m_pUIButton_LRight->Setup_button("image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_LRight->Setup(D3DXVECTOR3(205, 20, 0), E_UI_BUTTON);
+	m_pUIButton_LRight->Setup_button("Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_LRight);
 
 	m_pUIText_LID = new cUITextView();
-	m_pUIText_LID->Setup(D3DXVECTOR3(110, 20, 0), E_UI_BUTTON);
+	m_pUIText_LID->Setup(D3DXVECTOR3(95, 25, 0), E_UI_BUTTON);
 	m_pUIText_LID->Setup_Text(ST_SIZE(100, 40), "");
 	pUITab_Object_space->AddChild(m_pUIText_LID);
 
 	m_pUIButton_MLeft = new cUIButton;
-	m_pUIButton_MLeft->Setup(D3DXVECTOR3(30, 70, 0), E_UI_BUTTON);
-	m_pUIButton_MLeft->Setup_button("image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_MLeft->Setup(D3DXVECTOR3(20, 80, 0), E_UI_BUTTON);
+	m_pUIButton_MLeft->Setup_button("Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_MLeft);
 
 	m_pUIButton_MRight = new cUIButton;
-	m_pUIButton_MRight->Setup(D3DXVECTOR3(230, 70, 0), E_UI_BUTTON);
-	m_pUIButton_MRight->Setup_button("image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_MRight->Setup(D3DXVECTOR3(205, 80, 0), E_UI_BUTTON);
+	m_pUIButton_MRight->Setup_button("Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_MRight);
 
 	m_pUIText_MID = new cUITextView();
-	m_pUIText_MID->Setup(D3DXVECTOR3(110, 70, 0), E_UI_BUTTON);
+	m_pUIText_MID->Setup(D3DXVECTOR3(95, 85, 0), E_UI_BUTTON);
 	m_pUIText_MID->Setup_Text(ST_SIZE(100, 40), "");
 	pUITab_Object_space->AddChild(m_pUIText_MID);
 
 	m_pUIButton_SLeft = new cUIButton;
-	m_pUIButton_SLeft->Setup(D3DXVECTOR3(30, 700, 0), E_UI_BUTTON);
-	m_pUIButton_SLeft->Setup_button("image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_SLeft->Setup(D3DXVECTOR3(20, 700, 0), E_UI_BUTTON);
+	m_pUIButton_SLeft->Setup_button("Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/PREV_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_SLeft);
 
 	m_pUIButton_SRight = new cUIButton;
-	m_pUIButton_SRight->Setup(D3DXVECTOR3(230, 700, 0), E_UI_BUTTON);
-	m_pUIButton_SRight->Setup_button("image/rect/yellow.png", "image/rect/yellow.png", "image/rect/black.png");
+	m_pUIButton_SRight->Setup(D3DXVECTOR3(205, 700, 0), E_UI_BUTTON);
+	m_pUIButton_SRight->Setup_button("Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_CLICK.png", "Image/UI/Button/OBJECT_TAP/NEXT_BT_STAND.png");
 	pUITab_Object_space->AddChild(m_pUIButton_SRight);
 
 	m_pUIText_SID = new cUITextView();
@@ -469,7 +469,7 @@ void cMainGame::Setup_UI()
 
 	m_pRadioButton_Object = new cRadioButton;
 	m_pRadioButton_Object->Setup(D3DXVECTOR3(10, 130, 0), E_UI_RADIOBUTTON);
-	m_pRadioButton_Object->Setup_RadioButton("", "");
+	m_pRadioButton_Object->Setup_RadioButton("Image/UI/Button/OBJECT_TAP/check_box_stand.png", "Image/UI/Button/OBJECT_TAP/check_box.png");
 	pUITab_Object_space->AddChild(m_pRadioButton_Object);
 
 	m_pRadioButton_Object->Add_RadioButton(D3DXVECTOR3(15, 10, 0),  E_S_OBJECTID_H_DW_BARN, E_UISTATE_IDLE, NULL);
