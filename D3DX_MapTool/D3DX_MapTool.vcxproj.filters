@@ -76,12 +76,6 @@
     <Filter Include="05. UI\05. UITextView">
       <UniqueIdentifier>{63c1db32-13e8-480e-bc17-24e280b34d2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. UI\06. cRadioButton">
-      <UniqueIdentifier>{5d96fd7a-42bd-49ac-abc3-2703ce31e733}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. UI\07. UIInputField">
-      <UniqueIdentifier>{ff9c2b92-32ad-47c9-b15a-ad4956e510db}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Entity\03. Object">
       <UniqueIdentifier>{e6c23127-d6f7-446a-9578-acb5cb403f40}</UniqueIdentifier>
     </Filter>
@@ -120,6 +114,15 @@
     </Filter>
     <Filter Include="02. Manager\08. ShadowManager">
       <UniqueIdentifier>{fe330d6c-f7f2-49e5-98dd-a5eb9537db9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\08. UIInputField">
+      <UniqueIdentifier>{ff9c2b92-32ad-47c9-b15a-ad4956e510db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\07. cRadioButton">
+      <UniqueIdentifier>{5d96fd7a-42bd-49ac-abc3-2703ce31e733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\06. cUIImage">
+      <UniqueIdentifier>{37bbc5df-6291-445a-803c-286a4502f627}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -191,10 +194,10 @@
       <Filter>05. UI\05. UITextView</Filter>
     </ClInclude>
     <ClInclude Include="cRadioButton.h">
-      <Filter>05. UI\06. cRadioButton</Filter>
+      <Filter>05. UI\07. cRadioButton</Filter>
     </ClInclude>
     <ClInclude Include="cUIInputField.h">
-      <Filter>05. UI\07. UIInputField</Filter>
+      <Filter>05. UI\08. UIInputField</Filter>
     </ClInclude>
     <ClInclude Include="cObject.h">
       <Filter>03. Entity\03. Object</Filter>
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="cShadowManager.h">
       <Filter>02. Manager\08. ShadowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIImage.h">
+      <Filter>05. UI\06. cUIImage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -293,10 +299,10 @@
       <Filter>05. UI\05. UITextView</Filter>
     </ClCompile>
     <ClCompile Include="cRadioButton.cpp">
-      <Filter>05. UI\06. cRadioButton</Filter>
+      <Filter>05. UI\07. cRadioButton</Filter>
     </ClCompile>
     <ClCompile Include="cUIInputField.cpp">
-      <Filter>05. UI\07. UIInputField</Filter>
+      <Filter>05. UI\08. UIInputField</Filter>
     </ClCompile>
     <ClCompile Include="cObject.cpp">
       <Filter>03. Entity\03. Object</Filter>
@@ -330,6 +336,9 @@
     </ClCompile>
     <ClCompile Include="cShadowManager.cpp">
       <Filter>02. Manager\08. ShadowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cUIImage.cpp">
+      <Filter>05. UI\06. cUIImage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

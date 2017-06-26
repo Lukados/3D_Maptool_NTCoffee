@@ -32,7 +32,7 @@ void cHeightMap::Setup(int cellPerRow, float cellSpace)
 
 	// >> ¸ÊÀÇ Mtl & Tex ¼³Á¤
 	cMtlTex* pMtlTex = new cMtlTex;
-	pMtlTex->SetTexture(TEXTURE->GetTexture("map/Town_Orc.png"));
+	pMtlTex->SetTexture(TEXTURE->GetTexture("map/Town_Human.png"));
 
 	D3DMATERIAL9 stMtl;
 	ZeroMemory(&stMtl, sizeof(D3DMATERIAL9));
@@ -162,11 +162,11 @@ void cHeightMap::Render()
 	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 	DEVICE->SetMaterial(&(m_vecMtlTex[0]->GetMaterial()));
 	DEVICE->SetTexture(0, m_vecMtlTex[0]->GetTexture());
-	m_pMesh->DrawSubset(0);
-
-
+	m_pMesh->DrawSubset(0);	
 	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
 	if(m_isCursorOn) RenderBrush();
+
 }
 
 void cHeightMap::RenderBrush()

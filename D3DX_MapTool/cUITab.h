@@ -13,7 +13,7 @@ public:
 	cUITab();
 	~cUITab();
 
-	void Setup_tab(int titleWidth, int menuHeight, string title, string path_idleState, string path_selected);
+	void Setup_tab(string path_idleState, string path_selected);
 	virtual void Update(float deltaTime);
 	virtual void Render(LPD3DXSPRITE pSprite);
 };

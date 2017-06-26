@@ -170,6 +170,7 @@
     <ClInclude Include="cFontManager.h" />
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="cTimeManager.h" />
+    <ClInclude Include="cUIImage.h" />
     <ClInclude Include="cUIInputField.h" />
     <ClInclude Include="cUIObject.h" />
     <ClInclude Include="cUIScrollbar.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="cFontManager.cpp" />
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="cTimeManager.cpp" />
+    <ClCompile Include="cUIImage.cpp" />
     <ClCompile Include="cUIInputField.cpp" />
     <ClCompile Include="cUIObject.cpp" />
     <ClCompile Include="cUIScrollbar.cpp" />

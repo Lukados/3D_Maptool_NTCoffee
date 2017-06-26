@@ -8,6 +8,7 @@ class cUITab;
 class cUIScrollbar;
 class cUITextView;
 class cUIButton;
+class cUIImage;
 class cRadioButton;
 class cUIInputField;
 
@@ -40,6 +41,9 @@ class cMainGame
 	vector<cUITab*>				m_vecUITab_Image;
 
 	D3DXVECTOR3					m_vCursorPos;
+
+	// Board 이미지
+	cUIImage*					m_pImage_Board;
 
 	//>> Menu 탭 안 변수들
 	cUIInputField*				m_pUIInputField_CellSpace;

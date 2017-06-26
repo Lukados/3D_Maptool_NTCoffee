@@ -50,9 +50,9 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 }
 
 void cGrid::Render()
-{
-	DEVICE->SetRenderState(D3DRS_LIGHTING, false);
-		
+{	
+	DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+
 	D3DXMATRIXA16 matI;
 	D3DXMatrixIdentity(&matI);
 	DEVICE->SetTransform(D3DTS_WORLD, &matI);
