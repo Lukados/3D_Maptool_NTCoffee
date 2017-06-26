@@ -166,7 +166,7 @@ void cMainGame::Render()
 	if (m_isFogOn) Render_Effect_Fog();
 	else
 	{		
-		if (m_pMap) m_pMap->Render();
+		if (!m_pMap->GetMesh()) m_pMap->Render();
 		if (m_pSkyBox) m_pSkyBox->Render();
 
 		SHADOW->Render();
@@ -1372,7 +1372,11 @@ void cMainGame::LoadMap()
 	string temp = m_pUIInputField_FilePath->GetText() + ".txt";
 	char* filePath = strdup(temp.c_str());
 	
-	//if (m_pMap) SAFE_DELETE(m_pMap);
+	if (m_pMap)
+	{
+		m_pMap->Destroy();
+		SAFE_DELETE(m_pMap);
+	}
 	
 	m_pMap = new cHeightMap();
 	cObjLoader loader;
@@ -1382,6 +1386,7 @@ void cMainGame::LoadMap()
 	int nCellPerRow = 0;
 	float fCellSpace = 0.0f;
 	LPD3DXMESH pMesh = loader.LoadMesh_Map(vecMtlTex, vecVertex, vecIndex, nCellPerRow, fCellSpace, m_vecConstruct, folderPath, filePath, false);
+	if (!pMesh) return;
 	m_stWeather = loader.GetWeatherInfo();
 	m_stShadow = loader.GetShadowInfo();
 	m_pMap->Setup(nCellPerRow, fCellSpace, vecVertex, vecIndex);

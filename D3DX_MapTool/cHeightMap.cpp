@@ -13,12 +13,12 @@ m_isCursorOn(true), m_nOption(0), m_sMesh(NULL)
 cHeightMap::~cHeightMap()
 {
 	SAFE_RELEASE(m_pMesh);
-	for each(auto p in m_vecMtlTex)
-	{
-		SAFE_RELEASE(p);
-	}
-	SAFE_RELEASE(m_pTexture_Brush_Inside);
-	SAFE_RELEASE(m_pTexture_Brush_Outside); 
+	//for each(auto p in m_vecMtlTex)
+	//{
+	//	SAFE_RELEASE(p);
+	//}
+	//SAFE_RELEASE(m_pTexture_Brush_Inside);
+	//SAFE_RELEASE(m_pTexture_Brush_Outside); 
 }
 
 // 정방형 맵을 만들어주는 함수
@@ -142,6 +142,11 @@ void cHeightMap::Update()
 	PickingCursor();
 	if (m_isCursorOn) SetMapHeight_Inside();
 	//SetMapHeight_Outside();
+}
+
+void cHeightMap::Destroy()
+{
+	SAFE_RELEASE(m_pMesh);
 }
 
 bool cHeightMap::GetHeight(IN float x, OUT float&y, IN float z)
@@ -534,6 +539,7 @@ void cHeightMap::SetNoramlVector(IN OUT ST_PNT_VERTEX& v0, IN OUT ST_PNT_VERTEX&
 
 LPD3DXMESH cHeightMap::GetMesh()
 {
+	if (!m_sMesh) return NULL;
 	return *m_sMesh;
 }
 
