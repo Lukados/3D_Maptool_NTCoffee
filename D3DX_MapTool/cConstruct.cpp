@@ -54,7 +54,8 @@ void cConstruct::Update()
 void cConstruct::Render()
 {
 	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
-	DEVICE->LightEnable(0, true);
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
 	if (m_nSObjID >= E_S_OBJECTID_H_DW_START && m_nSObjID <= E_S_OBJECTID_H_DW_END ||
 		m_nSObjID >= E_S_OBJECTID_P_DW_START && m_nSObjID <= E_S_OBJECTID_P_ETC_END)
 	{
@@ -97,12 +98,6 @@ void cConstruct::Create(int sIndex)
 void cConstruct::Destroy()
 {
 	SAFE_RELEASE(m_pObjMesh);
-	for each(auto p in m_vecObjMtlTex)
-	{
-		SAFE_RELEASE(p);
-	}
-
-	// delete this;
 }
 
 D3DMATERIAL9 cConstruct::InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p)
