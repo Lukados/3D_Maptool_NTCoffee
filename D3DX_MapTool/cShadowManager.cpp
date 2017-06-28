@@ -128,7 +128,6 @@ void cShadowManager::Render2()
 		DEVICE->Clear(NULL, NULL, D3DCLEAR_STENCIL, D3DCOLOR_XRGB(47, 121, 112), 1.0f, 0);
 		DEVICE->SetRenderState(D3DRS_LIGHTING, true);
 		DEVICE->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-
 	}
 }
 
