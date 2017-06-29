@@ -36,7 +36,6 @@ public:
 	void Setup(int cellPerRow, float cellSpace);
 	void Setup(int cellPerRow, float cellSpace, vector<ST_PNT_VERTEX> vecVertex, vector<DWORD> vecIndex);
 	void Update();
-	void Destroy();
 	virtual bool GetHeight(IN float x, OUT float&y, IN float z) override;
 	virtual void Render() override;
 	void RenderBrush();

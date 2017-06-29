@@ -97,12 +97,6 @@ void cConstruct::Create(int sIndex)
 void cConstruct::Destroy()
 {
 	SAFE_RELEASE(m_pObjMesh);
-	//for each(auto p in m_vecObjMtlTex)
-	//{
-	//	SAFE_RELEASE(p);
-	//}
-
-	// delete this;
 }
 
 D3DMATERIAL9 cConstruct::InitMtrl(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p)

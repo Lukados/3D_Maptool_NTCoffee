@@ -352,8 +352,6 @@ LPD3DXMESH cObjLoader::LoadMesh_Map(OUT vector<cMtlTex*> &vecMtlTex, OUT vector<
 
 	string sMtlName;
 
-	if (!fp) return NULL;
-
 	while (true)
 	{
 		if (feof(fp)) break;
