@@ -54,7 +54,8 @@ void cConstruct::Update()
 void cConstruct::Render()
 {
 	DEVICE->SetRenderState(D3DRS_LIGHTING, true);
-	DEVICE->LightEnable(0, true);
+	DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
 	if (m_nSObjID >= E_S_OBJECTID_H_DW_START && m_nSObjID <= E_S_OBJECTID_H_DW_END ||
 		m_nSObjID >= E_S_OBJECTID_P_DW_START && m_nSObjID <= E_S_OBJECTID_P_ETC_END)
 	{

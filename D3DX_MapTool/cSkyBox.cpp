@@ -133,6 +133,7 @@ void cSkyBox::Setup(float sizeX, float sizeY, float sizeZ, char* szFolder, char*
 	Setup_Texture(szFolder, szExtension);
 }
 
+// 해당 파일의 texture를 textureManager에 저장 및 현재 texture 설정
 void cSkyBox::Setup_Texture(char* szFolder, char* szExtension)
 {
 	map<SKYBOX_FACE, LPDIRECT3DTEXTURE9> mapTexture;
@@ -144,11 +145,10 @@ void cSkyBox::Setup_Texture(char* szFolder, char* szExtension)
 	mapTexture[SKYBOX_FACE_TOP] = TEXTURE->GetTexture(szFolder + (string)"/Top." + (string)szExtension);
 	mapTexture[SKYBOX_FACE_BOTTOM] = TEXTURE->GetTexture(szFolder + (string)"/Bottom." + (string)szExtension);
 
-	m_mapWholeTexture[SKYBOX_TYPE_A] = mapTexture;
-
-	m_mapCurrentTexture = m_mapWholeTexture[SKYBOX_TYPE_A];
+	m_mapCurrentTexture = mapTexture;
 }
 
+// SkyBox를 Camera에 맞게 Update시키는 함수
 void cSkyBox::Update(cCamera* pCamera)
 {
 	D3DXMATRIXA16	projMat, viewMat, matWorld;
@@ -167,6 +167,7 @@ void cSkyBox::Update(cCamera* pCamera)
 	DEVICE->SetTransform(D3DTS_WORLD, &matWorld);
 }
 
+// SkyBox 렌더 함수
 void cSkyBox::Render()
 {
 	DEVICE->BeginScene();
@@ -180,6 +181,7 @@ void cSkyBox::Render()
 
 	LPDIRECT3DTEXTURE9 texture;
 
+	// 각 면에 해당하는 texture 입히기
 	texture = m_mapCurrentTexture[SKYBOX_FACE_FRONT];
 
 	DEVICE->SetTexture(0, texture);
@@ -225,9 +227,4 @@ void cSkyBox::Render()
 
 	DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	DEVICE->EndScene();
-}
-
-void cSkyBox::SetSkyType(int type)
-{
-	m_mapCurrentTexture = m_mapWholeTexture[type];
 }
