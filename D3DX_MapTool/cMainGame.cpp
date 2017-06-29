@@ -1298,13 +1298,15 @@ void cMainGame::SaveMap()
 
 		cMtlTex* pMtlTex = m_pMap->GetVecMtlTex()[0];
 		{
+			string bottomFile = m_pUIInputField_FilePath->GetText() + ".png";
+
 			fileOut << "mtllib " << m_pUIInputField_FilePath->GetText() + "_mtl.txt" << endl;
 
 			fileOut_mtl << "newmtl " << "Map" << endl;
 			fileOut_mtl << "Ka " << "0.700000 0.700000 0.700000" << endl;
 			fileOut_mtl << "Kd " << "0.700000 0.700000 0.700000" << endl;
 			fileOut_mtl << "Ks " << "0.700000 0.700000 0.700000" << endl;
-			fileOut_mtl << "map_Kd bottom.bmp" << endl;
+			fileOut_mtl << "map_Kd " << bottomFile << endl;
 		}
 
 		vector<ST_PNT_VERTEX> vecVertex = m_pMap->GetVecVertex();
