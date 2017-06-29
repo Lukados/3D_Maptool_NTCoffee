@@ -13,12 +13,6 @@ m_isCursorOn(true), m_nOption(0), m_sMesh(NULL)
 cHeightMap::~cHeightMap()
 {
 	SAFE_RELEASE(m_pMesh);
-	for each(auto p in m_vecMtlTex)
-	{
-		SAFE_RELEASE(p);
-	}
-	SAFE_RELEASE(m_pTexture_Brush_Inside);
-	SAFE_RELEASE(m_pTexture_Brush_Outside); 
 }
 
 // 정방형 맵을 만들어주는 함수

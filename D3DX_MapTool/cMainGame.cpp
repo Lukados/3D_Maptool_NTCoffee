@@ -1357,6 +1357,8 @@ void cMainGame::SaveMap()
 // 로드 버튼 눌렀을 때, 맵 불러와서 생성하도록.
 void cMainGame::LoadMap()
 {
+	if (m_pMap) SAFE_DELETE(m_pMap);
+
 	// >> 오브젝트 초기화
 	m_pConstruct = NULL;
 	for each(auto p in m_vecConstruct)
@@ -1371,8 +1373,6 @@ void cMainGame::LoadMap()
 	char* folderPath = "map";
 	string temp = m_pUIInputField_FilePath->GetText() + ".txt";
 	char* filePath = strdup(temp.c_str());
-	
-	//if (m_pMap) SAFE_DELETE(m_pMap);
 	
 	m_pMap = new cHeightMap();
 	cObjLoader loader;
