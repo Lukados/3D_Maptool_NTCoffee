@@ -49,6 +49,7 @@ class cMainGame
 	cUIInputField*				m_pUIInputField_CellSpace;
 	cUIInputField*				m_pUIInputField_CellNum;
 	cUIInputField*				m_pUIInputField_FilePath;
+	string						m_sBottomName;
 
 	cUIButton*					m_pUIButton_create;
 	cUIButton*					m_pUIButton_save;

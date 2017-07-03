@@ -45,7 +45,7 @@ m_pRadioButton_Snow(NULL), m_isSnowOn(false),
 m_pSphere(NULL), m_vSpherePos(0, 0, 0),
 m_pUIButton_Rain_Minus(NULL), m_pUIButton_Rain_Plus(NULL), m_pUIText_Rain_Minus(NULL), m_pUIText_Rain_Plus(NULL),
 m_pRadioButton_Rain(NULL), m_isRainOn(false), 
-m_diffuseAlpha(0.5f),m_pImage_Board(NULL)
+m_diffuseAlpha(0.5f),m_pImage_Board(NULL), m_sBottomName("")
 {
 	m_stWeather = ST_WEATHER();
 	m_stShadow = ST_SHADOW();
@@ -1298,7 +1298,7 @@ void cMainGame::SaveMap()
 
 		cMtlTex* pMtlTex = m_pMap->GetVecMtlTex()[0];
 		{
-			string bottomFile = m_pUIInputField_FilePath->GetText() + ".png";
+			m_sBottomName = m_pUIInputField_FilePath->GetText() + ".png";
 
 			fileOut << "mtllib " << m_pUIInputField_FilePath->GetText() + "_mtl.txt" << endl;
 
@@ -1306,7 +1306,7 @@ void cMainGame::SaveMap()
 			fileOut_mtl << "Ka " << "0.700000 0.700000 0.700000" << endl;
 			fileOut_mtl << "Kd " << "0.700000 0.700000 0.700000" << endl;
 			fileOut_mtl << "Ks " << "0.700000 0.700000 0.700000" << endl;
-			fileOut_mtl << "map_Kd " << bottomFile << endl;
+			fileOut_mtl << "map_Kd " << m_sBottomName << endl;
 		}
 
 		vector<ST_PNT_VERTEX> vecVertex = m_pMap->GetVecVertex();
